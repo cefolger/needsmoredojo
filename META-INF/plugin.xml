@@ -1,19 +1,22 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.0</version>
+  <version>0.1</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
-        Tools for working with dojo toolkit <br>
-            - detect and flag mismatched AMD imports as errors
-            - detect and remove unused AMD imports <br>
-            - organize AMD imports by sorting alphabetically (aware of plugins and other things tacked on the end)
+        Tools for working with dojo toolkit
+            <ul>
+                <li>detect and flag mismatched AMD imports as errors</li>
+                <li>flag unused AMD imports with strikethrough</li>
+                <li>organize AMD imports by sorting alphabetically (aware of plugins and other things tacked on the end)</li>
+            </ul>
+        Still very much under development. Please contact me with any feedback!
       ]]></description>
 
   <change-notes><![CDATA[
             <ul>
-
+                <li><b>06/16/2013:</b> Initial version, 0.1</li>
             </ul>
       ]]>
   </change-notes>
@@ -39,26 +42,15 @@
   </project-components>
 
     <actions>
-        <group id="MyPlugin.SampleMenu" text="_Sample Menu" description="Dojo">
-            <add-to-group group-id="EditorPopupMenu" anchor="first"  />
-
-            <group>
-                <action id="Myplugin.Textboxes" class="com.chrisfolger.needsmoredojo.actions.UnusedImportsAction" text="Highlight Unused Imports" description="A test menu item">
-                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="1"/>
-                </action>
-                <action id="Myplugin.Textboxes.Remove" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="A test menu item">
-                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
-                </action>
-                <separator/>
-            </group>
-        </group>
-
         <group id="com.chrisfolger.needsmoredojo.refactoring">
             <add-to-group group-id="RefactoringMenu" anchor="first"/>
 
             <group id="com.chrisfolger.dojotols.refactoring.menu.items">
                 <action id="test1" class="com.chrisfolger.needsmoredojo.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
-                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="1"/>
+                </action>
+                <action id="Myplugin.Textboxes.Remove" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="A test menu item">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
                 </action>
             </group>
 
