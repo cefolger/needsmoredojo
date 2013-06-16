@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.refactoring;
 
+import com.chrisfolger.needsmoredojo.base.JSUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
@@ -55,22 +56,17 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
 
         // create the declare statement and add it before the return statement
         String declareStatement = String.format("var util = declare([%s], {});", mixinArray.toString());
-        ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), declareStatement, JSUtils.getDialect(parent.getContainingFile()));
-        parent.addBefore(node.getPsi(), originalReturnStatement);
-        parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), "\n\n").getPsi(), originalReturnStatement);
+        JSUtil.addStatementBeforeElement(parent, originalReturnStatement, declareStatement);
 
         // convert each property to an assignment statement
         for (JSProperty property : properties) {
             String propertyStatement = String.format("util.%s = %s;", property.getName(), property.getValue().getText());
-            node = JSChangeUtil.createStatementFromText(parent.getProject(), propertyStatement);
-            parent.addBefore(node.getPsi(), originalReturnStatement);
-            parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), "\n\n").getPsi(), originalReturnStatement);
+            JSUtil.addStatementBeforeElement(parent, originalReturnStatement, propertyStatement);
         }
 
         // add the final statement to return the util
         String newReturnStatement = "return util;";
-        node = JSChangeUtil.createStatementFromText(parent.getProject(), newReturnStatement, JSUtils.getDialect(parent.getContainingFile()));
-        parent.addBefore(node.getPsi(), originalReturnStatement);
+        JSUtil.addStatementBeforeElement(parent, originalReturnStatement, newReturnStatement);
 
         originalReturnStatement.delete();
     }
