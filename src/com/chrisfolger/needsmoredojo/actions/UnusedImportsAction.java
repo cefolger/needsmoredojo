@@ -1,7 +1,11 @@
 package com.chrisfolger.needsmoredojo.actions;
 
 import com.chrisfolger.needsmoredojo.base.DefineResolver;
+import com.chrisfolger.needsmoredojo.conventions.UnusedImportsDetector;
 import com.intellij.codeInsight.highlighting.HighlightManager;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -14,15 +18,11 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.StatusBar;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.chrisfolger.needsmoredojo.conventions.UnusedImportsDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.chrisfolger.needsmoredojo.ui.DojoImportToolWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,6 +83,7 @@ public class UnusedImportsAction extends AnAction {
                     for(PsiElement element : defines)
                     {
                         elementsToDelete.add(element);
+                        results.append(element.getText() + ", ");
                         elementsToDelete.add(element.getNextSibling());
                     }
 
@@ -90,7 +91,6 @@ public class UnusedImportsAction extends AnAction {
                     {
                         try
                         {
-                            results.append("deleted " + element.getText() + "\n");
                             element.delete();
                         }
                         catch(Exception e)
@@ -99,14 +99,10 @@ public class UnusedImportsAction extends AnAction {
                         }
                     }
 
-                    final ToolWindow window = ToolWindowManager.getInstance(e.getProject()).getToolWindow("Dojo Unused Imports");
-                    window.activate(new Runnable() {
-                        @Override
-                        public void run() {
-                            JTextArea textarea = DojoImportToolWindow.getSharedTextArea();
-                            textarea.setText(results.toString());
-                        }
-                    });
+                    if(elementsToDelete.size() > 0)
+                    {
+                        Notifications.Bus.notify(new Notification("needsmoredojo", "Deleted Imports", "Deleted imports: " + results.toString(), NotificationType.INFORMATION));
+                    }
                 }
             });
         }

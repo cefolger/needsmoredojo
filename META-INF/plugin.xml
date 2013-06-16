@@ -59,9 +59,6 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Dojo Unused Imports" anchor="bottom" factoryClass="com.chrisfolger.needsmoredojo.ui.DojoImportToolWindowFactory" secondary="true">
-        </toolWindow>
-        <applicationConfigurable implementation="com.chrisfolger.needsmoredojo.ui.DojoSettingsForm"></applicationConfigurable>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.inspections.MismatchedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.inspections.UnusedImportsProvider"/>
     </extensions>
