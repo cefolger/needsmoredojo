@@ -7,10 +7,34 @@ import com.intellij.psi.PsiElement;
 
 public class JSUtil
 {
-    public static void addStatementBeforeElement(PsiElement parent, PsiElement element, String statement)
+    public static PsiElement addStatementBeforeElement(PsiElement parent, PsiElement element, String statement)
     {
         ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
         parent.addBefore(node.getPsi(), element);
         parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), "\n\n").getPsi(), element);
+
+        return node.getPsi();
+    }
+
+    public static PsiElement createStatement(PsiElement parent, String statement)
+    {
+        ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
+        return node.getPsi();
+    }
+
+    public static PsiElement addStatement(PsiElement parent, String statement)
+    {
+        ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
+        parent.add(node.getPsi());
+
+        return node.getPsi();
+    }
+
+    public static PsiElement addExpression(PsiElement parent, String statement)
+    {
+        ASTNode node = JSChangeUtil.createExpressionFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
+        parent.add(node.getPsi());
+
+        return node.getPsi();
     }
 }

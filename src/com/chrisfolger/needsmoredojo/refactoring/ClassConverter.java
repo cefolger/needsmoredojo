@@ -50,6 +50,25 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
 
         // create the declare statement and add it before the return statement
         String declareStatement = String.format("return declare([%s], {\n\n});", mixinArray.toString());
-        JSUtil.addStatementBeforeElement(parent, originalReturnStatement, declareStatement);
+        PsiElement declareExpression = JSUtil.createStatement(parent, declareStatement);
+
+        JSObjectLiteralExpression literal = (JSObjectLiteralExpression) ((JSCallExpression) declareExpression
+                .getChildren()[0])
+                .getArguments()[1];
+
+        for(JSExpressionStatement method : methods)
+        {
+            JSAssignmentExpression expression = (JSAssignmentExpression) method.getExpression();
+            String definition = ((JSReferenceExpression)((JSDefinitionExpression) expression
+                    .getChildren()[0])
+                    .getExpression())
+                    .getReferencedName();
+
+            String content = expression.getChildren()[1].getText();
+
+            JSUtil.addStatement(literal, String.format("%s: %s,", definition, content));
+        }
+
+        parent.addBefore(declareExpression, originalReturnStatement);
     }
 }
