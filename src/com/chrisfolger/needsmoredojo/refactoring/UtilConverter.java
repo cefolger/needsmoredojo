@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.refactoring;
 
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.psi.PsiElement;
 
 public class UtilConverter implements DeclareFinder.CompletionCallback
 {
@@ -23,6 +24,9 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
 
     public void doRefactor(JSReturnStatement originalReturnStatement, JSExpression[] mixins, JSProperty[] properties)
     {
+        // insert new items before this
+        PsiElement parent = originalReturnStatement.getParent();
 
+        JSExpressionCodeFragment fragment = JSElementFactory.createExpressionCodeFragment(parent.getProject(), "var x = y", parent, true);
     }
 }
