@@ -40,9 +40,10 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
     }
 
     public void doRefactor(JSReturnStatement originalReturnStatement, JSExpression[] mixins, JSProperty[] properties) {
-        // insert new items before this
+        // insert new items before the return statement
         PsiElement parent = originalReturnStatement.getParent();
 
+        // build an array of mixins for the new declare statement
         StringBuilder mixinArray = new StringBuilder();
         for (JSExpression mixin : mixins) {
             if (mixinArray.toString().equals("")) {
@@ -51,16 +52,22 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
                 mixinArray.append(", " + mixin.getText());
             }
         }
+
+        // create the declare statement and add it before the return statement
         String declareStatement = String.format("var util = declare([%s], {});", mixinArray.toString());
         ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), declareStatement, JSUtils.getDialect(parent.getContainingFile()));
         parent.addBefore(node.getPsi(), originalReturnStatement);
+        parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), "\n\n").getPsi(), originalReturnStatement);
 
+        // convert each property to an assignment statement
         for (JSProperty property : properties) {
             String propertyStatement = String.format("util.%s = %s;", property.getName(), property.getValue().getText());
             node = JSChangeUtil.createStatementFromText(parent.getProject(), propertyStatement);
             parent.addBefore(node.getPsi(), originalReturnStatement);
+            parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), "\n\n").getPsi(), originalReturnStatement);
         }
 
+        // add the final statement to return the util
         String newReturnStatement = "return util;";
         node = JSChangeUtil.createStatementFromText(parent.getProject(), newReturnStatement, JSUtils.getDialect(parent.getContainingFile()));
         parent.addBefore(node.getPsi(), originalReturnStatement);
