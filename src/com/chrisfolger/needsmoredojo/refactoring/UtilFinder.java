@@ -1,21 +1,52 @@
 package com.chrisfolger.needsmoredojo.refactoring;
 
-import com.intellij.lang.javascript.psi.JSCallExpression;
-import com.intellij.lang.javascript.psi.JSFunction;
-import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
-import com.intellij.lang.javascript.psi.JSReturnStatement;
+import com.intellij.lang.javascript.psi.*;
+import com.intellij.psi.PsiFile;
 
 public class UtilFinder
 {
-    public JSRecursiveElementVisitor getReturnCallbackVisitor(final DeclareFinder.CompletionCallback onReturnFound)
+    public JSElementVisitor getReturnCallbackVisitor(final DeclareFinder.CompletionCallback onReturnFound)
     {
-        return new JSRecursiveElementVisitor() {
-            public void visitJSReturnStatement(JSReturnStatement statement)
+        return new JSElementVisitor() {
+            @Override
+            public void visitJSBlock(JSBlockStatement element)
             {
+                JSReturnStatement returnStatement = null;
+                JSCallExpression declaration = null;
 
-                super.visitJSReturnStatement(statement);
+                for(JSStatement statement : element.getStatements())
+                {
+                    if(statement instanceof JSReturnStatement)
+                    {
+                        returnStatement = (JSReturnStatement) statement;
+                    }
+                    else if (statement instanceof JSVarStatement && statement.getText().contains("declare("))
+                    {
+                        for(JSVariable variable : ((JSVarStatement)statement).getVariables())
+                        {
+                            if(variable.getInitializerText().contains("declare"))
+                            {
+                                JSCallExpression declareCall = (JSCallExpression) variable.getInitializer();
+                                declaration = declareCall;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(returnStatement != null && declaration != null)
+                    {
+                        onReturnFound.run(new Object[] { returnStatement, declaration});
+                    }
+                }
+
+                super.visitJSBlock(element);
             }
         };
+    }
+
+    public void convertToClassPattern(PsiFile file)
+    {
+        file.acceptChildren(getDefineVisitor());
     }
 
     public JSRecursiveElementVisitor getDefineVisitor()

@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.actions;
 
 import com.chrisfolger.needsmoredojo.refactoring.DeclareFinder;
+import com.chrisfolger.needsmoredojo.refactoring.UtilFinder;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -13,6 +14,6 @@ public class ConvertToClassAction extends AnAction
     {
         final PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
 
-        new DeclareFinder().convertToUtilPattern(psiFile);
+        new UtilFinder().convertToClassPattern(psiFile);
     }
 }
