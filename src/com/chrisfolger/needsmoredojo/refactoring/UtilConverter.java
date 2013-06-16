@@ -56,10 +56,16 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
         parent.addBefore(node.getPsi(), originalReturnStatement);
 
         for (JSProperty property : properties) {
-            String propertyStatement = String.format("\t\tutil.%s = %s;", property.getName(), property.getValue().getText());
+            String propertyStatement = String.format("\t\tutil.%s = %s", property.getName(), property.getValue().getText());
             node = JSChangeUtil.createExpressionFromText(parent.getProject(), propertyStatement, JSUtils.getDialect(parent.getContainingFile()));
             parent.addBefore(node.getPsi(), originalReturnStatement);
+            node = JSChangeUtil.createStatementFromText(parent.getProject(), ";\n", JSUtils.getDialect(parent.getContainingFile()));
+            parent.addBefore(node.getPsi(), originalReturnStatement);
         }
+
+        String newReturnStatement = "return util;";
+        node = JSChangeUtil.createStatementFromText(parent.getProject(), newReturnStatement, JSUtils.getDialect(parent.getContainingFile()));
+        parent.addBefore(node.getPsi(), originalReturnStatement);
 
         originalReturnStatement.delete();
     }
