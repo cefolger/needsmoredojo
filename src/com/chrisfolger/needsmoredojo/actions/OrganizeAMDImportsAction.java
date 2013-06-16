@@ -1,12 +1,10 @@
-package com.chrisfolger.dojotools.actions;
+package com.chrisfolger.needsmoredojo.actions;
 
-import com.chrisfolger.dojotools.base.DefineResolver;
-import com.chrisfolger.dojotools.refactoring.AMDImportOrganizer;
-import com.intellij.codeInspection.ProblemDescriptor;
+import com.chrisfolger.needsmoredojo.base.DefineResolver;
+import com.chrisfolger.needsmoredojo.refactoring.AMDImportOrganizer;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;

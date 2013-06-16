@@ -1,4 +1,4 @@
-package com.chrisfolger.dojotools.refactoring;
+package com.chrisfolger.needsmoredojo.refactoring;
 
 import com.intellij.psi.PsiElement;
 import org.junit.Before;

@@ -1,12 +1,9 @@
-package com.chrisfolger.dojotools.base;
+package com.chrisfolger.needsmoredojo.base;
 
 import com.intellij.lang.javascript.psi.*;
-import com.intellij.lang.javascript.psi.impl.JSCallExpressionImpl;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 

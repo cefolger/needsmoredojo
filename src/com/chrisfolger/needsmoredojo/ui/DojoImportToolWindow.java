@@ -1,4 +1,4 @@
-package com.chrisfolger.dojotools.ui;
+package com.chrisfolger.needsmoredojo.ui;
 
 import javax.swing.*;
 

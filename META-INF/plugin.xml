@@ -1,6 +1,6 @@
 <idea-plugin version="2">
-  <id>com.chrisfolger.dojotools</id>
-  <name>Dojo Tools</name>
+  <id>com.chrisfolger.needsmoredojo</id>
+  <name>Needs More Dojo</name>
   <version>0.0</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
@@ -43,21 +43,21 @@
             <add-to-group group-id="EditorPopupMenu" anchor="first"  />
 
             <group>
-                <action id="Myplugin.Textboxes" class="com.chrisfolger.dojotools.actions.UnusedImportsAction" text="Highlight Unused Imports" description="A test menu item">
+                <action id="Myplugin.Textboxes" class="com.chrisfolger.needsmoredojo.actions.UnusedImportsAction" text="Highlight Unused Imports" description="A test menu item">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="1"/>
                 </action>
-                <action id="Myplugin.Textboxes.Remove" class="com.chrisfolger.dojotools.actions.DeleteAction" text="Remove Unused Imports" description="A test menu item">
+                <action id="Myplugin.Textboxes.Remove" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="A test menu item">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
                 </action>
                 <separator/>
             </group>
         </group>
 
-        <group id="com.chrisfolger.dojotools.refactoring">
+        <group id="com.chrisfolger.needsmoredojo.refactoring">
             <add-to-group group-id="RefactoringMenu" anchor="first"/>
 
             <group id="com.chrisfolger.dojotols.refactoring.menu.items">
-                <action id="test1" class="com.chrisfolger.dojotools.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
+                <action id="test1" class="com.chrisfolger.needsmoredojo.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
                 </action>
             </group>
@@ -67,9 +67,9 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Dojo Unused Imports" anchor="bottom" factoryClass="com.chrisfolger.dojotools.ui.DojoImportToolWindowFactory" secondary="true">
+        <toolWindow id="Dojo Unused Imports" anchor="bottom" factoryClass="com.chrisfolger.needsmoredojo.ui.DojoImportToolWindowFactory" secondary="true">
         </toolWindow>
-        <applicationConfigurable implementation="com.chrisfolger.dojotools.ui.DojoSettingsForm"></applicationConfigurable>
-        <inspectionToolProvider implementation="com.chrisfolger.dojotools.inspections.MismatchedImportsProvider"/>
+        <applicationConfigurable implementation="com.chrisfolger.needsmoredojo.ui.DojoSettingsForm"></applicationConfigurable>
+        <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.inspections.MismatchedImportsProvider"/>
     </extensions>
 </idea-plugin>

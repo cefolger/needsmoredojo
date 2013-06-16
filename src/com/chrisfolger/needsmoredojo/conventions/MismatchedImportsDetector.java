@@ -1,4 +1,4 @@
-package com.chrisfolger.dojotools.conventions;
+package com.chrisfolger.needsmoredojo.conventions;
 
 import com.intellij.psi.PsiElement;
 

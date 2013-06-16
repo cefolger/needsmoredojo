@@ -1,4 +1,4 @@
-package com.chrisfolger.dojotools.inspections;
+package com.chrisfolger.needsmoredojo.inspections;
 
 import com.intellij.codeInspection.InspectionToolProvider;
 

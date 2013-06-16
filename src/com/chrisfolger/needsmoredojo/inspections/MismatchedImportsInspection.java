@@ -1,23 +1,18 @@
-package com.chrisfolger.dojotools.inspections;
+package com.chrisfolger.needsmoredojo.inspections;
 
-import com.chrisfolger.dojotools.base.DefineResolver;
-import com.chrisfolger.dojotools.conventions.DijitConventionDetector;
-import com.chrisfolger.dojotools.conventions.MismatchedImportsDetector;
+import com.chrisfolger.needsmoredojo.base.DefineResolver;
+import com.chrisfolger.needsmoredojo.conventions.MismatchedImportsDetector;
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ex.BaseLocalInspectionTool;
-import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.

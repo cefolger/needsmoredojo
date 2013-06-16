@@ -1,6 +1,6 @@
-package com.chrisfolger.dojotools.actions;
+package com.chrisfolger.needsmoredojo.actions;
 
-import com.chrisfolger.dojotools.base.DefineResolver;
+import com.chrisfolger.needsmoredojo.base.DefineResolver;
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -13,17 +13,16 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.chrisfolger.dojotools.conventions.UnusedImportsDetector;
+import com.chrisfolger.needsmoredojo.conventions.UnusedImportsDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.chrisfolger.dojotools.ui.DojoImportToolWindow;
+import com.chrisfolger.needsmoredojo.ui.DojoImportToolWindow;
 
 import javax.swing.*;
 import java.awt.*;

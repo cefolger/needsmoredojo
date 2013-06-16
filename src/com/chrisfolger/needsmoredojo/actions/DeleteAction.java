@@ -1,4 +1,4 @@
-package com.chrisfolger.dojotools.actions;
+package com.chrisfolger.needsmoredojo.actions;
 
 /**
  * Created with IntelliJ IDEA.

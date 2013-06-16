@@ -1,27 +1,14 @@
-package com.chrisfolger.dojotools.refactoring;
+package com.chrisfolger.needsmoredojo.refactoring;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.javascript.psi.JSFile;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.PsiElementFactoryImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import static com.intellij.lang.javascript.psi.impl.JSChangeUtil.*;
-import static com.intellij.openapi.actionSystem.PlatformDataKeys.EDITOR;
 
 /**
  * Created with IntelliJ IDEA.
