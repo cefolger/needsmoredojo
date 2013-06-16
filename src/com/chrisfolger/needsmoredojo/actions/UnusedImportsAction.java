@@ -10,6 +10,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
@@ -46,42 +47,50 @@ public class UnusedImportsAction extends AnAction {
 
         if(this.deleteMode)
         {
-            ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            CommandProcessor.getInstance().executeCommand(psiFile.getProject(), new Runnable() {
                 @Override
                 public void run() {
-                    final StringBuilder results = new StringBuilder();
-                    List<PsiElement> elementsToDelete = new ArrayList<PsiElement>();
+                    ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            final StringBuilder results = new StringBuilder();
+                            List<PsiElement> elementsToDelete = new ArrayList<PsiElement>();
 
-                    for(PsiElement element : parameters)
-                    {
-                        elementsToDelete.add(element);
-                        elementsToDelete.add(element.getNextSibling());
-                    }
-                    for(PsiElement element : defines)
-                    {
-                        elementsToDelete.add(element);
-                        results.append(element.getText() + ", ");
-                        elementsToDelete.add(element.getNextSibling());
-                    }
+                            for(PsiElement element : parameters)
+                            {
+                                elementsToDelete.add(element);
+                                elementsToDelete.add(element.getNextSibling());
+                            }
+                            for(PsiElement element : defines)
+                            {
+                                elementsToDelete.add(element);
+                                results.append(element.getText() + ", ");
+                                elementsToDelete.add(element.getNextSibling());
+                            }
 
-                    for(PsiElement element : elementsToDelete)
-                    {
-                        try
-                        {
-                            element.delete();
+                            for(PsiElement element : elementsToDelete)
+                            {
+                                try
+                                {
+                                    element.delete();
+                                }
+                                catch(Exception e)
+                                {
+
+                                }
+                            }
+
+                            if(elementsToDelete.size() > 0)
+                            {
+                                Notifications.Bus.notify(new Notification("needsmoredojo", "Deleted Imports", "Deleted imports: " + results.toString(), NotificationType.INFORMATION));
+                            }
                         }
-                        catch(Exception e)
-                        {
-
-                        }
-                    }
-
-                    if(elementsToDelete.size() > 0)
-                    {
-                        Notifications.Bus.notify(new Notification("needsmoredojo", "Deleted Imports", "Deleted imports: " + results.toString(), NotificationType.INFORMATION));
-                    }
+                    });
                 }
-            });
+            },
+            "Delete unused AMD imports",
+            "Delete unused AMD imports");
+
         }
     }
 
