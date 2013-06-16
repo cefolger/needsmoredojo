@@ -2,11 +2,7 @@ package com.chrisfolger.needsmoredojo.inspections;
 
 import com.chrisfolger.needsmoredojo.base.DefineResolver;
 import com.chrisfolger.needsmoredojo.conventions.MismatchedImportsDetector;
-import com.intellij.codeInspection.InspectionManager;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ex.BaseLocalInspectionTool;
+import com.intellij.codeInspection.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MismatchedImportsInspection extends BaseLocalInspectionTool
+public class MismatchedImportsInspection extends LocalInspectionTool
 {
     @Override
     public String getDisplayName()

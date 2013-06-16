@@ -10,13 +10,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 1/7/13
- * Time: 9:03 PM
- * To change this template use File | Settings | File Templates.
- */
 public class TestMismatchedImportsDetector
 {
     private MismatchedImportsDetector detector;
