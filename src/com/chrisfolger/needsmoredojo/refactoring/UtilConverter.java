@@ -1,10 +1,7 @@
 package com.chrisfolger.needsmoredojo.refactoring;
 
 import com.chrisfolger.needsmoredojo.base.JSUtil;
-import com.intellij.lang.ASTNode;
 import com.intellij.lang.javascript.psi.*;
-import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
-import com.intellij.lang.javascript.psi.util.JSUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
@@ -68,6 +65,7 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
         String newReturnStatement = "return util;";
         JSUtil.addStatementBeforeElement(parent, originalReturnStatement, newReturnStatement);
 
+        // delete the old return declare(...) block
         originalReturnStatement.delete();
     }
 }
