@@ -7,13 +7,6 @@ import com.intellij.psi.PsiElement;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 1/1/13
- * Time: 3:13 PM
- * To change this template use File | Settings | File Templates.
- */
 public class UnusedImportsDetector
 {
     // TODO add exceptions?

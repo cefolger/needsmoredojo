@@ -12,13 +12,6 @@ import com.intellij.psi.PsiFile;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 1/8/13
- * Time: 8:44 PM
- * To change this template use File | Settings | File Templates.
- */
 public class OrganizeAMDImportsAction extends AnAction
 {
     @Override

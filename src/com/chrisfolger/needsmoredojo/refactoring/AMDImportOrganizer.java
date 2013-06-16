@@ -11,12 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 1/7/13
- * Time: 10:52 PM
- * To change this template use File | Settings | File Templates.
- *
  * This class is responsible for sorting AMD imports. This requires the following steps
  *  - gather all imports in a define statemnet (easy)
  *  - sort them (easy)

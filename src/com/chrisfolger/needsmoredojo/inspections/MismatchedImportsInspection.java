@@ -14,13 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 1/7/13
- * Time: 9:30 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class MismatchedImportsInspection extends BaseLocalInspectionTool
 {
     @Override

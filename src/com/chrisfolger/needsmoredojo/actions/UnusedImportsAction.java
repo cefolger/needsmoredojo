@@ -31,13 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 12/20/12
- * Time: 6:13 PM
- * To change this template use File | Settings | File Templates.
- */
 public class UnusedImportsAction extends AnAction {
     @Nullable
     private static Map<String, String> domMappings = null;

@@ -5,13 +5,6 @@ import com.intellij.psi.PsiElement;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 1/7/13
- * Time: 9:02 PM
- * To change this template use File | Settings | File Templates.
- */
 public class MismatchedImportsDetector
 {
     public class Mismatch

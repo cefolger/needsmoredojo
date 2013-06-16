@@ -9,13 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 12/20/12
- * Time: 7:12 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DojoImportToolWindowFactory implements ToolWindowFactory
 {
     private ToolWindow myToolWindow;
