@@ -22,7 +22,7 @@ public class DefineResolver
             public void visitJSCallExpression(JSCallExpression element)
             {
                 JSExpression[] arguments = element.getArguments();
-                if(!element.getMethodExpression().getText().equals("define") && !element.getMethodExpression().getText().equals("require"))
+                if(!element.getMethodExpression().getText().equals("define"))
                 {
                     return;
                 }
