@@ -63,27 +63,14 @@ public class UnusedImportsInspection extends BaseLocalInspectionTool
                 parameter = parameters.get(i);
             }
 
-            String defineString = "";
-            String parameterString = "";
-
-            if(define != null)
-            {
-                defineString = define.getText();
-            }
-
-            if(parameter != null)
-            {
-                parameterString = parameter.getText();
-            }
-
             if (parameter != null)
             {
-                descriptors.add(manager.createProblemDescriptor(parameter, String.format("test", defineString, parameterString), fix, ProblemHighlightType.WEAK_WARNING, true));
+                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Unused AMD import: %s", parameter.getText()), fix, ProblemHighlightType.LIKE_DEPRECATED, true));
             }
 
             if (define != null)
             {
-                descriptors.add(manager.createProblemDescriptor(define, String.format("test", defineString, parameterString), fix, ProblemHighlightType.ERROR, true));
+                descriptors.add(manager.createProblemDescriptor(define, String.format("Unused AMD import: %s", define.getText()), fix, ProblemHighlightType.LIKE_DEPRECATED, true));
             }
         }
 
