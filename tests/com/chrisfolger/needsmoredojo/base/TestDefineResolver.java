@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.base;
 
+import com.chrisfolger.needsmoredojo.testutil.MockJSArrayLiteralExpression;
 import com.chrisfolger.needsmoredojo.testutil.MockJSFunction;
 import com.chrisfolger.needsmoredojo.testutil.MockJSFunctionExpression;
 import com.intellij.lang.ASTNode;
@@ -49,7 +50,7 @@ public class TestDefineResolver
         JSRecursiveElementVisitor visitor = resolver.getDefineAndParametersVisitor(defines, parameters);
         visitor.visitJSCallExpression(getDojoAMDImportStatement(new String[] {"'dojo/_base/array'"}, new String[] { "array" }));
 
-        assertEquals("'dojo/_base/array'", parameters.get(0).getText());
+        assertEquals("'dojo/_base/array'", defines.get(0).getText());
     }
 
     private JSCallExpression getDojoAMDImportStatement(String[] defines, String[] parameters)
@@ -58,15 +59,8 @@ public class TestDefineResolver
         JSExpression[] arguments = new JSExpression[2];
 
         // set up the first argument in the dojo amd import call
-        JSArrayLiteralExpression defineExpression = mock(JSArrayLiteralExpression.class);
-        JSExpression[] defineExpressions = new JSExpression[defines.length];
-        when(defineExpression.getExpressions()).thenReturn(defineExpressions);
+        JSArrayLiteralExpression defineExpression = new MockJSArrayLiteralExpression(defines);
         arguments[0] = defineExpression;
-        for(int i=0;i<defines.length;i++)
-        {
-            defineExpressions[i] = mock(JSExpression.class);
-            when(defineExpressions[i].getText()).thenReturn(defines[i]);
-        }
 
         // set up the second argument which is the function call
         JSFunctionExpression functionExpression = new MockJSFunctionExpression(parameters);
