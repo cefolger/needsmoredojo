@@ -38,12 +38,15 @@
         <group id="com.chrisfolger.needsmoredojo.refactoring">
             <add-to-group group-id="RefactoringMenu" anchor="first"/>
 
-            <group id="com.chrisfolger.dojotols.refactoring.menu.items">
-                <action id="test1" class="com.chrisfolger.needsmoredojo.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
+            <group id="com.chrisfolger.needsmoredojo.refactoring.menu.items">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.organizeamdimports" class="com.chrisfolger.needsmoredojo.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="1"/>
                 </action>
-                <action id="Myplugin.Textboxes.Remove" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="A test menu item">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removeunusedimports" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="Removes unused AMD imports">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
+                </action>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertoutil" class="com.chrisfolger.needsmoredojo.actions.ConvertToUtilAction" text="Convert to util pattern" description="Converts a normal dojo class to use the util pattern">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
                 </action>
             </group>
 
