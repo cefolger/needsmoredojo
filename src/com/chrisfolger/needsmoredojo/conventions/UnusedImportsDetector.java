@@ -10,8 +10,6 @@ import java.util.List;
 public class UnusedImportsDetector
 {
     // TODO add exceptions?
-    // TODO type inference
-    // TODO closure context coloring
     // TODO detect registry.byNode and registry.byId
     public JSRecursiveElementVisitor getVisitorToRemoveUsedParameters(final List<PsiElement> parameters, final List<PsiElement> defines)
     {

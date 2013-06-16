@@ -22,29 +22,12 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class UnusedImportsAction extends AnAction {
-    @Nullable
-    private static Map<String, String> domMappings = null;
     protected boolean deleteMode = false;
-
-    static
-    {
-        domMappings = new HashMap<String, String>();
-        domMappings.put("domGeometry", "dom-geometry");
-        domMappings.put("domConstruct", "dom-construct");
-        domMappings.put("domAttr", "dom-attr");
-        domMappings.put("domClass", "dom-class");
-        domMappings.put("domStyle", "dom-style");
-    }
 
     public void actionPerformed(@NotNull final AnActionEvent e)
     {
@@ -60,12 +43,6 @@ public class UnusedImportsAction extends AnAction {
 
         highlightElement(e.getProject(), parameters.toArray(new PsiElement[0]));
         highlightElement(e.getProject(), defines.toArray(new PsiElement[0]));
-
-        JPanel panel = new JPanel();
-        JLabel label = new JLabel();
-        label.setText(String.format("Detected %d unused imports in this file", parameters.size()));
-        panel.add(label);
-        WindowManager.getInstance().getStatusBar(e.getProject()).fireNotificationPopup(panel, Color.green);
 
         if(this.deleteMode)
         {
@@ -106,12 +83,6 @@ public class UnusedImportsAction extends AnAction {
                 }
             });
         }
-    }
-
-    @NotNull
-    private Boolean inMap(@NotNull String text, String unused)
-    {
-        return domMappings.containsKey(unused) && text.contains(domMappings.get(unused));
     }
 
     private void highlightElement(@NotNull Project project, @NotNull PsiElement[] elements)
