@@ -65,8 +65,7 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
                     .getReferencedName();
 
             String content = expression.getChildren()[1].getText();
-
-            JSUtil.addStatement(literal, String.format("%s: %s,", definition, content));
+            literal.getNode().addChild(JSUtil.createStatement(literal, String.format("%s: %s", definition, content)).getNode());
         }
 
         parent.addBefore(declareExpression, originalReturnStatement);
