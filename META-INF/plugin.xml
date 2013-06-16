@@ -15,8 +15,14 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>next</b>
             <ul>
-                <li><b>06/16/2013:</b> Initial version, 0.1</li>
+                <li>Add convert to util pattern refactoring</li>
+            </ul>
+
+            <b>0.1</b> -- 06/16/2013
+            <ul>
+                <li>Initial Version</li>
             </ul>
       ]]>
   </change-notes>
@@ -47,6 +53,9 @@
                 </action>
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertoutil" class="com.chrisfolger.needsmoredojo.actions.ConvertToUtilAction" text="Convert to util pattern" description="Converts a normal dojo class to use the util pattern">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
+                </action>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertclass" class="com.chrisfolger.needsmoredojo.actions.ConvertToClassAction" text="Convert to class pattern" description="Converts a dojo util module to be an instantiable class">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="4"/>
                 </action>
             </group>
 

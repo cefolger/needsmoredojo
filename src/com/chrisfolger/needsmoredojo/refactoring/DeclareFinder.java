@@ -19,7 +19,7 @@ public class DeclareFinder
         // get the return declare statement
         // get all of the literal expressions
 
-        file.acceptChildren(getDefineVisitor(file));
+        file.acceptChildren(getDefineVisitor());
     }
 
     public JSRecursiveElementVisitor getDefineCallbackVisitor(final CompletionCallback onReturnFound)
@@ -53,7 +53,7 @@ public class DeclareFinder
         };
     }
 
-    public JSRecursiveElementVisitor getDefineVisitor(PsiFile file)
+    public JSRecursiveElementVisitor getDefineVisitor()
     {
         return new JSRecursiveElementVisitor() {
             @Override
