@@ -10,7 +10,7 @@ public class DeclareFinder
 {
     public interface CompletionCallback
     {
-        public void run(Object result);
+        public void run(Object[] result);
     }
 
     public void convertToUtilPattern(PsiFile file)
@@ -44,7 +44,7 @@ public class DeclareFinder
                 JSCallExpression expression = (JSCallExpression) statement.getChildren()[0];
                 if(expression.getMethodExpression().getText().equals("declare"))
                 {
-                    onReturnFound.run(expression);
+                    onReturnFound.run(new Object[] { expression, statement});
                     return;
                 }
 
