@@ -16,6 +16,7 @@ public class UtilFinder
             {
                 JSReturnStatement returnStatement = null;
                 JSCallExpression declaration = null;
+                JSVarStatement declarationVariable = null;
                 List<JSExpressionStatement> otherElements = new ArrayList<JSExpressionStatement>();
 
                 for(JSStatement statement : element.getStatements())
@@ -26,6 +27,8 @@ public class UtilFinder
                     }
                     else if (statement instanceof JSVarStatement && statement.getText().contains("declare("))
                     {
+                        declarationVariable = (JSVarStatement) statement;
+
                         for(JSVariable variable : ((JSVarStatement)statement).getVariables())
                         {
                             if(variable.getInitializerText().contains("declare"))
@@ -44,7 +47,7 @@ public class UtilFinder
 
                 if(returnStatement != null && declaration != null)
                 {
-                    onReturnFound.run(new Object[] { returnStatement, declaration, otherElements});
+                    onReturnFound.run(new Object[] { returnStatement, declaration, otherElements, declarationVariable});
                 }
 
                 super.visitJSBlock(element);

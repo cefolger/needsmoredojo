@@ -14,8 +14,9 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
     public void run(Object[] result)
     {
         final JSReturnStatement returnStatement = (JSReturnStatement) result[0];
-        JSCallExpression declaration = (JSCallExpression) result[1];
+        final JSCallExpression declaration = (JSCallExpression) result[1];
         final List<JSExpressionStatement> methods = (List<JSExpressionStatement>) result[2];
+        final JSVarStatement declarationVariable = (JSVarStatement) result[3];
 
         final JSExpression[] mixins = ((JSArrayLiteralExpression) declaration.getArguments()[0]).getExpressions();
 
@@ -25,7 +26,7 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        doRefactor(mixins, methods, returnStatement);
+                        doRefactor(mixins, methods, returnStatement, declarationVariable);
                     }
                 });
             }
@@ -34,7 +35,7 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
         "Convert util module to class module");
     }
 
-    public void doRefactor(JSExpression[] mixins, List<JSExpressionStatement> methods, JSReturnStatement originalReturnStatement)
+    public void doRefactor(JSExpression[] mixins, List<JSExpressionStatement> methods, JSReturnStatement originalReturnStatement, JSVarStatement declarationVariable)
     {
         PsiElement parent = originalReturnStatement.getParent();
 
@@ -63,7 +64,7 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
 
             if(i < methods.size() - 1)
             {
-                properties.append(String.format("%s: %s,", definition, content));
+                properties.append(String.format("%s: %s,\n\n", definition, content));
             }
             else
             {
@@ -76,5 +77,12 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
         PsiElement declareExpression = JSUtil.createStatement(parent, declareStatement);
 
         parent.addBefore(declareExpression, originalReturnStatement);
+
+        for(JSExpressionStatement method : methods)
+        {
+            method.delete();
+        }
+        originalReturnStatement.delete();
+        declarationVariable.delete();
     }
 }
