@@ -64,7 +64,14 @@ public class UnusedImportsAction extends AnAction {
                             for(PsiElement element : defines)
                             {
                                 elementsToDelete.add(element);
-                                results.append(element.getText() + ", ");
+                                if(results.toString().equals(""))
+                                {
+                                    results.append(element.getText());
+                                }
+                                else
+                                {
+                                    results.append("," + element.getText());
+                                }
                                 elementsToDelete.add(element.getNextSibling());
                             }
 
@@ -82,7 +89,11 @@ public class UnusedImportsAction extends AnAction {
 
                             if(elementsToDelete.size() > 0)
                             {
-                                Notifications.Bus.notify(new Notification("needsmoredojo", "Deleted Imports", "Deleted imports: " + results.toString(), NotificationType.INFORMATION));
+                                Notifications.Bus.notify(new Notification("needsmoredojo", "Deleted Imports", results.toString(), NotificationType.INFORMATION));
+                            }
+                            else
+                            {
+                                Notifications.Bus.notify(new Notification("needsmoredojo", "No unused imports", "No unused imports were detected to delete", NotificationType.INFORMATION));
                             }
                         }
                     });
