@@ -1,0 +1,75 @@
+<idea-plugin version="2">
+  <id>com.chrisfolger.dojotools</id>
+  <name>Dojo Tools</name>
+  <version>0.0</version>
+  <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
+
+  <description><![CDATA[
+        Tools for working with dojo toolkit <br>
+            - detect and flag mismatched AMD imports as errors
+            - detect and remove unused AMD imports <br>
+            - organize AMD imports by sorting alphabetically (aware of plugins and other things tacked on the end)
+      ]]></description>
+
+  <change-notes><![CDATA[
+            <ul>
+
+            </ul>
+      ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="107.105"/>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <depends>com.intellij.modules.lang</depends>
+<depends>com.intellij.modules.platform</depends>
+<depends>com.intellij.modules.vcs</depends>
+<depends>com.intellij.modules.xml</depends>
+<depends>com.intellij.modules.xdebugger</depends>
+<depends>JavaScript</depends>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+    <actions>
+        <group id="MyPlugin.SampleMenu" text="_Sample Menu" description="Dojo">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"  />
+
+            <group>
+                <action id="Myplugin.Textboxes" class="com.chrisfolger.dojotools.actions.UnusedImportsAction" text="Highlight Unused Imports" description="A test menu item">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="1"/>
+                </action>
+                <action id="Myplugin.Textboxes.Remove" class="com.chrisfolger.dojotools.actions.DeleteAction" text="Remove Unused Imports" description="A test menu item">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
+                </action>
+                <separator/>
+            </group>
+        </group>
+
+        <group id="com.chrisfolger.dojotools.refactoring">
+            <add-to-group group-id="RefactoringMenu" anchor="first"/>
+
+            <group id="com.chrisfolger.dojotols.refactoring.menu.items">
+                <action id="test1" class="com.chrisfolger.dojotools.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
+                </action>
+            </group>
+
+            <separator/>
+        </group>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Dojo Unused Imports" anchor="bottom" factoryClass="com.chrisfolger.dojotools.ui.DojoImportToolWindowFactory" secondary="true">
+        </toolWindow>
+        <applicationConfigurable implementation="com.chrisfolger.dojotools.ui.DojoSettingsForm"></applicationConfigurable>
+        <inspectionToolProvider implementation="com.chrisfolger.dojotools.inspections.MismatchedImportsProvider"/>
+    </extensions>
+</idea-plugin>
