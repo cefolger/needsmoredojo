@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
@@ -27,13 +28,20 @@ public class OrganizeAMDImportsAction extends AnAction
 
         final AMDImportOrganizer organizer = new AMDImportOrganizer();
 
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+        CommandProcessor.getInstance().executeCommand(psiFile.getProject(), new Runnable() {
             @Override
             public void run() {
-                final AMDImportOrganizer.SortingResult result = organizer.sortDefinesAndParameters(defines, parameters);
-                organizer.reorder(defines.toArray(new PsiElement[]{}), result.getDefines(), true, result);
-                organizer.reorder(parameters.toArray(new PsiElement[]{}), result.getParameters(), false, result);
+                ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        final AMDImportOrganizer.SortingResult result = organizer.sortDefinesAndParameters(defines, parameters);
+                        organizer.reorder(defines.toArray(new PsiElement[]{}), result.getDefines(), true, result);
+                        organizer.reorder(parameters.toArray(new PsiElement[]{}), result.getParameters(), false, result);
+                    }
+                });
             }
-        });
+        },
+        "Organize AMD Imports",
+        "Organize AMD Imports");
     }
 }
