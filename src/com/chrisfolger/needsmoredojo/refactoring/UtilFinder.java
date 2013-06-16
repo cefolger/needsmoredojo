@@ -3,6 +3,9 @@ package com.chrisfolger.needsmoredojo.refactoring;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UtilFinder
 {
     public JSElementVisitor getReturnCallbackVisitor(final DeclareFinder.CompletionCallback onReturnFound)
@@ -13,6 +16,7 @@ public class UtilFinder
             {
                 JSReturnStatement returnStatement = null;
                 JSCallExpression declaration = null;
+                List<JSExpressionStatement> otherElements = new ArrayList<JSExpressionStatement>();
 
                 for(JSStatement statement : element.getStatements())
                 {
@@ -32,11 +36,15 @@ public class UtilFinder
                             }
                         }
                     }
-
-                    if(returnStatement != null && declaration != null)
+                    else if (statement instanceof JSExpressionStatement)
                     {
-                        onReturnFound.run(new Object[] { returnStatement, declaration});
+                        otherElements.add((JSExpressionStatement) statement);
                     }
+                }
+
+                if(returnStatement != null && declaration != null)
+                {
+                    onReturnFound.run(new Object[] { returnStatement, declaration, otherElements});
                 }
 
                 super.visitJSBlock(element);
