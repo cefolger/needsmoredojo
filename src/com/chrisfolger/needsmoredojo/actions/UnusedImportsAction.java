@@ -89,18 +89,18 @@ public class UnusedImportsAction extends AnAction {
 
                             if(elementsToDelete.size() > 0)
                             {
-                                Notifications.Bus.notify(new Notification("needsmoredojo", "Deleted Imports", results.toString(), NotificationType.INFORMATION));
+                                Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Unused Imports", results.toString(), NotificationType.INFORMATION));
                             }
                             else
                             {
-                                Notifications.Bus.notify(new Notification("needsmoredojo", "No unused imports", "No unused imports were detected to delete", NotificationType.INFORMATION));
+                                Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Unused Imports", "No unused imports were detected to delete", NotificationType.INFORMATION));
                             }
                         }
                     });
                 }
             },
-            "Delete unused AMD imports",
-            "Delete unused AMD imports");
+            "Remove Unused Imports",
+            "Remove Unused Imports");
 
         }
     }

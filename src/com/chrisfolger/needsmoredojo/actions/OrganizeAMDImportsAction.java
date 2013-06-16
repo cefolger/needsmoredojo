@@ -2,6 +2,9 @@ package com.chrisfolger.needsmoredojo.actions;
 
 import com.chrisfolger.needsmoredojo.base.DefineResolver;
 import com.chrisfolger.needsmoredojo.refactoring.AMDImportOrganizer;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -37,6 +40,7 @@ public class OrganizeAMDImportsAction extends AnAction
                         final AMDImportOrganizer.SortingResult result = organizer.sortDefinesAndParameters(defines, parameters);
                         organizer.reorder(defines.toArray(new PsiElement[]{}), result.getDefines(), true, result);
                         organizer.reorder(parameters.toArray(new PsiElement[]{}), result.getParameters(), false, result);
+                        Notifications.Bus.notify(new Notification("needsmoredojo", "Organize AMD Imports", "Completed", NotificationType.INFORMATION));
                     }
                 });
             }
