@@ -48,16 +48,11 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
             }
         }
 
-        // create the declare statement and add it before the return statement
-        String declareStatement = String.format("return declare([%s], {\n\n});", mixinArray.toString());
-        PsiElement declareExpression = JSUtil.createStatement(parent, declareStatement);
-
-        JSObjectLiteralExpression literal = (JSObjectLiteralExpression) ((JSCallExpression) declareExpression
-                .getChildren()[0])
-                .getArguments()[1];
-
-        for(JSExpressionStatement method : methods)
+        StringBuilder properties = new StringBuilder();
+        for(int i=0;i<methods.size();i++)
         {
+            JSExpressionStatement method = methods.get(i);
+
             JSAssignmentExpression expression = (JSAssignmentExpression) method.getExpression();
             String definition = ((JSReferenceExpression)((JSDefinitionExpression) expression
                     .getChildren()[0])
@@ -65,8 +60,20 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
                     .getReferencedName();
 
             String content = expression.getChildren()[1].getText();
-            literal.getNode().addChild(JSUtil.createStatement(literal, String.format("%s: %s", definition, content)).getNode());
+
+            if(i < methods.size() - 1)
+            {
+                properties.append(String.format("%s: %s,", definition, content));
+            }
+            else
+            {
+                properties.append(String.format("%s: %s", definition, content));
+            }
         }
+
+        // create the declare statement and add it before the return statement
+        String declareStatement = String.format("return declare([%s], {\n%s\n});", mixinArray.toString(), properties.toString());
+        PsiElement declareExpression = JSUtil.createStatement(parent, declareStatement);
 
         parent.addBefore(declareExpression, originalReturnStatement);
     }
