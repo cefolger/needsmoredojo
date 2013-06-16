@@ -21,17 +21,10 @@
       ]]>
   </change-notes>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
   <idea-version since-build="107.105"/>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <depends>com.intellij.modules.lang</depends>
-<depends>com.intellij.modules.platform</depends>
-<depends>com.intellij.modules.vcs</depends>
-<depends>com.intellij.modules.xml</depends>
-<depends>com.intellij.modules.xdebugger</depends>
-<depends>JavaScript</depends>
+    <depends>JavaScript</depends>
+    <depends>com.intellij.modules.xml</depends>
 
   <application-components>
     <!-- Add your application components here -->
