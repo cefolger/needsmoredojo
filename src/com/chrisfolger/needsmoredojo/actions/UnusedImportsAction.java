@@ -23,6 +23,7 @@ import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiWhiteSpace;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,6 +31,22 @@ import java.util.List;
 
 public class UnusedImportsAction extends AnAction {
     protected boolean deleteMode = false;
+
+    private PsiElement getNearestComma(PsiElement start)
+    {
+        PsiElement sibling = start.getPrevSibling();
+        while(sibling != null)
+        {
+            if(sibling.getText().equals(","))
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getPrevSibling();
+        }
+
+        return null;
+    }
 
     public void actionPerformed(@NotNull final AnActionEvent e)
     {
@@ -45,6 +62,7 @@ public class UnusedImportsAction extends AnAction {
 
         if(this.deleteMode)
         {
+            // TODO refactor this please
             CommandProcessor.getInstance().executeCommand(psiFile.getProject(), new Runnable() {
                 @Override
                 public void run() {
@@ -70,7 +88,20 @@ public class UnusedImportsAction extends AnAction {
                                 {
                                     results.append("," + element.getText());
                                 }
-                                elementsToDelete.add(element.getNextSibling());
+
+                                // special case for when the element we're removing is last on the list
+                                PsiElement sibling = element.getNextSibling();
+                                if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
+                                {
+                                    getNearestComma(sibling).delete();
+                                }
+
+                                // only remove the next sibling if it's a comma
+                                PsiElement nextSibling = element.getNextSibling();
+                                if(nextSibling != null && !nextSibling.getText().equals("]"))
+                                {
+                                    elementsToDelete.add(element.getNextSibling());
+                                }
                             }
 
                             for(PsiElement element : elementsToDelete)
