@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.base;
 
+import com.chrisfolger.needsmoredojo.conventions.MismatchedImportsDetector;
 import com.chrisfolger.needsmoredojo.refactoring.DeclareFinder;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
@@ -10,10 +11,10 @@ public class ImportCreator
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
         PsiElement importElement = JSUtil.createExpression(imports, String.format("'%s'", module));
-        PsiElement parameterElement = JSUtil.createExpression(parameters, String.format("%s", module));
+        PsiElement parameterElement = JSUtil.createExpression(parameters, String.format(MismatchedImportsDetector.defineToParameter(module), module));
 
         imports.addBefore(importElement, imports.getChildren()[0]);
-        parameters.addBefore(importElement, parameters.getChildren()[0]);
+        parameters.addBefore(parameterElement, parameters.getChildren()[0]);
     }
 
     public void addImport(PsiFile file, final String module)
