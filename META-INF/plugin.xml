@@ -70,6 +70,7 @@
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
                 </action>
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.addimport" class="com.chrisfolger.needsmoredojo.actions.AddNewImportAction" text="Add new AMD import" description="Add a new AMD import to a dojo module">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
                 </action>
             </group>
 
