@@ -26,13 +26,22 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
+                        PsiElement parent = returnStatement.getParent();
                         doRefactor(mixins, methods, returnStatement, declarationVariable);
+                        // all of those deletions creates a ton of whitespace for some reason. So, delete it!
+                        cleanupWhiteSpace(parent);
                     }
                 });
             }
         },
         "Convert util module to class module",
         "Convert util module to class module");
+    }
+
+    public void cleanupWhiteSpace(PsiElement parent)
+    {
+        String result = "{\n" + parent.getText().substring(1).trim();
+        parent.replace(JSUtil.createStatement(parent, result));
     }
 
     public void doRefactor(JSExpression[] mixins, List<JSExpressionStatement> methods, JSReturnStatement originalReturnStatement, JSVarStatement declarationVariable)
@@ -49,6 +58,7 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
             }
         }
 
+        // convert each method to a property in the new object literal
         StringBuilder properties = new StringBuilder();
         for(int i=0;i<methods.size();i++)
         {
@@ -72,12 +82,12 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
             }
         }
 
-        // create the declare statement and add it before the return statement
+        // create the new declare statement and add it before the return statement
         String declareStatement = String.format("return declare([%s], {\n%s\n});", mixinArray.toString(), properties.toString());
         PsiElement declareExpression = JSUtil.createStatement(parent, declareStatement);
-
         parent.addBefore(declareExpression, originalReturnStatement);
 
+        // delete all of the old code
         for(JSExpressionStatement method : methods)
         {
             method.delete();

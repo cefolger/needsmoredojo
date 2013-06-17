@@ -22,6 +22,12 @@ public class JSUtil
         return node.getPsi();
     }
 
+    public static PsiElement createExpression(PsiElement parent, String statement)
+    {
+        ASTNode node = JSChangeUtil.createExpressionFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
+        return node.getPsi();
+    }
+
     public static PsiElement addStatement(PsiElement parent, String statement)
     {
         ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
