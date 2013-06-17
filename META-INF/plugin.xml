@@ -26,6 +26,8 @@
                 <li>Add class -> util module refactoring</li>
                 <li>Split options up into different menus </li>
                 <li>Fix NPE thrown when cursor was not in an editor during an action</li>
+                <li>Fix bug when removing the last import in a define array leaving a trailing comma</li>
+                <li>Fix NPE being generated when invalid syntax was parsed </li>
             </ul>
 
             <b>0.1</b>
