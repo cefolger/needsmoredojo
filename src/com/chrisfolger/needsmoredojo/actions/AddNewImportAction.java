@@ -15,7 +15,12 @@ public class AddNewImportAction extends AnAction
     public void actionPerformed(AnActionEvent e)
     {
         final PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
-        final String importModule = Messages.showInputDialog("", "Add new AMD import", null);
+        final String importModule = Messages.showInputDialog("Enter the fully qualified path to the module", "Add new AMD import", null);
+
+        if(importModule == null)
+        {
+            return;
+        }
 
         CommandProcessor.getInstance().executeCommand(psiFile.getProject(), new Runnable() {
             @Override

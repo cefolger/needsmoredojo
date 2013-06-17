@@ -3,15 +3,23 @@ package com.chrisfolger.needsmoredojo.base;
 import com.chrisfolger.needsmoredojo.conventions.MismatchedImportsDetector;
 import com.chrisfolger.needsmoredojo.refactoring.DeclareFinder;
 import com.intellij.lang.javascript.psi.*;
-import com.intellij.psi.PsiElement;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiFile;
 
 public class ImportCreator
 {
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
-        JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
-        JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], MismatchedImportsDetector.defineToParameter(module) + ",", " ");
+        if(imports.getChildren().length == 0)
+        {
+            Messages.showInfoMessage("Need at least one import already present", "Add new AMD import");
+            return;
+        }
+        else
+        {
+            JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
+            JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], MismatchedImportsDetector.defineToParameter(module) + ",", " ");
+        }
     }
 
     public void addImport(PsiFile file, final String module)
