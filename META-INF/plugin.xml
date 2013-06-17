@@ -5,7 +5,7 @@
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
-        Tools for working with dojo toolkit
+        Tools for working with the dojo toolkit
             <ul>
                 <li>detect and flag mismatched AMD imports as errors</li>
                 <li>flag unused AMD imports with strikethrough</li>
