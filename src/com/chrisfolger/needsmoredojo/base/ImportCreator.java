@@ -4,10 +4,52 @@ import com.chrisfolger.needsmoredojo.conventions.MismatchedImportsDetector;
 import com.chrisfolger.needsmoredojo.refactoring.DeclareFinder;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 
 public class ImportCreator
 {
+    public String[] getPossibleDojoImports(PsiFile psiFile, String module)
+    {
+        PsiFile[] files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.allScope(psiFile.getProject()));
+        String[] choices = new String[files.length + 1];
+        choices[choices.length - 1] = module;
+
+        String[] dojoLibraries = new String[] { "dojo", "dijit", "dojox", "dgrid", "util"};
+
+        for(int i=0;i<files.length;i++)
+        {
+            PsiFile file = files[i];
+            PsiDirectory directory = file.getContainingDirectory();
+            String result = directory.toString();
+
+            // parse dojo libraries only
+            int firstIndex = Integer.MAX_VALUE;
+            String firstLibrary = null;
+
+            for(String library : dojoLibraries)
+            {
+                int index = result.indexOf(library);
+                if(index > -1 && index < firstIndex)
+                {
+                    firstIndex = index;
+                    firstLibrary = library;
+                }
+            }
+
+            if(firstLibrary != null)
+            {
+                result = result.substring(result.indexOf(firstLibrary));
+                result = result.replace('\\', '/') + '/' + module;
+                choices[i] = result;
+            }
+        }
+
+        return choices;
+    }
+
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
         if(imports.getChildren().length == 0)
