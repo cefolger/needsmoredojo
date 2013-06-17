@@ -35,9 +35,13 @@ public class ImportCreator
     public String[] getPossibleDojoImports(PsiFile psiFile, String module)
     {
         PsiFile[] files = null;
+        PsiFile[] filesWithUnderscore = null;
+
         try
         {
             files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
+            // this will let us search for _TemplatedMixin and friends
+            filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
         }
         catch(NullPointerException exc)
         {
@@ -48,9 +52,16 @@ public class ImportCreator
 
         String[] dojoLibraries = new String[] { "dojo", "dijit", "dojox", "dgrid", "util"};
 
-        for(int i=0;i<files.length;i++)
+        Set<PsiFile> allFiles = new HashSet<PsiFile>();
+        for(PsiFile file : files) allFiles.add(file);
+        for(PsiFile file : filesWithUnderscore) allFiles.add(file);
+
+        PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
+
+        for(int i=0;i<filesArray.length;i++)
         {
-            PsiFile file = files[i];
+            PsiFile file = filesArray[i];
+
             PsiDirectory directory = file.getContainingDirectory();
             String result = directory.toString();
 
@@ -70,8 +81,15 @@ public class ImportCreator
 
             if(firstLibrary != null)
             {
+                String underscorePrefix = "";
+
+                if(file.getName().startsWith("_"))
+                {
+                    underscorePrefix = "_";
+                }
+
                 result = result.substring(result.indexOf(firstLibrary));
-                result = result.replace('\\', '/') + '/' + module;
+                result = result.replace('\\', '/') + '/' + underscorePrefix + module;
                 choices.add(result);
             }
         }
