@@ -73,6 +73,8 @@ public class MismatchedImportsDetector
             result = result.substring(0,index)+ ("" +result.charAt(index)).toUpperCase() +result.substring(index+1);
         }
 
+        result = result.replaceAll("_", "");
+
         return result;
     }
 
