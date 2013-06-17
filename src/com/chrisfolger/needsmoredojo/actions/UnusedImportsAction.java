@@ -84,17 +84,24 @@ public class UnusedImportsAction extends AnAction {
                                     elementsToDelete.add(element.getNextSibling());
                                 }
                             }
+
+                            int current = 0;
                             for(PsiElement element : defines)
                             {
                                 elementsToDelete.add(element);
-                                if(results.toString().equals(""))
+                                if(results.toString().equals("") && current < 4)
                                 {
                                     results.append(element.getText());
                                 }
-                                else
+                                else if (current < 4)
                                 {
                                     results.append("," + element.getText());
                                 }
+                                else if (current == 4)
+                                {
+                                    results.append(String.format(" ... (+%d more) ", defines.size() - 4));
+                                }
+                                current++;
 
                                 // special case for when the element we're removing is last on the list
                                 PsiElement sibling = element.getNextSibling();
