@@ -7,13 +7,18 @@ import com.intellij.psi.PsiElement;
 
 public class JSUtil
 {
-    public static PsiElement addStatementBeforeElement(PsiElement parent, PsiElement element, String statement)
+    public static PsiElement addStatementBeforeElement(PsiElement parent, PsiElement element, String statement, String whitespace)
     {
         ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
         parent.addBefore(node.getPsi(), element);
-        parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), "\n\n").getPsi(), element);
+        parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), whitespace).getPsi(), element);
 
         return node.getPsi();
+    }
+
+    public static PsiElement addStatementBeforeElement(PsiElement parent, PsiElement element, String statement)
+    {
+        return addStatementBeforeElement(parent, element, statement, "\n\n");
     }
 
     public static PsiElement createStatement(PsiElement parent, String statement)

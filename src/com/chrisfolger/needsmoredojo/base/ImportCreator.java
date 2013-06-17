@@ -10,11 +10,8 @@ public class ImportCreator
 {
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
-        PsiElement importElement = JSUtil.createExpression(imports, String.format("'%s'", module));
-        PsiElement parameterElement = JSUtil.createExpression(parameters, String.format(MismatchedImportsDetector.defineToParameter(module), module));
-
-        imports.addBefore(importElement, imports.getChildren()[0]);
-        parameters.addBefore(parameterElement, parameters.getChildren()[0]);
+        JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
+        JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], MismatchedImportsDetector.defineToParameter(module) + ",", " ");
     }
 
     public void addImport(PsiFile file, final String module)
