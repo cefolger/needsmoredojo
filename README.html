@@ -1,0 +1,26 @@
+The plugin adds the following options under the Code menu:
+<ul>
+    <li>Organize AMD Imports: Sorts imports alphabetically, removes duplicates, and normalizes quotes</li>
+    <li>Add new AMD Import: pops up a dialog. Type in the name of a dojo module OR the full path of your module. If you type a dojo module, a second dialog will popup giving a list of suggestions. The module will then be inserted in the define argument list and corresponding function parameter</li>
+    <li>Remove unused imports: Removes imports that have been crossed out</li> The following items are added to the Refactor menu:
+    <ul>
+        <li>Convert class module to util module: Converts a normal dojo class created using declare to a pattern that will allow only one instance to be created.</li>
+        <li>Convert util module to class module: The reverse of the first conversion. <br /> A class module looks like the following: <pre>
+define([..], function(..., {
+    return declare(....);
+});
+</pre> <br /> A util module looks like this: <pre>
+define([..], function(.., {
+  var util = declare(...);
+
+  util.method1 = ...
+
+  return util;
+});
+</pre> </li>
+    </ul>
+</ul> Two inspections run in the background:
+<ul>
+    <li>Detection of unused AMD imports in dojo modules, indicated by strikethrough</li>
+    <li>Highlighting of inconsistent naming with import names and the corresponding function argument name</li>
+</ul>
