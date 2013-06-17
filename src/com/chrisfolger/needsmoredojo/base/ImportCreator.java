@@ -37,7 +37,7 @@ public class ImportCreator
         PsiFile[] files = null;
         try
         {
-            files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.allScope(psiFile.getProject()));
+            files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
         }
         catch(NullPointerException exc)
         {
