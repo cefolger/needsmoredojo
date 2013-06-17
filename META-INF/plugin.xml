@@ -13,7 +13,6 @@
                 <li>detect inconsistent naming in AMD imports</li>
                 <li>convert util style modules to class style modules and vice-versa</li>
                 <li>Add new AMD imports</li>
-                <li>Fix NPE thrown when cursor was not in an editor during an action</li>
             </ul>
         Still very much under development. Please contact me with any feedback!
       ]]></description>
@@ -26,6 +25,7 @@
                 <li>Add util -> class module refactoring</li>
                 <li>Add class -> util module refactoring</li>
                 <li>Split options up into different menus </li>
+                <li>Fix NPE thrown when cursor was not in an editor during an action</li>
             </ul>
 
             <b>0.1</b>
