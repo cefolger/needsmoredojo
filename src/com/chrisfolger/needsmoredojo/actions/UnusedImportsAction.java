@@ -42,9 +42,6 @@ public class UnusedImportsAction extends AnAction {
         UnusedImportsDetector detector = new UnusedImportsDetector();
         psiFile.accept(detector.getVisitorToRemoveUsedParameters(parameters, defines));
 
-        highlightElement(e.getProject(), parameters.toArray(new PsiElement[0]));
-        highlightElement(e.getProject(), defines.toArray(new PsiElement[0]));
-
         if(this.deleteMode)
         {
             CommandProcessor.getInstance().executeCommand(psiFile.getProject(), new Runnable() {
@@ -103,27 +100,5 @@ public class UnusedImportsAction extends AnAction {
             "Remove Unused Imports");
 
         }
-    }
-
-    private void highlightElement(@NotNull Project project, @NotNull PsiElement[] elements)
-    {
-        final FileEditorManager editorManager =
-                FileEditorManager.getInstance(project);
-        final HighlightManager highlightManager =
-                HighlightManager.getInstance(project);
-        final EditorColorsManager editorColorsManager =
-                EditorColorsManager.getInstance();
-        final Editor editor = editorManager.getSelectedTextEditor();
-        final EditorColorsScheme globalScheme =
-                editorColorsManager.getGlobalScheme();
-        final TextAttributes textattributes =
-                globalScheme.getAttributes(
-                        EditorColors.SEARCH_RESULT_ATTRIBUTES);
-
-        highlightManager.addOccurrenceHighlights(
-                editor, elements, textattributes, true, null);
-        final WindowManager windowManager = WindowManager.getInstance();
-        final StatusBar statusBar = windowManager.getStatusBar(project);
-        statusBar.setInfo("Press Esc to remove highlighting");
     }
 }
