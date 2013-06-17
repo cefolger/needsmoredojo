@@ -75,7 +75,14 @@ public class UnusedImportsAction extends AnAction {
                             for(PsiElement element : parameters)
                             {
                                 elementsToDelete.add(element);
-                                elementsToDelete.add(element.getNextSibling());
+
+                                PsiElement nextSibling = element.getNextSibling();
+
+                                // only remove commas at the end
+                                if(nextSibling != null && nextSibling.getText().equals(","))
+                                {
+                                    elementsToDelete.add(element.getNextSibling());
+                                }
                             }
                             for(PsiElement element : defines)
                             {
