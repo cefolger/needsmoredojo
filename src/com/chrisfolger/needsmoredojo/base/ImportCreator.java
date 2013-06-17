@@ -9,13 +9,43 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 
+import java.util.*;
+
 public class ImportCreator
 {
+    private int getScore(String item)
+    {
+        Map<String, Integer> scores = new HashMap<String, Integer>();
+        scores.put("dojo", 5);
+        scores.put("dijit", 4);
+        scores.put("dojox", 2);
+        scores.put("dgrid", 1);
+
+        for(String key : scores.keySet())
+        {
+            if(item.indexOf(key) != -1)
+            {
+                return scores.get(key);
+            }
+        }
+
+        return 0;
+    }
+
     public String[] getPossibleDojoImports(PsiFile psiFile, String module)
     {
-        PsiFile[] files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.allScope(psiFile.getProject()));
-        String[] choices = new String[files.length + 1];
-        choices[choices.length - 1] = module;
+        PsiFile[] files = null;
+        try
+        {
+            files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.allScope(psiFile.getProject()));
+        }
+        catch(NullPointerException exc)
+        {
+            // sometimes this will show up when the ide is first loaded
+            return new String[] { module };
+        }
+
+        List<String> choices = new ArrayList<String>();
 
         String[] dojoLibraries = new String[] { "dojo", "dijit", "dojox", "dgrid", "util"};
 
@@ -43,11 +73,19 @@ public class ImportCreator
             {
                 result = result.substring(result.indexOf(firstLibrary));
                 result = result.replace('\\', '/') + '/' + module;
-                choices[i] = result;
+                choices.add(result);
             }
         }
 
-        return choices;
+        Collections.sort(choices, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return getScore(o1) - getScore(o2);
+            }
+        });
+
+        choices.add(module);
+        return choices.toArray(new String[0]);
     }
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)

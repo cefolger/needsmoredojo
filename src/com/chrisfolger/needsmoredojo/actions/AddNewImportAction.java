@@ -7,14 +7,7 @@ import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
-
-import java.util.Collection;
 
 public class AddNewImportAction extends AnAction
 {
@@ -34,6 +27,11 @@ public class AddNewImportAction extends AnAction
         if(choices.length > 1)
         {
             importModule = Messages.showEditableChooseDialog("", "Dojo imports detected", null, choices, choices[0], null);
+        }
+
+        if(importModule == null)
+        {
+            return;
         }
 
         final String importedModule = importModule;
