@@ -12,7 +12,7 @@
                 <li>organize AMD imports by sorting alphabetically (aware of plugins and other things tacked on the end)</li>
                 <li>detect inconsistent naming in AMD imports</li>
                 <li>convert util style modules to class style modules and vice-versa</li>
-                <li>Add new AMD imports</li>
+                <li>Add new AMD imports option for quick and safe importing</li>
             </ul>
         Still very much under development. Please contact me with any feedback!
       ]]></description>
