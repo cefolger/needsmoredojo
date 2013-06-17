@@ -33,8 +33,8 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
                 });
             }
         },
-        "Convert module to use Util Pattern",
-        "Convert module to use Util Pattern");
+        "Convert class module to util module",
+        "Convert class module to util module");
     }
 
     public void doRefactor(JSReturnStatement originalReturnStatement, JSExpression[] mixins, JSProperty[] properties) {

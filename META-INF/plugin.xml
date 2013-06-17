@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.1</version>
+  <version>0.2</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -10,14 +10,17 @@
                 <li>detect and flag mismatched AMD imports as errors</li>
                 <li>flag unused AMD imports with strikethrough</li>
                 <li>organize AMD imports by sorting alphabetically (aware of plugins and other things tacked on the end)</li>
+                <li>detect inconsistent naming in AMD imports</li>
+                <li>convert util style modules to class style modules and vice-versa</li>
             </ul>
         Still very much under development. Please contact me with any feedback!
       ]]></description>
 
   <change-notes><![CDATA[
-            <b>next</b>
+            <b>0.2 -- TBD</b>
             <ul>
-                <li>Add convert to util pattern refactoring</li>
+                <li>Add util -> class module refactoring</li>
+                <li>Add class -> util module refactoring</li>
             </ul>
 
             <b>0.1</b> -- 06/16/2013
@@ -51,11 +54,9 @@
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removeunusedimports" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="Removes unused AMD imports">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
                 </action>
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertoutil" class="com.chrisfolger.needsmoredojo.actions.ConvertToUtilAction" text="Convert to util pattern" description="Converts a normal dojo class to use the util pattern">
-                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertoutil" class="com.chrisfolger.needsmoredojo.actions.ConvertToUtilAction" text="Convert class module to util module" description="Converts a normal dojo class to use the util pattern">
                 </action>
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertclass" class="com.chrisfolger.needsmoredojo.actions.ConvertToClassAction" text="Convert to class pattern" description="Converts a dojo util module to be an instantiable class">
-                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="4"/>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertclass" class="com.chrisfolger.needsmoredojo.actions.ConvertToClassAction" text="Convert util module to class module" description="Converts a dojo util module to be an instantiable class">
                 </action>
             </group>
 
