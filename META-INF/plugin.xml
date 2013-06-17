@@ -58,6 +58,8 @@
                 </action>
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertclass" class="com.chrisfolger.needsmoredojo.actions.ConvertToClassAction" text="Convert util module to class module" description="Converts a dojo util module to be an instantiable class">
                 </action>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.addimport" class="com.chrisfolger.needsmoredojo.actions.AddNewImportAction" text="Add new AMD import" description="Add a new AMD import to a dojo module">
+                </action>
             </group>
 
             <separator/>
