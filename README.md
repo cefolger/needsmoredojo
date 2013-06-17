@@ -11,15 +11,40 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 
 #### Usage
 
-The plugin will do four things:
-- Allow removal of these imports
-- Sort imports alphabetically and normalize quotes (no more mixed single/double quotes)
-- Strikethrough unused AMD imports at the top of a dojo define(...) call in a module
-- Highlight inconsistent naming in an imported module and its associated function argument
+The plugin adds the following options under the Code menu:
+- Organize AMD Imports: Sorts imports alphabetically, removes duplicates, and normalizes quotes
+- Add new AMD Import: pops up a dialog. Type in the name of a dojo module OR the full path of your module. If you type a dojo module, a second dialog will popup giving a list of suggestions.
+The module will then be inserted in the define argument list and corresponding function parameter
+- Remove unused imports: Removes imports that have been crossed out
 
-The first two items can be accessed by right clicking in the editor and going to the refactor submenu. 
+The following items are added to the Refactor menu:
+- Convert class module to util module: Converts a normal dojo class created using declare to a pattern that will
+allow only one instance to be created.
+- Convert util module to class module: The reverse of the first conversion. 
 
-The last two items run in the background
+A class module looks like the following: 
+
+<pre>
+define([..], function(..., {
+    return declare(....); 
+}); 
+</pre>
+
+A util module looks like this: 
+
+<pre>
+define([..], function(.., {
+  var util = declare(...); 
+  
+  util.method1 = ...
+  
+  return util; 
+}); 
+</pre>
+
+Two inspections are enabled: 
+- Check for unused imports: Marks unused imports with strikethrough
+- Check for mismatched imports: Check if naming between an import and its corresponding function parameter are consistent
 
 #### Development
 
