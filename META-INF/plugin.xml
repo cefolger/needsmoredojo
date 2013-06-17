@@ -19,7 +19,7 @@
       ]]></description>
 
   <change-notes><![CDATA[
-            <b>0.2 -- TBD</b>
+            <b>0.2</b>
             <ul>
                 <li>Auto detect dojo modules when using the add new import dialog</li>
                 <li>Add new AMD import option added </li>
@@ -28,7 +28,7 @@
                 <li>Split options up into different menus </li>
             </ul>
 
-            <b>0.1</b> -- 06/16/2013
+            <b>0.1</b>
             <ul>
                 <li>Initial Version</li>
             </ul>
