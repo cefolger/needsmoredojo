@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.actions;
 
 import com.chrisfolger.needsmoredojo.base.DefineResolver;
+import com.chrisfolger.needsmoredojo.base.PsiFileUtil;
 import com.chrisfolger.needsmoredojo.refactoring.AMDImportOrganizer;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -21,7 +22,7 @@ public class OrganizeAMDImportsAction extends AnAction
     @Override
     public void actionPerformed(AnActionEvent e)
     {
-        final PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
+        final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
 
         DefineResolver resolver = new DefineResolver();
         final List<PsiElement> parameters = new ArrayList<PsiElement>();

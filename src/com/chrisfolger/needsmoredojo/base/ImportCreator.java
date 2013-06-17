@@ -41,7 +41,6 @@ public class ImportCreator
         }
         catch(NullPointerException exc)
         {
-            // sometimes this will show up when the ide is first loaded
             return new String[] { module };
         }
 

@@ -1,9 +1,9 @@
 package com.chrisfolger.needsmoredojo.actions;
 
 import com.chrisfolger.needsmoredojo.base.ImportCreator;
+import com.chrisfolger.needsmoredojo.base.PsiFileUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.ui.Messages;
@@ -14,7 +14,7 @@ public class AddNewImportAction extends AnAction
     @Override
     public void actionPerformed(AnActionEvent e)
     {
-        final PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
+        final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
         String importModule = Messages.showInputDialog("Enter the path to the module or name of the dojo module", "Add new AMD import", null);
 
         if(importModule == null)

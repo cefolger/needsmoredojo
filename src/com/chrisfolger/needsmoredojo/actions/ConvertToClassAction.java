@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.actions;
 
+import com.chrisfolger.needsmoredojo.base.PsiFileUtil;
 import com.chrisfolger.needsmoredojo.refactoring.DeclareFinder;
 import com.chrisfolger.needsmoredojo.refactoring.UtilFinder;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -12,7 +13,7 @@ public class ConvertToClassAction extends AnAction
     @Override
     public void actionPerformed(AnActionEvent e)
     {
-        final PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
+        final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
 
         new UtilFinder().convertToClassPattern(psiFile);
     }

@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.actions;
 
 import com.chrisfolger.needsmoredojo.base.DefineResolver;
+import com.chrisfolger.needsmoredojo.base.PsiFileUtil;
 import com.chrisfolger.needsmoredojo.conventions.UnusedImportsDetector;
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.notification.Notification;
@@ -32,7 +33,7 @@ public class UnusedImportsAction extends AnAction {
 
     public void actionPerformed(@NotNull final AnActionEvent e)
     {
-        final PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
+        final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
 
         DefineResolver resolver = new DefineResolver();
         final List<PsiElement> parameters = new ArrayList<PsiElement>();
