@@ -68,10 +68,10 @@
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.organizeamdimports" class="com.chrisfolger.needsmoredojo.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="1"/>
                 </action>
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removeunusedimports" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="Removes unused AMD imports">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.addimport" class="com.chrisfolger.needsmoredojo.actions.AddNewImportAction" text="Add new AMD import" description="Add a new AMD import to a dojo module">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
                 </action>
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.addimport" class="com.chrisfolger.needsmoredojo.actions.AddNewImportAction" text="Add new AMD import" description="Add a new AMD import to a dojo module">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removeunusedimports" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="Removes unused AMD imports">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
                 </action>
             </group>
