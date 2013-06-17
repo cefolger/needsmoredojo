@@ -20,6 +20,7 @@
   <change-notes><![CDATA[
             <b>0.2 -- TBD</b>
             <ul>
+                <li>Auto detect dojo modules when using the add new import dialog</li>
                 <li>Add new AMD import option added </li>
                 <li>Add util -> class module refactoring</li>
                 <li>Add class -> util module refactoring</li>
