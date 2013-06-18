@@ -53,9 +53,9 @@
             <add-to-group group-id="RefactoringMenu" anchor="first"/>
 
             <group id="com.chrisfolger.needsmoredojo.refactoring.menu.items">
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertoutil" class="com.chrisfolger.needsmoredojo.actions.ConvertToUtilAction" text="Convert class module to util module" description="Converts a normal dojo class to use the util pattern">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertoutil" class="com.chrisfolger.needsmoredojo.intellij.actions.ConvertToUtilAction" text="Convert class module to util module" description="Converts a normal dojo class to use the util pattern">
                 </action>
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertclass" class="com.chrisfolger.needsmoredojo.actions.ConvertToClassAction" text="Convert util module to class module" description="Converts a dojo util module to be an instantiable class">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.convertclass" class="com.chrisfolger.needsmoredojo.intellij.actions.ConvertToClassAction" text="Convert util module to class module" description="Converts a dojo util module to be an instantiable class">
                 </action>
             </group>
 
@@ -65,13 +65,13 @@
             <add-to-group group-id="CodeMenu" anchor="first"/>
 
             <group id="com.chrisfolger.needsmoredojo.code.menu.items">
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.organizeamdimports" class="com.chrisfolger.needsmoredojo.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.organizeamdimports" class="com.chrisfolger.needsmoredojo.intellij.actions.OrganizeAMDImportsAction" text="Organize AMD Imports" description="Organizes (reorders) AMD import statements">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="1"/>
                 </action>
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.addimport" class="com.chrisfolger.needsmoredojo.actions.AddNewImportAction" text="Add new AMD import" description="Add a new AMD import to a dojo module">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.addimport" class="com.chrisfolger.needsmoredojo.intellij.actions.AddNewImportAction" text="Add new AMD import" description="Add a new AMD import to a dojo module">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="2"/>
                 </action>
-                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removeunusedimports" class="com.chrisfolger.needsmoredojo.actions.DeleteAction" text="Remove Unused Imports" description="Removes unused AMD imports">
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removeunusedimports" class="com.chrisfolger.needsmoredojo.intellij.actions.DeleteAction" text="Remove Unused Imports" description="Removes unused AMD imports">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
                 </action>
             </group>
@@ -81,7 +81,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.inspections.MismatchedImportsProvider"/>
-        <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.inspections.UnusedImportsProvider"/>
+        <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchedImportsProvider"/>
+        <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.UnusedImportsProvider"/>
     </extensions>
 </idea-plugin>
