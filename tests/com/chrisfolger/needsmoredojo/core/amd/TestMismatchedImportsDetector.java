@@ -58,6 +58,22 @@ public class TestMismatchedImportsDetector
     }
 
     @Test
+    public void matchI18n()
+    {
+        assertTrue(detector.defineMatchesParameter("dojo/i18n!./resources/resources", "resources"));
+    }
+
+    @Test
+    public void matchI18nWithConvention()
+    {
+        // I've seen all of these in the dojo libraries
+        assertTrue(detector.defineMatchesParameter("dojo/i18n!./MainToolbar/resources", "resources"));
+        assertTrue(detector.defineMatchesParameter("dojo/i18n!./MainToolbar/resources", "nlsMaintoolbar"));
+        assertTrue(detector.defineMatchesParameter("dojo/i18n!./MainToolbar/resources", "i18nMaintoolbar"));
+        assertTrue(detector.defineMatchesParameter("dojo/i18n!./nls/buttons", "_nls"));
+    }
+
+    @Test
     public void simpleCorrectList()
     {
         PsiElement[] defines = new PsiElement[] { createPsiElement("dojo/on"), createPsiElement("dojo/_base/array"), createPsiElement("dijit/layout/ContentPane")};

@@ -23,6 +23,7 @@
                 <li>Tweaked the priority settings for the add import dialog popup</li>
                 <li>Behind the scenes, refactored and added some more unit tests</li>
                 <li>Fix race condition during organize imports (Issue #26)</li>
+                <li>Fix inconsistent flagging of i18n and text imports (Issue #22)</li>
             </ul>
 
             <b>0.2</b>

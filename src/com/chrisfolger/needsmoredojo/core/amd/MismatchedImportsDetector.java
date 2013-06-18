@@ -95,10 +95,46 @@ public class MismatchedImportsDetector
         }
 
         // there is a hard-coded comparison against dojo/text since it is used to define templates
-        if(defineComparison.startsWith("dojo/text"))
+        if(defineComparison.startsWith("dojo/text") || defineComparison.startsWith("dojo/i18n"))
         {
             // grab everything after the !
             String fileName = defineComparison.substring(defineComparison.lastIndexOf('!') + 1);
+
+            if(fileName.indexOf('/') != -1)
+            {
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+            }
+
+            if(fileName.indexOf('.') != -1)
+            {
+                fileName = fileName.substring(0, fileName.indexOf('.'));
+            }
+
+            boolean isText = defineComparison.startsWith("dojo/text");
+            boolean isI18n = defineComparison.startsWith("dojo/i18n");
+
+            if(isText && parameterComparison.contains(fileName + "template"))
+            {
+                return true;
+            }
+            else if(isText && parameterComparison.equals("template"))
+            {
+                return true;
+            }
+            // can't really enforce a stricter convention in this case
+            else if(isI18n && parameterComparison.startsWith("i18n"))
+            {
+                return true;
+            }
+            else if(isI18n && parameterComparison.startsWith("nls"))
+            {
+                return true;
+            }
+            else if(isI18n && parameterComparison.startsWith("_nls"))
+            {
+                return true;
+            }
+
             return fileName.contains(parameterComparison);
         }
 
