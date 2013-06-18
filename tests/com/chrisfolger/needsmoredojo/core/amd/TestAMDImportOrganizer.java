@@ -179,8 +179,11 @@ public class TestAMDImportOrganizer
 
         AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
-        assertEquals(2, results.getDefines().length);
-        assertEquals(2, results.getParameters().length);
+        AMDImportOrganizer.SortedPsiElementAdapter[] resultingDefines = results.getDefines();
+        assertTrue(resultingDefines[0].isInactive() || resultingDefines[1].isInactive() || resultingDefines[2].isInactive());
+
+        AMDImportOrganizer.SortedPsiElementAdapter[] resultingParameters = results.getParameters();
+        assertTrue(resultingParameters[0].isInactive() || resultingParameters[1].isInactive() || resultingParameters[2].isInactive());
     }
 
     private PsiElement createPsiElement(String text)
