@@ -146,6 +146,13 @@ public class TestMismatchedImportsDetector
         assertFalse(detector.defineMatchesParameter("\"../../../../foo/bar/Element\"", "Eledment"));
     }
 
+    @Test
+    public void baseFxException()
+    {
+        assertTrue(detector.defineMatchesParameter("dojo/_base/fx", "baseFx"));
+        assertTrue(detector.defineMatchesParameter("dojo/_base/fx", "fx"));
+    }
+
     private PsiElement createPsiElement(String text)
     {
         PsiElement result = mock(PsiElement.class);

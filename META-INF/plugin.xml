@@ -21,11 +21,12 @@
             <b>0.21</b> (Maintenance release)
             <ul>
                 <li>Tweaked the priority settings for the add import dialog popup</li>
-                <li>Behind the scenes, refactored and added some more unit tests</li>
+                <li>Behind the scenes: refactored and added some more unit tests</li>
                 <li>Fix race condition during organize imports (Issue #26)</li>
                 <li>Fix inconsistent flagging of i18n and text imports (Issue #22)</li>
                 <li>Fix issue when entering a module with underscores (Issue #24)</li>
                 <li>Fix util -> class when declare has different arguments (Issue #28)</li>
+                <li>Added naming exception for dojo/_base/fx</li>
             </ul>
 
             <b>0.2</b>

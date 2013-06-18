@@ -65,6 +65,11 @@ public class MismatchedImportsDetector
         String defineComparison = define.toLowerCase().replaceAll("'|\"", "").replace("\"", "");
         String parameterComparison = parameter.toLowerCase();
 
+        if(defineComparison.contains("/_base/fx"))
+        {
+            return parameterComparison.equals("basefx") || parameterComparison.equals("fx");
+        }
+
         if(defineComparison.indexOf('/') != -1)
         {
             String defineName = defineComparison.substring(defineComparison.lastIndexOf('/') + 1);

@@ -25,6 +25,12 @@ public class TestAMDUtil
     }
 
     @Test
+    public void testBaseFx()
+    {
+        assertEquals("baseFx", AMDUtil.defineToParameter("dojo/_base/fx"));
+    }
+
+    @Test
     public void testTextPlugin()
     {
         assertEquals("amoduleTemplate", AMDUtil.defineToParameter("dojo/text!./AModule.html"));

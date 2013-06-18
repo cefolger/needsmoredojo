@@ -4,6 +4,12 @@ public class AMDUtil
 {
     public static String defineToParameter(String define)
     {
+        // since there are two fx modules we have this exception
+        if(define.contains("/_base/fx"))
+        {
+            return "baseFx";
+        }
+
         if(define.startsWith("dojo/text") || define.startsWith("dojo/i18n"))
         {
             String postPlugin = define.substring(define.indexOf('!') + 1);
