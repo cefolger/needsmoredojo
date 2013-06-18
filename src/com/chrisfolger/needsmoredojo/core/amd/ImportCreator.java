@@ -61,13 +61,6 @@ public class ImportCreator
 
             if(firstLibrary != null)
             {
-                String underscorePrefix = "";
-
-                if(file.getName().startsWith("_"))
-                {
-                    underscorePrefix = "_";
-                }
-
                 result = result.substring(result.indexOf(firstLibrary));
                 result = result.replace('\\', '/') + '/' + file.getName().substring(0, file.getName().indexOf('.'));
                 choices.add(result);

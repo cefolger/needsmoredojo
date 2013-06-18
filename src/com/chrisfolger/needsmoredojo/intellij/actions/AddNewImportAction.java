@@ -15,7 +15,7 @@ public class AddNewImportAction extends AnAction
     public void actionPerformed(AnActionEvent e)
     {
         final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
-        String importModule = Messages.showInputDialog("Enter the path to the module or name of the dojo module", "Add new AMD import", null);
+        String importModule = Messages.showInputDialog("Enter the path to your module or the unqualified name of the dojo module", "Add new AMD import", null);
 
         if(importModule == null)
         {
@@ -24,9 +24,9 @@ public class AddNewImportAction extends AnAction
 
         String[] choices = new ImportCreator().getPossibleDojoImports(psiFile, importModule);
         // there will be always one choice (the original module)
-        if(choices.length > 1)
+        if(choices.length > 0)
         {
-            importModule = Messages.showEditableChooseDialog("", "Dojo imports detected", null, choices, choices[0], null);
+            importModule = Messages.showEditableChooseDialog("", "Add new AMD Import", null, choices, choices[0], null);
         }
 
         if(importModule == null)
