@@ -12,6 +12,8 @@ import java.util.*;
 
 public class ImportCreator
 {
+    public static final String[] dojoLibraries = new String[] { "dojo", "dijit", "dojox", "dgrid", "util"};
+
     private int getScore(String item)
     {
         Map<String, Integer> scores = new HashMap<String, Integer>();
@@ -97,10 +99,6 @@ public class ImportCreator
         {
             return new String[] { module };
         }
-
-        List<String> choices = new ArrayList<String>();
-
-        String[] dojoLibraries = new String[] { "dojo", "dijit", "dojox", "dgrid", "util"};
 
         Set<PsiFile> allFiles = new HashSet<PsiFile>();
         for(PsiFile file : files) allFiles.add(file);
