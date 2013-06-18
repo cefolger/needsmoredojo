@@ -31,31 +31,9 @@ public class ImportCreator
         return 0;
     }
 
-    public String[] getPossibleDojoImports(PsiFile psiFile, String module)
+    public String[] getChoicesFromFiles(PsiFile[] filesArray, String[] dojoLibraries, String module)
     {
-        PsiFile[] files = null;
-        PsiFile[] filesWithUnderscore = null;
-
-        try
-        {
-            files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
-            // this will let us search for _TemplatedMixin and friends
-            filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
-        }
-        catch(NullPointerException exc)
-        {
-            return new String[] { module };
-        }
-
         List<String> choices = new ArrayList<String>();
-
-        String[] dojoLibraries = new String[] { "dojo", "dijit", "dojox", "dgrid", "util"};
-
-        Set<PsiFile> allFiles = new HashSet<PsiFile>();
-        for(PsiFile file : files) allFiles.add(file);
-        for(PsiFile file : filesWithUnderscore) allFiles.add(file);
-
-        PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
         for(int i=0;i<filesArray.length;i++)
         {
@@ -102,6 +80,35 @@ public class ImportCreator
 
         choices.add(module);
         return choices.toArray(new String[0]);
+    }
+
+    public String[] getPossibleDojoImports(PsiFile psiFile, String module)
+    {
+        PsiFile[] files = null;
+        PsiFile[] filesWithUnderscore = null;
+
+        try
+        {
+            files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
+            // this will let us search for _TemplatedMixin and friends
+            filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
+        }
+        catch(NullPointerException exc)
+        {
+            return new String[] { module };
+        }
+
+        List<String> choices = new ArrayList<String>();
+
+        String[] dojoLibraries = new String[] { "dojo", "dijit", "dojox", "dgrid", "util"};
+
+        Set<PsiFile> allFiles = new HashSet<PsiFile>();
+        for(PsiFile file : files) allFiles.add(file);
+        for(PsiFile file : filesWithUnderscore) allFiles.add(file);
+
+        PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
+
+        return getChoicesFromFiles(filesArray, dojoLibraries, module);
     }
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
