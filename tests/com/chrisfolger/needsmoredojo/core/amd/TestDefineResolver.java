@@ -53,6 +53,10 @@ public class TestDefineResolver
         arguments[1] = functionExpression;
 
         when(callExpression.getArguments()).thenReturn(arguments);
+
+        JSExpression methodName = mock(JSExpression.class);
+        when(methodName.getText()).thenReturn("define");
+        when(callExpression.getMethodExpression()).thenReturn(methodName);
         return callExpression;
     }
 }
