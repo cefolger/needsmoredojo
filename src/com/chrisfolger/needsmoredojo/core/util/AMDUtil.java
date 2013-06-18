@@ -6,7 +6,19 @@ public class AMDUtil
     {
         if(define.startsWith("dojo/text") || define.startsWith("dojo/i18n"))
         {
-            return define.substring(define.indexOf('!') + 1);
+            String postPlugin = define.substring(define.indexOf('!') + 1);
+
+            if(postPlugin.indexOf('/') != -1)
+            {
+                postPlugin = postPlugin.substring(postPlugin.lastIndexOf('/') + 1);
+            }
+
+            if(postPlugin.indexOf('.') != -1)
+            {
+                postPlugin = postPlugin.substring(0, postPlugin.indexOf('.'));
+            }
+
+            return postPlugin;
         }
 
         String result = define.substring(define.lastIndexOf("/") + 1);

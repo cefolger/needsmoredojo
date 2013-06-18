@@ -24,10 +24,9 @@ public class TestAMDUtil
         assertEquals("BorderContainer", AMDUtil.defineToParameter("dijit/layout/BorderContainer"));
     }
 
-    // TODO this fails at the moment
     @Test
     public void testTextPlugin()
     {
-        assertEquals("AModule", AMDUtil.defineToParameter("dojo/text!./amodule.html"));
+        assertEquals("aModuleTemplate", AMDUtil.defineToParameter("dojo/text!./AModule.html"));
     }
 }

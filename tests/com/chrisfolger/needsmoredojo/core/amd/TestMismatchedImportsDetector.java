@@ -52,6 +52,12 @@ public class TestMismatchedImportsDetector
     }
 
     @Test
+    public void matchOnTemplateWithExplicitName()
+    {
+        assertTrue(detector.defineMatchesParameter("dojo/text!./Foo.html", "fooTemplate"));
+    }
+
+    @Test
     public void simpleCorrectList()
     {
         PsiElement[] defines = new PsiElement[] { createPsiElement("dojo/on"), createPsiElement("dojo/_base/array"), createPsiElement("dijit/layout/ContentPane")};
