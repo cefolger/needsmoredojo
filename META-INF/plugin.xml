@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.2</version>
+  <version>0.21</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -22,6 +22,7 @@
             <ul>
                 <li>Tweaked the priority settings for the add import dialog popup</li>
                 <li>Behind the scenes, refactored and added some more unit tests</li>
+                <li>Fix race condition during organize imports (Issue #26)</li>
             </ul>
 
             <b>0.2</b>

@@ -178,8 +178,6 @@ public class AMDImportOrganizer
                 // sometimes deleting comma's will throw an exception (ignorant as to why)
             }
         }
-
-        FileDocumentManager.getInstance().saveAllDocuments();
     }
 
     private List<SortItem> getSortItems(List<PsiElement> defines, List<PsiElement> parameters)
