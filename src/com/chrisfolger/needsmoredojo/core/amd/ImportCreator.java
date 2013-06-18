@@ -69,7 +69,7 @@ public class ImportCreator
                 }
 
                 result = result.substring(result.indexOf(firstLibrary));
-                result = result.replace('\\', '/') + '/' + underscorePrefix + module;
+                result = result.replace('\\', '/') + '/' + file.getName().substring(0, file.getName().indexOf('.'));
                 choices.add(result);
             }
         }

@@ -47,6 +47,32 @@ public class TestImportCreator
     }
 
     @Test
+    // see Issue #24 entering a module with an underscore resolves into two underscores
+    public void testWidgetWithUnderscoreDoesNotGetTwoUnderscoresInserted()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("_WidgetBase.js", "dijit")
+        };
+
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "_WidgetBase");
+
+        assertEquals("dijit/_WidgetBase", choices[0]);
+    }
+
+    @Test
+    // a little unrealistic, but let's make sure this case works anyway
+    public void testWidgetWithDoubleUnderscoresIsStillInsertedCorrectly()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("__WidgetBase.js", "dijit")
+        };
+
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "__WidgetBase");
+
+        assertEquals("dijit/__WidgetBase", choices[0]);
+    }
+
+    @Test
     public void testDgridPriority()
     {
         PsiFile[] files = new PsiFile[] {
