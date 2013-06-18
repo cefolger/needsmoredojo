@@ -1,0 +1,63 @@
+package com.chrisfolger.needsmoredojo.core.refactoring;
+
+import com.chrisfolger.needsmoredojo.testutil.MockJSArrayLiteralExpression;
+import com.chrisfolger.needsmoredojo.testutil.MockJSCallExpression;
+import com.chrisfolger.needsmoredojo.testutil.MockJSObjectLiteralExpression;
+import com.intellij.lang.javascript.psi.JSCallExpression;
+import com.intellij.lang.javascript.psi.JSExpression;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+
+public class TestUtilConverter
+{
+    private UtilConverter converter;
+
+    @Before
+    public void setup()
+    {
+        converter = new UtilConverter();
+    }
+
+    @Test
+    public void testTheBasicHappyBath()
+    {
+        Map<String, String> propertyMap = new HashMap<String, String>();
+        propertyMap.put("property 1", "value");
+
+        JSExpression[] arguments = new JSExpression[] {
+                new MockJSArrayLiteralExpression(new String[] { "mixin1", "mixin2"}),
+                new MockJSObjectLiteralExpression(propertyMap)
+        };
+
+        JSCallExpression callExpression = new MockJSCallExpression(arguments);
+        Object[] statements = new Object[] {callExpression, null};
+
+        UtilConverter.UtilItem result = converter.getDeclareStatementFromParsedStatement(statements);
+        assertEquals(2, result.getExpressionsToMixin().length);
+        assertEquals(1, result.getMethodsToConvert().length);
+    }
+
+    @Test
+    public void testWhenFirstArgumentIsNull()
+    {
+        Map<String, String> propertyMap = new HashMap<String, String>();
+        propertyMap.put("property 1", "value");
+
+        JSExpression[] arguments = new JSExpression[] {
+                new MockJSArrayLiteralExpression(new String[] { "mixin1", "mixin2"}),
+                new MockJSObjectLiteralExpression(propertyMap)
+        };
+
+        JSCallExpression callExpression = new MockJSCallExpression(arguments);
+        Object[] statements = new Object[] {callExpression, null};
+
+        UtilConverter.UtilItem result = converter.getDeclareStatementFromParsedStatement(statements);
+        assertEquals(2, result.getExpressionsToMixin().length);
+        assertEquals(1, result.getMethodsToConvert().length);
+    }
+}
