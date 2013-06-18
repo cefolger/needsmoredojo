@@ -17,10 +17,10 @@ public class ImportCreator
     private int getScore(String item)
     {
         Map<String, Integer> scores = new HashMap<String, Integer>();
-        scores.put("dojo", 5);
-        scores.put("dijit", 4);
-        scores.put("dojox", 2);
-        scores.put("dgrid", 1);
+        scores.put("dojo/", 5);
+        scores.put("dijit/", 4);
+        scores.put("dgrid/", 2);
+        scores.put("dojox/", 1);
 
         for(String key : scores.keySet())
         {
@@ -76,7 +76,7 @@ public class ImportCreator
         Collections.sort(choices, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return getScore(o1) - getScore(o2);
+                return getScore(o2) - getScore(o1);
             }
         });
 
