@@ -18,6 +18,11 @@ public class AMDUtil
                 postPlugin = postPlugin.substring(0, postPlugin.indexOf('.'));
             }
 
+            if(!define.startsWith("dojo/i18n"))
+            {
+                postPlugin = postPlugin.toLowerCase() + "Template";
+            }
+
             return postPlugin;
         }
 

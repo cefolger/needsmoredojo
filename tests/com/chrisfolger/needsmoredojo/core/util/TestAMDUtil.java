@@ -27,6 +27,12 @@ public class TestAMDUtil
     @Test
     public void testTextPlugin()
     {
-        assertEquals("aModuleTemplate", AMDUtil.defineToParameter("dojo/text!./AModule.html"));
+        assertEquals("amoduleTemplate", AMDUtil.defineToParameter("dojo/text!./AModule.html"));
+    }
+
+    @Test
+    public void testI18nPlugin()
+    {
+        assertEquals("resources", AMDUtil.defineToParameter("dojo/i18n!nls/resources"));
     }
 }
