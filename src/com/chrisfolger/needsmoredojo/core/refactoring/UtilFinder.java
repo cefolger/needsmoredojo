@@ -48,7 +48,7 @@ public class UtilFinder
 
                 if(returnStatement != null && declaration != null)
                 {
-                    onReturnFound.run(new Object[] { returnStatement, declaration, otherElements, declarationVariable});
+                    onReturnFound.run(new Object[] { declaration,returnStatement, otherElements, declarationVariable});
                 }
 
                 super.visitJSBlock(element);

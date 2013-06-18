@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
+import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.application.ApplicationManager;
@@ -14,21 +15,19 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
     @Override
     public void run(Object[] result)
     {
-        final JSReturnStatement returnStatement = (JSReturnStatement) result[0];
-        final JSCallExpression declaration = (JSCallExpression) result[1];
+        final DeclareUtil.DeclareStatementItems item = new DeclareUtil().getDeclareStatementFromParsedStatement(result);
+
         final List<JSExpressionStatement> methods = (List<JSExpressionStatement>) result[2];
         final JSVarStatement declarationVariable = (JSVarStatement) result[3];
 
-        final JSExpression[] mixins = ((JSArrayLiteralExpression) declaration.getArguments()[0]).getExpressions();
-
-        CommandProcessor.getInstance().executeCommand(returnStatement.getProject(), new Runnable() {
+        CommandProcessor.getInstance().executeCommand(item.getReturnStatement().getProject(), new Runnable() {
             @Override
             public void run() {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        PsiElement parent = returnStatement.getParent();
-                        doRefactor(mixins, methods, returnStatement, declarationVariable);
+                        PsiElement parent = item.getReturnStatement().getParent();
+                        doRefactor(item.getExpressionsToMixin(), methods, item.getReturnStatement(), declarationVariable);
                         // all of those deletions creates a ton of whitespace for some reason. So, delete it!
                         cleanupWhiteSpace(parent);
                     }

@@ -31,6 +31,11 @@ public class DeclareUtil
 
     public DeclareStatementItems getDeclareStatementFromParsedStatement(Object[] result)
     {
+        return getDeclareStatementFromParsedStatement(result, true);
+    }
+
+    public DeclareStatementItems getDeclareStatementFromParsedStatement(Object[] result, boolean parseMethodsFromObjectLiteral)
+    {
         JSCallExpression expression = (JSCallExpression) result[0];
         JSReturnStatement returnStatement = (JSReturnStatement) result[1];
 
