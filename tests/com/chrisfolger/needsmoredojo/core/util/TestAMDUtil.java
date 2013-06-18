@@ -17,4 +17,10 @@ public class TestAMDUtil
     {
         assertEquals("WidgetBase", AMDUtil.defineToParameter("dijit/_WidgetBase"));
     }
+
+    @Test
+    public void testBasicModule()
+    {
+        assertEquals("BorderContainer", AMDUtil.defineToParameter("dijit/layout/BorderContainer"));
+    }
 }
