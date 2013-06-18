@@ -9,8 +9,32 @@ import com.intellij.psi.PsiElement;
 
 public class UtilConverter implements DeclareFinder.CompletionCallback
 {
-    @Override
-    public void run(Object[] result)
+    public class UtilItem
+    {
+        private JSExpression[] expressionsToMixin;
+        private JSProperty[] methodsToConvert;
+        private JSReturnStatement returnStatement;
+
+        public UtilItem(JSExpression[] expressionsToMixin, JSProperty[] methodsToConvert, JSReturnStatement returnStatement) {
+            this.expressionsToMixin = expressionsToMixin;
+            this.methodsToConvert = methodsToConvert;
+            this.returnStatement = returnStatement;
+        }
+
+        public JSReturnStatement getReturnStatement() {
+            return returnStatement;
+        }
+
+        public JSExpression[] getExpressionsToMixin() {
+            return expressionsToMixin;
+        }
+
+        public JSProperty[] getMethodsToConvert() {
+            return methodsToConvert;
+        }
+    }
+
+    public UtilItem getDeclareStatementFromParsedStatement(Object[] result)
     {
         JSCallExpression expression = (JSCallExpression) result[0];
         final JSReturnStatement returnStatement = (JSReturnStatement) result[1];
@@ -23,13 +47,20 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
         JSObjectLiteralExpression literal = (JSObjectLiteralExpression) expression.getArguments()[1];
         final JSProperty[] methodsToConvert = literal.getProperties();
 
-        CommandProcessor.getInstance().executeCommand(expression.getProject(), new Runnable() {
+        return new UtilItem(expressionsToMixin, methodsToConvert, returnStatement);
+    }
+
+    @Override
+    public void run(Object[] result)
+    {
+        final UtilItem utilItem = getDeclareStatementFromParsedStatement(result);
+        CommandProcessor.getInstance().executeCommand(utilItem.getReturnStatement().getProject(), new Runnable() {
             @Override
             public void run() {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        doRefactor(returnStatement, expressionsToMixin, methodsToConvert);
+                        doRefactor(utilItem.getReturnStatement(), utilItem.getExpressionsToMixin(), utilItem.getMethodsToConvert());
                     }
                 });
             }
