@@ -24,6 +24,8 @@
                 <li>Behind the scenes, refactored and added some more unit tests</li>
                 <li>Fix race condition during organize imports (Issue #26)</li>
                 <li>Fix inconsistent flagging of i18n and text imports (Issue #22)</li>
+                <li>Fix issue when entering a module with underscores (Issue #24)</li>
+                <li>Fix util -> class when declare has different arguments (Issue #28)</li>
             </ul>
 
             <b>0.2</b>

@@ -42,14 +42,28 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
         // this will be used to determine what we mixin to the util
         JSExpression[] expressionsToMixin = new JSExpression[0];
 
+        /*
+            three possible syntax'es for declare:
+
+            declare(null, {});
+            declare([], {});
+            declare(string, [], {});
+         */
+        int objectLiteralIndex = 1;
         if(expression.getArguments()[0] instanceof  JSArrayLiteralExpression)
         {
             JSArrayLiteralExpression arrayLiteral = (JSArrayLiteralExpression) expression.getArguments()[0];
             expressionsToMixin = arrayLiteral.getExpressions();
         }
+        else if (expression.getArguments().length == 3 && expression.getArguments()[1] instanceof JSArrayLiteralExpression)
+        {
+            JSArrayLiteralExpression arrayLiteral = (JSArrayLiteralExpression) expression.getArguments()[1];
+            expressionsToMixin = arrayLiteral.getExpressions();
+            objectLiteralIndex = 2;
+        }
 
         // now we need to get the object literal with all of the function names
-        JSObjectLiteralExpression literal = (JSObjectLiteralExpression) expression.getArguments()[1];
+        JSObjectLiteralExpression literal = (JSObjectLiteralExpression) expression.getArguments()[objectLiteralIndex];
         JSProperty[] methodsToConvert = literal.getProperties();
 
         return new UtilItem(expressionsToMixin, methodsToConvert, returnStatement);
