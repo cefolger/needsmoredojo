@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
+import com.chrisfolger.needsmoredojo.testutil.BasicPsiElements;
 import com.chrisfolger.needsmoredojo.testutil.MockJSArrayLiteralExpression;
 import com.chrisfolger.needsmoredojo.testutil.MockJSCallExpression;
 import com.chrisfolger.needsmoredojo.testutil.MockJSObjectLiteralExpression;
@@ -49,7 +50,7 @@ public class TestUtilConverter
         propertyMap.put("property 1", "value");
 
         JSExpression[] arguments = new JSExpression[] {
-                new MockJSArrayLiteralExpression(new String[] { "mixin1", "mixin2"}),
+                BasicPsiElements.Null(),
                 new MockJSObjectLiteralExpression(propertyMap)
         };
 
@@ -57,7 +58,7 @@ public class TestUtilConverter
         Object[] statements = new Object[] {callExpression, null};
 
         UtilConverter.UtilItem result = converter.getDeclareStatementFromParsedStatement(statements);
-        assertEquals(2, result.getExpressionsToMixin().length);
+        assertEquals(0, result.getExpressionsToMixin().length);
         assertEquals(1, result.getMethodsToConvert().length);
     }
 }
