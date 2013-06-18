@@ -1,7 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
-import com.chrisfolger.needsmoredojo.core.amd.UnusedImportsDetector;
+import com.chrisfolger.needsmoredojo.core.amd.UnusedImportsRemover;
 import com.intellij.codeInspection.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -40,7 +40,7 @@ public class UnusedImportsInspection extends LocalInspectionTool
         final List<ProblemDescriptor> descriptors = new ArrayList<ProblemDescriptor>();
 
         resolver.gatherDefineAndParameters(file, defines, parameters);
-        UnusedImportsDetector detector = new UnusedImportsDetector();
+        UnusedImportsRemover detector = new UnusedImportsRemover();
         file.accept(detector.getVisitorToRemoveUsedParameters(parameters, defines));
 
         LocalQuickFix fix = null;
