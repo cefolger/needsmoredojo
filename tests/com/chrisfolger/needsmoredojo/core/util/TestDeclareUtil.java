@@ -1,5 +1,6 @@
-package com.chrisfolger.needsmoredojo.core.refactoring;
+package com.chrisfolger.needsmoredojo.core.util;
 
+import com.chrisfolger.needsmoredojo.core.refactoring.UtilConverter;
 import com.chrisfolger.needsmoredojo.testutil.*;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
@@ -11,14 +12,14 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class TestUtilConverter
+public class TestDeclareUtil
 {
-    private UtilConverter converter;
+    private DeclareUtil util;
 
     @Before
     public void setup()
     {
-        converter = new UtilConverter();
+        util = new DeclareUtil();
     }
 
     @Test
@@ -35,7 +36,7 @@ public class TestUtilConverter
         JSCallExpression callExpression = new MockJSCallExpression(arguments);
         Object[] statements = new Object[] {callExpression, null};
 
-        UtilConverter.UtilItem result = converter.getDeclareStatementFromParsedStatement(statements);
+        DeclareUtil.DeclareStatementItems result = util.getDeclareStatementFromParsedStatement(statements);
         assertEquals(2, result.getExpressionsToMixin().length);
         assertEquals(1, result.getMethodsToConvert().length);
     }
@@ -54,7 +55,7 @@ public class TestUtilConverter
         JSCallExpression callExpression = new MockJSCallExpression(arguments);
         Object[] statements = new Object[] {callExpression, null};
 
-        UtilConverter.UtilItem result = converter.getDeclareStatementFromParsedStatement(statements);
+        DeclareUtil.DeclareStatementItems result = util.getDeclareStatementFromParsedStatement(statements);
         assertEquals(0, result.getExpressionsToMixin().length);
         assertEquals(1, result.getMethodsToConvert().length);
     }
@@ -74,7 +75,7 @@ public class TestUtilConverter
         JSCallExpression callExpression = new MockJSCallExpression(arguments);
         Object[] statements = new Object[] {callExpression, null};
 
-        UtilConverter.UtilItem result = converter.getDeclareStatementFromParsedStatement(statements);
+        DeclareUtil.DeclareStatementItems result = util.getDeclareStatementFromParsedStatement(statements);
         assertEquals(2, result.getExpressionsToMixin().length);
         assertEquals(1, result.getMethodsToConvert().length);
     }
