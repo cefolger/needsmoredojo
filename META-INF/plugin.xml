@@ -20,6 +20,7 @@
   <change-notes><![CDATA[
             <b>0.21</b> (Maintenance release)
             <ul>
+                <li>Now building with jdk 1.6 instead of 1.7</li>
                 <li>Tweaked the priority settings for the add import dialog popup</li>
                 <li>Behind the scenes: refactored and added some more unit tests</li>
                 <li>Fix race condition during organize imports (Issue #26)</li>
