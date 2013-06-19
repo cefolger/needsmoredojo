@@ -13,6 +13,7 @@ public class MockJSAssignmentExpression extends JSAssignmentExpressionImpl
     private String definitionNamespace;
     private String definitionName;
     private String content;
+    private JSDefinitionExpression definition;
 
     public MockJSAssignmentExpression(String definitionNamespace, String definitionName, String content) {
         super(mock(ASTNode.class));
@@ -22,9 +23,22 @@ public class MockJSAssignmentExpression extends JSAssignmentExpressionImpl
         this.content = content;
     }
 
+    public MockJSAssignmentExpression(JSDefinitionExpression definition) {
+        super(mock(ASTNode.class));
+
+        this.definition = definition;
+    }
+
     @Override
     public JSExpression[] getChildren()
     {
-        return new JSExpression[] { new MockJSDefinitionExpression(definitionNamespace, definitionName), BasicPsiElements.expressionFromText(content) };
+        if(definition == null)
+        {
+            return new JSExpression[] { new MockJSDefinitionExpression(definitionNamespace, definitionName), BasicPsiElements.expressionFromText(content) };
+        }
+        else
+        {
+            return new JSExpression[] { this.definition, BasicPsiElements.expressionFromText(content)};
+        }
     }
 }
