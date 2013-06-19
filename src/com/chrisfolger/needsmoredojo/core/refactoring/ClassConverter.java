@@ -63,10 +63,21 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
             JSExpressionStatement method = methods.get(i);
 
             JSAssignmentExpression expression = (JSAssignmentExpression) method.getExpression();
-            String definition = ((JSReferenceExpression)((JSDefinitionExpression) expression
-                    .getChildren()[0])
-                    .getExpression())
-                    .getReferencedName();
+            JSExpression reference = ((JSDefinitionExpression) expression.getChildren()[0]).getExpression();
+            String definition = "";
+
+            /* a util property can be two things:
+                util.a = b;
+                util['a'] = b;
+             */
+            if(reference instanceof JSReferenceExpression)
+            {
+                definition = ((JSReferenceExpression)reference).getReferencedName();
+            }
+            else if (reference instanceof JSIndexedPropertyAccessExpression)
+            {
+                definition = ((JSIndexedPropertyAccessExpression)reference).getIndexExpression().getText();
+            }
 
             String content = expression.getChildren()[1].getText();
 
