@@ -52,6 +52,14 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
         // convert each property to an assignment statement
         for (JSProperty property : properties) {
             String propertyStatement = String.format("util.%s = %s;", property.getName(), property.getValue().getText());
+
+            // account for the case where the class property is in quotes, because it might be a special
+            // property that would not be a valid javascript property unless it was in quotes.
+            if(property.getNameIdentifier().getText().contains("'") || property.getNameIdentifier().getText().contains("\""))
+            {
+                propertyStatement = String.format("util['%s'] = %s;", property.getName().substring(1, property.getName().length() - 1), property.getValue().getText());
+            }
+
             JSUtil.addStatementBeforeElement(parent, originalReturnStatement, propertyStatement);
         }
 
