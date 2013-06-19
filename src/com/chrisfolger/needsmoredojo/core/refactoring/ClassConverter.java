@@ -44,10 +44,8 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
         parent.replace(JSUtil.createStatement(parent, result));
     }
 
-    public void doRefactor(JSExpression[] mixins, List<JSExpressionStatement> methods, JSReturnStatement originalReturnStatement, JSVarStatement declarationVariable)
+    public String buildUtilPatternString(JSExpression[] mixins, List<JSExpressionStatement> methods)
     {
-        PsiElement parent = originalReturnStatement.getParent();
-
         // build an array of mixins for the new declare statement
         StringBuilder mixinArray = new StringBuilder();
         for (JSExpression mixin : mixins) {
@@ -82,8 +80,15 @@ public class ClassConverter implements DeclareFinder.CompletionCallback
             }
         }
 
-        // create the new declare statement and add it before the return statement
         String declareStatement = String.format("return declare([%s], {\n%s\n});", mixinArray.toString(), properties.toString());
+        return declareStatement;
+    }
+
+    public void doRefactor(JSExpression[] mixins, List<JSExpressionStatement> methods, JSReturnStatement originalReturnStatement, JSVarStatement declarationVariable)
+    {
+        PsiElement parent = originalReturnStatement.getParent();
+
+        String declareStatement = buildUtilPatternString(mixins, methods);
         PsiElement declareExpression = JSUtil.createStatement(parent, declareStatement);
         parent.addBefore(declareExpression, originalReturnStatement);
 
