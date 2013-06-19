@@ -29,6 +29,7 @@
                 <li>Fix util -> class when declare has different arguments (Issue #28)</li>
                 <li>Added naming exception for dojo/_base/fx</li>
                 <li>Fix issue converting quoted properties with class -> util and reverse refactoring (Issue #17)</li>
+                <li>Fix issue with inspection group names (Issue #31)</li>
             </ul>
 
             <b>0.2</b>
