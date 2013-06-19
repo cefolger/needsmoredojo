@@ -57,7 +57,7 @@ public class UtilConverter implements DeclareFinder.CompletionCallback
             // property that would not be a valid javascript property unless it was in quotes.
             if(property.getNameIdentifier().getText().contains("'") || property.getNameIdentifier().getText().contains("\""))
             {
-                propertyStatement = String.format("util['%s'] = %s;", property.getName().substring(1, property.getName().length() - 1), property.getValue().getText());
+                propertyStatement = String.format("util[%s] = %s;", property.getNameIdentifier().getText(), property.getValue().getText());
             }
 
             JSUtil.addStatementBeforeElement(parent, originalReturnStatement, propertyStatement);
