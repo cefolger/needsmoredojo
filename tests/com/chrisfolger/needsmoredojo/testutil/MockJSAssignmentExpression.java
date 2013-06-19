@@ -23,10 +23,11 @@ public class MockJSAssignmentExpression extends JSAssignmentExpressionImpl
         this.content = content;
     }
 
-    public MockJSAssignmentExpression(JSDefinitionExpression definition) {
+    public MockJSAssignmentExpression(JSDefinitionExpression definition, String content) {
         super(mock(ASTNode.class));
 
         this.definition = definition;
+        this.content = content;
     }
 
     @Override
