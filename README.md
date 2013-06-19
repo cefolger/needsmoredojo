@@ -46,8 +46,13 @@ Two inspections are enabled:
 - Check for unused imports: Marks unused imports with strikethrough
 - Check for mismatched imports: Check if naming between an import and its corresponding function parameter are consistent
 
+These inspections also appear in the 'Inspections' menu, under **JavaScript -> Needs More Dojo**
+
 #### Development
 
-You will need access to the JavaScript plugin for IntelliJ, or have WebStorm. 
+You will need:
+- to have checked out the [IntelliJ Community Edition SDK](http://www.jetbrains.org/pages/viewpage.action?pageId=983225)
+- have access to the JavaScript plugin in plugins/JavaScript
+- [Mockito](https://code.google.com/p/mockito/) for running unit tests
 
-Running unit tests requires [Mockito](https://code.google.com/p/mockito/)
+Simply clone the repository from GitHub or fork it for your modifications.
