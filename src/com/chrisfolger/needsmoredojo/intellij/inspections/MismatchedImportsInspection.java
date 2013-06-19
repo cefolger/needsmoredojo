@@ -3,9 +3,12 @@ package com.chrisfolger.needsmoredojo.intellij.inspections;
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.MismatchedImportsDetector;
 import com.intellij.codeInspection.*;
+import com.intellij.openapi.graph.algo.Groups;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +19,7 @@ public class MismatchedImportsInspection extends LocalInspectionTool
     @Override
     public String getDisplayName()
     {
-        return "Check for mismatched imports";
+        return "Check for inconsistently named imports";
     }
 
     @Override
@@ -29,6 +32,27 @@ public class MismatchedImportsInspection extends LocalInspectionTool
     public String getShortName()
     {
         return "MismatchedImportsInspection";
+    }
+
+    @Nullable
+    @Override
+    public String getStaticDescription() {
+        return "Detects AMD imports that have inconsistent naming between the module path and the variable name. " +
+                "\n\nExample: \n\ndefine([\n    'dojo/foo'\n], function(someOtherName) {}); \n\nvs\n\n define([\n    'dojo/foo'\n'], function(foo) {});";
+    }
+
+    @Nls
+    @NotNull
+    @Override
+    public String getGroupDisplayName()
+    {
+        return "Needs More Dojo";
+    }
+
+    @Override
+    public String[] getGroupPath()
+    {
+        return new String[] { "JavaScript", "Needs More Dojo "};
     }
 
     @Override

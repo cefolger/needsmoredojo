@@ -5,7 +5,9 @@ import com.chrisfolger.needsmoredojo.core.amd.UnusedImportsRemover;
 import com.intellij.codeInspection.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,26 @@ public class UnusedImportsInspection extends LocalInspectionTool
     public String getDisplayName()
     {
         return "Check for unused imports";
+    }
+
+    @Nls
+    @NotNull
+    @Override
+    public String getGroupDisplayName()
+    {
+        return "Needs More Dojo";
+    }
+
+    @Override
+    public String[] getGroupPath()
+    {
+        return new String[] { "JavaScript", "Needs More Dojo "};
+    }
+
+    @Nullable
+    @Override
+    public String getStaticDescription() {
+        return "Detects AMD imports that are flagged as unused and marks them with a strikethrough";
     }
 
     @Override
