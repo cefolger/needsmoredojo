@@ -34,14 +34,23 @@ public class DefineResolver
                         return;
                     }
 
-                    if(!(arguments.length > 1 && arguments[0] instanceof JSArrayLiteralExpression && arguments[1] instanceof JSFunctionExpression))
+                    // account for when we get this (even though this is defined as legacy) :
+                    /**
+                     * define('classname', [], function(...){});
+                     */
+                    int argumentOffset = 0;
+                    if(arguments.length > 1 && arguments[0] instanceof JSLiteralExpression && arguments[1] instanceof  JSArrayLiteralExpression)
+                    {
+                        argumentOffset = 1;
+                    }
+                    else if(!(arguments.length > 1 && arguments[0] instanceof JSArrayLiteralExpression && arguments[1] instanceof JSFunctionExpression))
                     {
                         super.visitJSCallExpression(element);
                         return;
                     }
 
                     // get the first argument which should be an array literal
-                    JSArrayLiteralExpression literalExpressions = (JSArrayLiteralExpression) arguments[0];
+                    JSArrayLiteralExpression literalExpressions = (JSArrayLiteralExpression) arguments[0 + argumentOffset];
                     for(JSExpression expression : literalExpressions.getExpressions())
                     {
                         if(expression instanceof JSLiteralExpression)
@@ -52,7 +61,7 @@ public class DefineResolver
                     }
 
                     // get the second argument which should be a function
-                    JSFunctionExpression function = (JSFunctionExpression) arguments[1];
+                    JSFunctionExpression function = (JSFunctionExpression) arguments[1 + argumentOffset];
                     for(JSParameter parameter : function.getFunction().getParameters())
                     {
                         parameters.add(parameter);

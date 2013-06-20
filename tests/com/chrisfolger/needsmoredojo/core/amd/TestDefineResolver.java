@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.amd;
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.testutil.MockJSArrayLiteralExpression;
 import com.chrisfolger.needsmoredojo.testutil.MockJSFunctionExpression;
+import com.chrisfolger.needsmoredojo.testutil.MockJSLiteralExpression;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 import org.junit.Before;
@@ -39,6 +40,15 @@ public class TestDefineResolver
         assertEquals("'dojo/_base/array'", defines.get(0).getText());
     }
 
+    @Test
+    public void testParametersAndDefinesAreParsedWithAClassNameInTheDefine()
+    {
+        JSRecursiveElementVisitor visitor = resolver.getDefineAndParametersVisitor(defines, parameters);
+        visitor.visitJSCallExpression(getDojoAMDImportWithClassname("foo", new String[] {"'dojo/_base/array'"}, new String[] { "array" }));
+
+        assertEquals("'dojo/_base/array'", defines.get(0).getText());
+    }
+
     private JSCallExpression getDojoAMDImportStatement(String[] defines, String[] parameters)
     {
         JSCallExpression callExpression = mock(JSCallExpression.class);
@@ -51,6 +61,30 @@ public class TestDefineResolver
         // set up the second argument which is the function call
         JSFunctionExpression functionExpression = new MockJSFunctionExpression(parameters);
         arguments[1] = functionExpression;
+
+        when(callExpression.getArguments()).thenReturn(arguments);
+
+        JSExpression methodName = mock(JSExpression.class);
+        when(methodName.getText()).thenReturn("define");
+        when(callExpression.getMethodExpression()).thenReturn(methodName);
+        return callExpression;
+    }
+
+    private JSCallExpression getDojoAMDImportWithClassname(String className, String[] defines, String[] parameters)
+    {
+        JSCallExpression callExpression = mock(JSCallExpression.class);
+        JSExpression[] arguments = new JSExpression[3];
+
+        JSLiteralExpression classExpression = new MockJSLiteralExpression(className);
+        arguments[0] = classExpression;
+
+        // set up the first argument in the dojo amd import call
+        JSArrayLiteralExpression defineExpression = new MockJSArrayLiteralExpression(defines);
+        arguments[1] = defineExpression;
+
+        // set up the second argument which is the function call
+        JSFunctionExpression functionExpression = new MockJSFunctionExpression(parameters);
+        arguments[2] = functionExpression;
 
         when(callExpression.getArguments()).thenReturn(arguments);
 
