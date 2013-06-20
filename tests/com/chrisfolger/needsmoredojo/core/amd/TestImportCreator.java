@@ -88,6 +88,30 @@ public class TestImportCreator
     }
 
     @Test
+    public void testExternalLibrary()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("Grid.js", "website/static/js/website/foo")
+        };
+
+        String[] choices = creator.getChoicesFromFiles(files, new String[] { "website"} , "Grid", "website/static/js" );
+
+        assertEquals("website/foo/Grid", choices[0]);
+    }
+
+    @Test
+    public void testLibrary_withNoSourceRoot()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("Grid.js", "website/static/js/dojo/foo")
+        };
+
+        String[] choices = creator.getChoicesFromFiles(files, new String[] { "dojo"} , "Grid", null );
+
+        assertEquals("dojo/foo/Grid", choices[0]);
+    }
+
+    @Test
     public void testDojoLibraryPriority()
     {
         PsiFile[] files = new PsiFile[] {

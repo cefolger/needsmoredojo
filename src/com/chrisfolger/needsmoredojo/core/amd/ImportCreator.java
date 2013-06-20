@@ -36,7 +36,7 @@ public class ImportCreator
         return 0;
     }
 
-    public String[] getChoicesFromFiles(PsiFile[] filesArray, String[] dojoLibraries, String module, @Nullable String[] otherSourceDirectories)
+    public String[] getChoicesFromFiles(PsiFile[] filesArray, String[] dojoLibraries, String module, @Nullable String sourcesBasePath)
     {
         List<String> choices = new ArrayList<String>();
 
@@ -45,7 +45,11 @@ public class ImportCreator
             PsiFile file = filesArray[i];
 
             PsiDirectory directory = file.getContainingDirectory();
-            String result = directory.toString();
+            String result = directory.getVirtualFile().getCanonicalPath();
+            if(sourcesBasePath != null && result.indexOf(sourcesBasePath) > -1)
+            {
+                result = result.substring(result.indexOf(sourcesBasePath) + sourcesBasePath.length());
+            }
 
             // parse dojo libraries only
             int firstIndex = Integer.MAX_VALUE;
@@ -85,11 +89,16 @@ public class ImportCreator
         PsiFile[] files = null;
         PsiFile[] filesWithUnderscore = null;
 
-        String sourceRootToRemove = "";
+        List<String> otherLibraries = new ArrayList<String>();
+        String basePath = "";
 
         try
         {
-            // first, try to get the directory that contains the dojo sources.
+            /*
+            this block of code checks to see if there are any non-dojo libraries on the same level as the dojo
+            folder. If this is the case, then we can resolve imports in those folders as well.
+            (ideal TODO: have optional source directory configurations??)
+             */
             PsiFile[] dojoSources = FilenameIndex.getFilesByName(psiFile.getProject(), "dojo.js", GlobalSearchScope.projectScope(psiFile.getProject()));
             if(dojoSources.length > 0)
             {
@@ -104,7 +113,11 @@ public class ImportCreator
                 }
 
                 PsiDirectory sourceDirectory = dojoSourceModule.getContainingDirectory().getParentDirectory();
-                sourceRootToRemove = sourceDirectory.getVirtualFile().getCanonicalPath();
+                for(PsiDirectory directory : sourceDirectory.getSubdirectories())
+                {
+                    otherLibraries.add(directory.getName());
+                }
+                basePath = sourceDirectory.getVirtualFile().getCanonicalPath();
             }
 
             files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
@@ -122,7 +135,7 @@ public class ImportCreator
 
         PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
-        return getChoicesFromFiles(filesArray, dojoLibraries, module, null);
+        return getChoicesFromFiles(filesArray, otherLibraries.toArray(new String[0]), module, basePath);
     }
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
