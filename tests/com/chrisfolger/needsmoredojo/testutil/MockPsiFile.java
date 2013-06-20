@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.testutil;
 
 import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElementVisitor;
@@ -9,6 +10,7 @@ import com.intellij.psi.impl.source.PsiFileImpl;
 import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MockPsiFile extends PsiFileImpl
 {
