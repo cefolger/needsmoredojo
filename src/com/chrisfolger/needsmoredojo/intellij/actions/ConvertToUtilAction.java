@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.PsiFile;
 
-public class ConvertToUtilAction extends AnAction
+public class ConvertToUtilAction extends JavaScriptAction
 {
     @Override
     public void actionPerformed(AnActionEvent e)

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnusedImportsAction extends AnAction {
+public class UnusedImportsAction extends JavaScriptAction {
     protected boolean deleteMode = false;
 
     public void actionPerformed(@NotNull final AnActionEvent e)

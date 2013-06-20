@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.intellij.actions;
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.chrisfolger.needsmoredojo.core.amd.AMDImportOrganizer;
+import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -16,7 +17,7 @@ import com.intellij.psi.PsiFile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrganizeAMDImportsAction extends AnAction
+public class OrganizeAMDImportsAction extends JavaScriptAction
 {
     @Override
     public void actionPerformed(AnActionEvent e)

@@ -9,7 +9,7 @@ import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiFile;
 
-public class AddNewImportAction extends AnAction
+public class AddNewImportAction extends JavaScriptAction
 {
     @Override
     public void actionPerformed(AnActionEvent e)
