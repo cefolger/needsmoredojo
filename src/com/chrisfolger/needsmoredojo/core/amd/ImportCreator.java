@@ -8,6 +8,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.LocalSearchScope;
 
 import java.util.*;
 
@@ -34,7 +35,7 @@ public class ImportCreator
         return 0;
     }
 
-    public String[] getChoicesFromFiles(PsiFile[] filesArray, String[] dojoLibraries, String module)
+    public String[] getChoicesFromFiles(PsiFile[] filesArray, String[] dojoLibraries, String module, String[] otherSourceDirectories)
     {
         List<String> choices = new ArrayList<String>();
 
@@ -83,8 +84,28 @@ public class ImportCreator
         PsiFile[] files = null;
         PsiFile[] filesWithUnderscore = null;
 
+        String sourceRootToRemove = "";
+
         try
         {
+            // first, try to get the directory that contains the dojo sources.
+            PsiFile[] dojoSources = FilenameIndex.getFilesByName(psiFile.getProject(), "dojo.js", GlobalSearchScope.projectScope(psiFile.getProject()));
+            if(dojoSources.length > 0)
+            {
+                PsiFile dojoSourceModule = dojoSources[0];
+                for(int i=0;i<dojoSources.length;i++)
+                {
+                    if(dojoSources[i].getContainingDirectory().getName().contains("dojo"))
+                    {
+                        dojoSourceModule = dojoSources[i];
+                        break;
+                    }
+                }
+
+                PsiDirectory sourceDirectory = dojoSourceModule.getContainingDirectory().getParentDirectory();
+                sourceRootToRemove = sourceDirectory.getVirtualFile().getCanonicalPath();
+            }
+
             files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
             // this will let us search for _TemplatedMixin and friends
             filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
@@ -100,7 +121,7 @@ public class ImportCreator
 
         PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
-        return getChoicesFromFiles(filesArray, dojoLibraries, module);
+        return getChoicesFromFiles(filesArray, dojoLibraries, module, null);
     }
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
