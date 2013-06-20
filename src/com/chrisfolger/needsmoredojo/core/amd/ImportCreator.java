@@ -9,6 +9,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.LocalSearchScope;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -35,7 +36,7 @@ public class ImportCreator
         return 0;
     }
 
-    public String[] getChoicesFromFiles(PsiFile[] filesArray, String[] dojoLibraries, String module, String[] otherSourceDirectories)
+    public String[] getChoicesFromFiles(PsiFile[] filesArray, String[] dojoLibraries, String module, @Nullable String[] otherSourceDirectories)
     {
         List<String> choices = new ArrayList<String>();
 

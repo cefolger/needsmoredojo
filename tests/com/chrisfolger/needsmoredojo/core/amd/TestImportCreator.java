@@ -28,7 +28,7 @@ public class TestImportCreator
                 new MockPsiFile("BorderContainer.js", "dijit/layout")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "BorderContainer");
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "BorderContainer", null);
 
         assertEquals("dijit/layout/BorderContainer", choices[0]);
     }
@@ -41,7 +41,7 @@ public class TestImportCreator
                 new MockPsiFile("functional.js", "util/docscripts/tests")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "functional");
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "functional", null);
 
         assertEquals("dojox/lang/functional", choices[0]);
     }
@@ -54,7 +54,7 @@ public class TestImportCreator
                 new MockPsiFile("_WidgetBase.js", "dijit")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "_WidgetBase");
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "_WidgetBase", null);
 
         assertEquals("dijit/_WidgetBase", choices[0]);
     }
@@ -67,7 +67,7 @@ public class TestImportCreator
                 new MockPsiFile("__WidgetBase.js", "dijit")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "__WidgetBase");
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "__WidgetBase", null);
 
         assertEquals("dijit/__WidgetBase", choices[0]);
     }
@@ -82,7 +82,7 @@ public class TestImportCreator
                 new MockPsiFile("Grid.js", "dojox/charting/plot2d")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "Grid");
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "Grid", null);
 
         assertEquals("dgrid/Grid", choices[0]);
     }
@@ -95,7 +95,7 @@ public class TestImportCreator
                 new MockPsiFile("BorderContainer.js", "dojo")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "BorderContainer");
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "BorderContainer", null);
 
         assertEquals("dojo/BorderContainer", choices[0]);
     }
