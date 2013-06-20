@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.refactoring.UtilConverter;
+import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSFunction;
 import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
@@ -88,8 +89,8 @@ public class DeclareFinder
                 }
 
                 // get the function
-                JSFunction function = (JSFunction) element.getArguments()[1];
-                onDefineFound.run(new Object[] { element, function });
+                DefineUtil.DefineStatementItems items = new DefineUtil().getDefineStatementItemsFromArguments(element.getArguments());
+                onDefineFound.run(new Object[] { element, items.getFunction().getFunction()});
 
                 return;
             }

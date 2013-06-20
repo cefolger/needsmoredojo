@@ -22,6 +22,7 @@
             <ul>
                 <li>For packages on the same level as the dojo sources, add new import will resolve modules inside them </li>
                 <li>Actions are disabled when not in JavaScript files </li>
+                <li>Now take legacy define(moduleId, ...) syntax into account </li>
             </ul>
 
             <b>0.21</b> (Maintenance release)

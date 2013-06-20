@@ -1,5 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
+import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -34,23 +36,15 @@ public class DefineResolver
                         return;
                     }
 
-                    // account for when we get this (even though this is defined as legacy) :
-                    /**
-                     * define('classname', [], function(...){});
-                     */
-                    int argumentOffset = 0;
-                    if(arguments.length > 1 && arguments[0] instanceof JSLiteralExpression && arguments[1] instanceof  JSArrayLiteralExpression)
-                    {
-                        argumentOffset = 1;
-                    }
-                    else if(!(arguments.length > 1 && arguments[0] instanceof JSArrayLiteralExpression && arguments[1] instanceof JSFunctionExpression))
+                    DefineUtil.DefineStatementItems items = new DefineUtil().getDefineStatementItemsFromArguments(arguments);
+                    if(items == null)
                     {
                         super.visitJSCallExpression(element);
                         return;
                     }
 
                     // get the first argument which should be an array literal
-                    JSArrayLiteralExpression literalExpressions = (JSArrayLiteralExpression) arguments[0 + argumentOffset];
+                    JSArrayLiteralExpression literalExpressions = items.getArguments();
                     for(JSExpression expression : literalExpressions.getExpressions())
                     {
                         if(expression instanceof JSLiteralExpression)
@@ -61,7 +55,7 @@ public class DefineResolver
                     }
 
                     // get the second argument which should be a function
-                    JSFunctionExpression function = (JSFunctionExpression) arguments[1 + argumentOffset];
+                    JSFunctionExpression function = items.getFunction();
                     for(JSParameter parameter : function.getFunction().getParameters())
                     {
                         parameters.add(parameter);

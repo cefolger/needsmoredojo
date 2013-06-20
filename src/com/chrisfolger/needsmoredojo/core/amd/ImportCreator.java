@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
+import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.ui.Messages;
@@ -160,7 +161,8 @@ public class ImportCreator
                 JSCallExpression callExpression = (JSCallExpression) result[0];
                 JSFunction function = (JSFunction) result[1];
 
-                createImport(module, (JSArrayLiteralExpression) callExpression.getArguments()[0], function.getParameterList());
+                DefineUtil.DefineStatementItems items = new DefineUtil().getDefineStatementItemsFromArguments(callExpression.getArguments());
+                createImport(module, items.getArguments(), function.getParameterList());
             }
         });
 
