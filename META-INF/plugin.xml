@@ -25,6 +25,11 @@
                 <li>Now take legacy define(moduleId, ...) syntax into account </li>
             </ul>
 
+            <b>0.22</b> (Maintenance release)
+            <ul>
+                <li>fix dojo/test modules appearing first instead of dojo modules (Issue #38)</li>
+            </ul>
+
             <b>0.21</b> (Maintenance release)
             <ul>
                 <li>Now building with jdk 1.6 instead of 1.7</li>
