@@ -99,6 +99,9 @@
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removeunusedimports" class="com.chrisfolger.needsmoredojo.intellij.actions.DeleteAction" text="Remove Unused Imports" description="Removes unused AMD imports">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
                 </action>
+                <action id="com.chrisfolger.needsmoredojo.actions.jumptoattachpoint"
+                        class="com.chrisfolger.needsmoredojo.intellij.actions.JumpToAttachPoint" text="Jump to attach point "
+                        description="Jump to a dojo attach point in the widget's template html file "/>
             </group>
 
             <separator/>
