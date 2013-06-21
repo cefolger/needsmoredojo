@@ -27,6 +27,7 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
         this.file = file;
     }
 
+    // TODO document flow
     public String findTemplateFromDeclare(DeclareUtil.DeclareStatementItems statement)
     {
         for(JSProperty property : statement.getMethodsToConvert())
@@ -58,7 +59,7 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
 
                 PsiFile templateFile = PsiManager.getInstance(file.getProject()).findFile(htmlFile);
                 FileEditor editor = FileEditorManager.getInstance(file.getProject()).openFile(htmlFile, true, true)[0];
-                
+
 
                 int i=0;
             }
