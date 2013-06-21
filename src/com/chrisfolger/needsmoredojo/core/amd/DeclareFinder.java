@@ -55,6 +55,27 @@ public class DeclareFinder
         };
     }
 
+    public JSRecursiveElementVisitor getDefineVisitorToRetrieveDeclareObject(final CompletionCallback onDeclareFound)
+    {
+        return new JSRecursiveElementVisitor() {
+            @Override
+            public void visitJSCallExpression(JSCallExpression element)
+            {
+                if(!element.getMethodExpression().getText().equals("define"))
+                {
+                    super.visitJSCallExpression(element);
+                    return;
+                }
+
+                // get the function
+                JSFunction function = (JSFunction) element.getArguments()[1];
+                function.acceptChildren(getDefineCallbackVisitor(onDeclareFound));
+
+                return;
+            }
+        };
+    }
+
     public JSRecursiveElementVisitor getDefineVisitor()
     {
         return new JSRecursiveElementVisitor() {
