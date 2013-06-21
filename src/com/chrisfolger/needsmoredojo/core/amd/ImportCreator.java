@@ -17,13 +17,14 @@ public class ImportCreator
 
     private int getScore(String item)
     {
-        Map<String, Integer> scores = new HashMap<String, Integer>();
+        Map<String, Integer> scores = new LinkedHashMap<String, Integer>();
+        scores.put("dojo/tests", 0);
         scores.put("dojo/", 5);
         scores.put("dijit/", 4);
         scores.put("dgrid/", 2);
         scores.put("dojox/", 1);
 
-        for(String key : scores.keySet())
+        for(String key : scores.keySet().toArray(new String[0]))
         {
             if(item.indexOf(key) != -1)
             {

@@ -88,6 +88,19 @@ public class TestImportCreator
     }
 
     @Test
+    public void testDojoTestPriority()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("on.js", "dojo/tests"),
+                new MockPsiFile("on.js", "dojo")
+        };
+
+        String[] choices = creator.getChoicesFromFiles(files, ImportCreator.dojoLibraries, "on");
+
+        assertEquals("dojo/on", choices[0]);
+    }
+
+    @Test
     public void testDojoLibraryPriority()
     {
         PsiFile[] files = new PsiFile[] {
