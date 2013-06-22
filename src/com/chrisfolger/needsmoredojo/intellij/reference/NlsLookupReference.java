@@ -26,9 +26,33 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         this.accessor = accessor;
     }
 
-    @Nullable
-    @Override
-    public PsiElement resolve() {
+    public List<JSProperty> getI18nKeys(PsiFile file)
+    {
+        final List<JSProperty> keys = new ArrayList<JSProperty>();
+        file.acceptChildren(new JSRecursiveElementVisitor() {
+            @Override
+            public void visitJSObjectLiteralExpression(JSObjectLiteralExpression node)
+            {
+                if(!node.getParent().getText().startsWith("root:"))
+                {
+                    super.visitJSObjectLiteralExpression(node);
+                    return;
+                }
+
+                for(JSProperty property : node.getProperties())
+                {
+                    keys.add(property);
+                }
+
+                super.visitJSObjectLiteralExpression(node);
+            }
+        });
+
+        return keys;
+    }
+
+    public PsiFile getFileContainingI18nKeys()
+    {
         // get the list of defines
         // find one that matches
         // check to see if it's an i18n file
@@ -71,38 +95,50 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         VirtualFile i18nFile = dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath("/" + defineText + ".js");
         PsiFile templateFile = PsiManager.getInstance(dojoFile.getProject()).findFile(i18nFile);
 
-        final PsiElement[] i18nElement = {null};
-        templateFile.acceptChildren(new JSRecursiveElementVisitor() {
-            @Override
-            public void visitJSObjectLiteralExpression(JSObjectLiteralExpression node)
+        return templateFile;
+    }
+
+    @Nullable
+    @Override
+    public PsiElement resolve() {
+        PsiFile templateFile = getFileContainingI18nKeys();
+
+        if(templateFile == null)
+        {
+            return null;
+        }
+
+        for(JSProperty property : getI18nKeys(templateFile))
+        {
+            String propertyText = accessor.getIndexExpression().getText();
+            propertyText = propertyText.substring(1, propertyText.length() - 1);
+
+            if(property.getName().equals(propertyText))
             {
-                if(!node.getParent().getText().startsWith("root:"))
-                {
-                    super.visitJSObjectLiteralExpression(node);
-                    return;
-                }
-
-                for(JSProperty property : node.getProperties())
-                {
-                    String propertyText = accessor.getIndexExpression().getText();
-                    propertyText = propertyText.substring(1, propertyText.length() - 1);
-
-                    if(property.getName().equals(propertyText))
-                    {
-                        i18nElement[0] = property;
-                    }
-                }
-
-                super.visitJSObjectLiteralExpression(node);
+                return property;
             }
-        });
+        }
 
-        return i18nElement[0];
+        return null;
     }
 
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[] { "foo"} ;  //To change body of implemented methods use File | Settings | File Templates.
+        PsiFile file = getFileContainingI18nKeys();
+        if(file == null)
+        {
+            return new Object[0];
+        }
+
+        List<JSProperty> keys = getI18nKeys(file);
+        List<Object> keyStrings = new ArrayList<Object>();
+
+        for(JSProperty key : keys)
+        {
+            keyStrings.add(key.getName());
+        }
+
+        return keyStrings.toArray();
     }
 }
