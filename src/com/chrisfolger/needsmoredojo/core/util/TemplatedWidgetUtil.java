@@ -1,20 +1,13 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
-import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
+import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSProperty;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.fileEditor.*;
+import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-
-import java.util.ArrayList;
 
 public class TemplatedWidgetUtil {
     private PsiFile file;
@@ -64,9 +57,26 @@ public class TemplatedWidgetUtil {
 
     public static boolean elementIsAttachPoint(PsiElement element)
     {
-        // conditions for an element to be an attach point:
-        // must be inside of a this expression
-        // must have no references?
+        /*
+            It's hard to detect when an element is an attach point, because of the use of this inside other functions
+
+            this.attachpoint
+            that.attachpoint
+
+            ideally we would parse the template file in the beginning and cache all of the attach points,
+            maybe that's a todo item...
+         */
+        if(element.getParent() == null || !(element.getParent() instanceof JSReferenceExpression))
+        {
+            return false;
+        }
+
+        // we can exclude JSCallExpressions at least because you will never reference an attach point like
+        // this.attachpoint(...)
+        if(element.getParent().getParent() instanceof JSCallExpression)
+        {
+            return false;
+        }
 
         return true;
     }

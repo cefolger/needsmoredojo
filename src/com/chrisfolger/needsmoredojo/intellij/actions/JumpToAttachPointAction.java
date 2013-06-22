@@ -1,18 +1,18 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
-import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.util.HighlightingUtil;
 import com.chrisfolger.needsmoredojo.core.util.TemplatedWidgetUtil;
-import com.intellij.find.findUsages.FindUsagesHandlerFactory;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -53,7 +53,7 @@ public class JumpToAttachPointAction extends AnAction
     {
         if(!TemplatedWidgetUtil.elementIsAttachPoint(sourceElement))
         {
-            Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Element is not an attach point" + sourceElement.getText(), NotificationType.INFORMATION));
+            Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Element is not an attach point: '" + sourceElement.getText() + "'", NotificationType.INFORMATION));
             return;
         }
 
