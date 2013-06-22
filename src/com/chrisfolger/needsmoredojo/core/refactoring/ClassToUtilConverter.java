@@ -7,6 +7,8 @@ import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
 {
@@ -22,7 +24,7 @@ public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        doRefactor(utilItem.getReturnStatement(), utilItem.getExpressionsToMixin(), utilItem.getMethodsToConvert());
+                        doRefactor(utilItem.getClassName(), utilItem.getReturnStatement(), utilItem.getExpressionsToMixin(), utilItem.getMethodsToConvert());
                     }
                 });
             }
@@ -31,7 +33,7 @@ public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
         "Convert class module to util module");
     }
 
-    public void doRefactor(JSReturnStatement originalReturnStatement, JSExpression[] mixins, JSProperty[] properties) {
+    public void doRefactor(@Nullable JSLiteralExpression className, @NotNull JSReturnStatement originalReturnStatement, @NotNull JSExpression[] mixins, @NotNull JSProperty[] properties) {
         // insert new items before the return statement
         PsiElement parent = originalReturnStatement.getParent();
 
@@ -45,8 +47,14 @@ public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
             }
         }
 
+        String classPrefix = "";
+        if(className != null)
+        {
+            classPrefix = String.format("%s, ", className.getText());
+        }
+
         // create the declare statement and add it before the return statement
-        String declareStatement = String.format("var util = declare([%s], {});", mixinArray.toString());
+        String declareStatement = String.format("var util = declare(%s[%s], {});", classPrefix, mixinArray.toString());
         JSUtil.addStatementBeforeElement(parent, originalReturnStatement, declareStatement);
 
         // convert each property to an assignment statement

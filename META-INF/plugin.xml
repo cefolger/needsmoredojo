@@ -27,7 +27,8 @@
                 <li>Actions are disabled when not in JavaScript files </li>
                 <li>Now take legacy define(moduleId, ...) syntax into account </li>
                 <li>Can now jump to attach points inside modules that mixin _TemplatedWidget</li>
-                <li>fix dojo/test modules appearing first instead of dojo modules (Issue #38)</li>
+                <li>Fix dojo/test modules appearing first instead of dojo modules (Issue #38)</li>
+                <li>Fix class->util/util->class conversion not preserving the declared class name (Issue #33)</li>
             </ul>
 
             <b>0.21</b> (Maintenance release)
