@@ -45,6 +45,8 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
         });
     }
 
+
+
     public String findTemplateFromDeclare(DeclareUtil.DeclareStatementItems statement)
     {
         for(JSProperty property : statement.getMethodsToConvert())
@@ -53,16 +55,10 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
             {
                 String template = property.getValue().getText();
 
-                ArrayList<PsiElement> defines = new ArrayList<PsiElement>();
-                ArrayList<PsiElement> parameters = new ArrayList<PsiElement>();
-
-                new DefineResolver().gatherDefineAndParameters(file, defines, parameters);
-
                 // find the parameter and define that matches the template parameter
                 PsiElement relevantDefine = AMDUtil.getDefineForVariable(file, template);
 
                 String templatePath = relevantDefine.getText().substring(relevantDefine.getText().lastIndexOf('!') + 1);
-                String parsedPath = templatePath.replaceFirst("./", "/").replaceAll("'", "").replaceAll("\"", "");
                 // now open the file and find the reference in it
                 VirtualFile htmlFile = AMDUtil.getAMDImportFile(relevantDefine.getProject(), templatePath, relevantDefine.getContainingFile().getContainingDirectory());
 
