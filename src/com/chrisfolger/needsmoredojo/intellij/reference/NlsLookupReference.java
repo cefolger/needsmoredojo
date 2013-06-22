@@ -73,7 +73,7 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         String defineText = correctDefine.getText();
         defineText = defineText.substring(defineText.lastIndexOf("!") + 1).replaceAll("'", "");
 
-        VirtualFile i18nFile = AMDUtil.getAMDImportFile(correctDefine.getProject(), "/" + defineText + ".js");
+        VirtualFile i18nFile = AMDUtil.getAMDImportFile(correctDefine.getProject(), defineText, correctDefine.getContainingFile().getContainingDirectory());
         PsiFile templateFile = PsiManager.getInstance(correctDefine.getProject()).findFile(i18nFile);
 
         file = templateFile;

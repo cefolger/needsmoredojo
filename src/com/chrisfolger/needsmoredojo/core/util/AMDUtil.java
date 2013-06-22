@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.util;
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -30,7 +31,7 @@ public class AMDUtil
         return null;
     }
 
-    public static VirtualFile getAMDImportFile(Project project, String modulePath)
+    public static VirtualFile getAMDImportFile(Project project, String modulePath, PsiDirectory sourceFileParentDirectory)
     {
         // TODO find relative path etc.
         PsiFile[] files = FilenameIndex.getFilesByName(project, "dojo.js", GlobalSearchScope.projectScope(project));
@@ -45,7 +46,13 @@ public class AMDUtil
             }
         }
 
-        return dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath(modulePath);
+        String parsedPath = modulePath + ".js";
+        if(parsedPath.charAt(0) != '.') // this means it's not a relative path, but rather a dojo path
+        {
+            parsedPath = "/" + parsedPath;
+        }
+
+        return dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath(parsedPath);
     }
 
     public static String defineToParameter(String define)
