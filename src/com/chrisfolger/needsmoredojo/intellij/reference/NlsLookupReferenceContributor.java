@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.reference;
 
+import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.intellij.javascript.JavaScriptReferenceContributor;
 import com.intellij.lang.javascript.psi.JSIndexedPropertyAccessExpression;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
@@ -12,6 +13,9 @@ import com.intellij.psi.PsiReferenceRegistrar;
 import com.intellij.util.PatternUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NlsLookupReferenceContributor extends JavaScriptReferenceContributor
 {
@@ -33,7 +37,26 @@ public class NlsLookupReferenceContributor extends JavaScriptReferenceContributo
                     // find one that matches
                     // check to see if it's an i18n file
                     // resolve the reference to the file
-                    int i=0;
+                    List<PsiElement> defines = new ArrayList<PsiElement>();
+                    List<PsiElement> parameters = new ArrayList<PsiElement>();
+                    new DefineResolver().gatherDefineAndParameters(qualifier.getContainingFile(), defines, parameters);
+
+                    PsiElement correctDefine = null;
+                    for(int i=0;i<parameters.size();i++)
+                    {
+                        if(parameters.get(i).getText().equals(qualifier.getText()))
+                        {
+                            correctDefine = defines.get(i);
+                        }
+                    }
+
+                    String defineText = correctDefine.getText();
+                    defineText = defineText.substring(defineText.lastIndexOf("!") + 1);
+
+                    // TODO find relative path etc.
+
+
+                    int x = 0;
                 }
 
                 return new PsiReference[0];  //To change body of implemented methods use File | Settings | File Templates.
