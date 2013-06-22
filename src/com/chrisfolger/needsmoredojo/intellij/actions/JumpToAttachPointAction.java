@@ -90,5 +90,11 @@ public class JumpToAttachPointAction extends AnAction
         {
             e.getPresentation().setEnabled(false);
         }
+
+        PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
+        if(!TemplatedWidgetUtil.elementIsAttachPoint(element))
+        {
+            e.getPresentation().setEnabled(false);
+        }
     }
 }
