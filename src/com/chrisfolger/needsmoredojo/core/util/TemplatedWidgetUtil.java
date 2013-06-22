@@ -63,8 +63,8 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
 
                 String templatePath = relevantDefine.getText().substring(relevantDefine.getText().lastIndexOf('!') + 1);
                 String parsedPath = templatePath.replaceFirst("./", "/").replaceAll("'", "").replaceAll("\"", "");
-                // now open the file and find the reference in it TODO
-                VirtualFile htmlFile = file.getContainingDirectory().getVirtualFile().findFileByRelativePath(parsedPath);
+                // now open the file and find the reference in it
+                VirtualFile htmlFile = AMDUtil.getAMDImportFile(relevantDefine.getProject(), templatePath, relevantDefine.getContainingFile().getContainingDirectory());
 
                 PsiFile templateFile = PsiManager.getInstance(file.getProject()).findFile(htmlFile);
                 FileEditor fileEditor = FileEditorManager.getInstance(file.getProject()).openFile(htmlFile, true, true)[0];

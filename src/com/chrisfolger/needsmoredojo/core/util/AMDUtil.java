@@ -33,7 +33,7 @@ public class AMDUtil
 
     public static VirtualFile getAMDImportFile(Project project, String modulePath, PsiDirectory sourceFileParentDirectory)
     {
-        // TODO find relative path etc.
+        // TODO other source roots
         PsiFile[] files = FilenameIndex.getFilesByName(project, "dojo.js", GlobalSearchScope.projectScope(project));
         PsiFile dojoFile = null;
 
@@ -46,13 +46,16 @@ public class AMDUtil
             }
         }
 
-        String parsedPath = modulePath + ".js";
-        if(parsedPath.charAt(0) != '.') // this means it's not a relative path, but rather a dojo path
+        String parsedPath = modulePath.replaceAll("('|\")", "");
+        if(parsedPath.charAt(0) != '.') // this means it's not a relative path, but rather a defined package path
         {
             parsedPath = "/" + parsedPath;
+            return dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath(parsedPath);
         }
-
-        return dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath(parsedPath);
+        else
+        {
+            return sourceFileParentDirectory.getVirtualFile().findFileByRelativePath(parsedPath);
+        }
     }
 
     public static String defineToParameter(String define)
