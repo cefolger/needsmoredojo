@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
 import com.intellij.lang.javascript.psi.*;
+import org.jetbrains.annotations.Nullable;
 
 public class DeclareUtil
 {
@@ -9,11 +10,23 @@ public class DeclareUtil
         private JSExpression[] expressionsToMixin;
         private JSProperty[] methodsToConvert;
         private JSReturnStatement returnStatement;
+        private JSLiteralExpression className;
 
         public DeclareStatementItems(JSExpression[] expressionsToMixin, JSProperty[] methodsToConvert, JSReturnStatement returnStatement) {
             this.expressionsToMixin = expressionsToMixin;
             this.methodsToConvert = methodsToConvert;
             this.returnStatement = returnStatement;
+        }
+
+        public DeclareStatementItems(JSLiteralExpression className, JSExpression[] expressionsToMixin, JSProperty[] methodsToConvert, JSReturnStatement returnStatement) {
+            this(expressionsToMixin, methodsToConvert, returnStatement);
+
+            this.className = className;
+        }
+
+        @Nullable
+        public JSLiteralExpression getClassName() {
+            return className;
         }
 
         public JSReturnStatement getReturnStatement() {
@@ -62,10 +75,16 @@ public class DeclareUtil
             objectLiteralIndex = 2;
         }
 
+        JSLiteralExpression className = null;
+        if(expression.getArguments()[0] instanceof JSLiteralExpression)
+        {
+            className = (JSLiteralExpression) expression.getArguments()[0];
+        }
+
         // now we need to get the object literal with all of the function names
         JSObjectLiteralExpression literal = (JSObjectLiteralExpression) expression.getArguments()[objectLiteralIndex];
         JSProperty[] methodsToConvert = literal.getProperties();
 
-        return new DeclareStatementItems(expressionsToMixin, methodsToConvert, returnStatement);
+        return new DeclareStatementItems(className, expressionsToMixin, methodsToConvert, returnStatement);
     }
 }

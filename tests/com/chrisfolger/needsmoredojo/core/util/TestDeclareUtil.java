@@ -60,6 +60,25 @@ public class TestDeclareUtil
     }
 
     @Test
+    public void classNameIsRetrieved()
+    {
+        Map<String, String> propertyMap = new HashMap<String, String>();
+        propertyMap.put("property 1", "value");
+
+        JSExpression[] arguments = new JSExpression[] {
+                new MockJSLiteralExpression("test class"),
+                new MockJSArrayLiteralExpression(new String[] { "define 1", "define 2"}),
+                new MockJSObjectLiteralExpression(propertyMap)
+        };
+
+        JSCallExpression callExpression = new MockJSCallExpression(arguments);
+        Object[] statements = new Object[] {callExpression, null};
+
+        DeclareUtil.DeclareStatementItems result = util.getDeclareStatementFromParsedStatement(statements);
+        assertEquals("test class", result.getClassName().getText());
+    }
+
+    @Test
     public void testWhenFirstArgumentIsAClassName()
     {
         Map<String, String> propertyMap = new HashMap<String, String>();
