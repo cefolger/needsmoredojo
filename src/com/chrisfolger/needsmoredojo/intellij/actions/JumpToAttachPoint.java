@@ -23,7 +23,7 @@ public class JumpToAttachPoint extends AnAction
 
         // TODO base on source roots
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
-        new TemplatedWidgetUtil(file,  new DeclareFinder.CompletionCallback() {
+        new TemplatedWidgetUtil(element, file,  new DeclareFinder.CompletionCallback() {
             @Override
             public void run(Object[] result) {
                 //To change body of implemented methods use File | Settings | File Templates.

@@ -6,9 +6,13 @@ import com.intellij.find.actions.FindUsagesInFileAction;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSFunction;
 import com.intellij.lang.javascript.psi.JSProperty;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.roots.FileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -20,11 +24,13 @@ import java.util.ArrayList;
 public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
     private DeclareFinder.CompletionCallback onTemplatePathFound;
     private PsiFile file;
+    private PsiElement sourceElement;
 
-    public TemplatedWidgetUtil(PsiFile file, DeclareFinder.CompletionCallback onTemplatePathFound)
+    public TemplatedWidgetUtil(PsiElement sourceElement, PsiFile file, DeclareFinder.CompletionCallback onTemplatePathFound)
     {
         this.onTemplatePathFound = onTemplatePathFound;
         this.file = file;
+        this.sourceElement = sourceElement;
     }
 
     // TODO document flow
@@ -58,9 +64,11 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
                 VirtualFile htmlFile = file.getContainingDirectory().getVirtualFile().findFileByRelativePath(parsedPath);
 
                 PsiFile templateFile = PsiManager.getInstance(file.getProject()).findFile(htmlFile);
-                FileEditor editor = FileEditorManager.getInstance(file.getProject()).openFile(htmlFile, true, true)[0];
-
-
+                FileEditor fileEditor = FileEditorManager.getInstance(file.getProject()).openFile(htmlFile, true, true)[0];
+                Editor editor = EditorFactory.getInstance().getEditors(PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile))[0];
+                Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
+                String documentText = document.getText();
+                editor.getCaretModel().moveToOffset(documentText.indexOf("data-dojo-attach-point=\"" + sourceElement.getText() + "\""));
                 int i=0;
             }
         }
