@@ -13,14 +13,14 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class TestClassConverter
+public class TestUtilToClassConverter
 {
-    private ClassConverter converter;
+    private UtilToClassConverter converter;
 
     @Before
     public void setup()
     {
-        converter = new ClassConverter();
+        converter = new UtilToClassConverter();
     }
 
     @Test

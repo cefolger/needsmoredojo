@@ -1,6 +1,5 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
-import com.chrisfolger.needsmoredojo.core.refactoring.UtilConverter;
 import com.chrisfolger.needsmoredojo.testutil.*;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;

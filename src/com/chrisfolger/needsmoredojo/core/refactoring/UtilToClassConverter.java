@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement;
 
 import java.util.List;
 
-public class ClassConverter implements DeclareFinder.CompletionCallback
+public class UtilToClassConverter implements DeclareFinder.CompletionCallback
 {
     @Override
     public void run(Object[] result)

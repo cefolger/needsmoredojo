@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
-import com.chrisfolger.needsmoredojo.core.refactoring.UtilConverter;
+import com.chrisfolger.needsmoredojo.core.refactoring.ClassToUtilConverter;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSFunction;
@@ -90,7 +90,7 @@ public class DeclareFinder
 
                 // get the function
                 JSFunction function = (JSFunction) element.getArguments()[1];
-                function.acceptChildren(getDefineCallbackVisitor(new UtilConverter()));
+                function.acceptChildren(getDefineCallbackVisitor(new ClassToUtilConverter()));
 
                 return;
             }

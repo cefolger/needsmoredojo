@@ -75,7 +75,7 @@ public class UtilFinder
 
                 // get the function
                 JSFunction function = (JSFunction) element.getArguments()[1];
-                function.acceptChildren(getReturnCallbackVisitor(new ClassConverter()));
+                function.acceptChildren(getReturnCallbackVisitor(new UtilToClassConverter()));
 
                 return;
             }

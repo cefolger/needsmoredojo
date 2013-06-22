@@ -8,7 +8,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
 
-public class UtilConverter implements DeclareFinder.CompletionCallback
+public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
 {
     @Override
     public void run(Object[] result)
