@@ -1,13 +1,35 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
+import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AMDUtil
 {
+    public static PsiElement getDefineForVariable(PsiFile file, String textToCompare)
+    {
+        List<PsiElement> defines = new ArrayList<PsiElement>();
+        List<PsiElement> parameters = new ArrayList<PsiElement>();
+        new DefineResolver().gatherDefineAndParameters(file, defines, parameters);
+
+        for(int i=0;i<parameters.size();i++)
+        {
+            if(parameters.get(i).getText().equals(textToCompare))
+            {
+                return defines.get(i);
+            }
+        }
+
+        return null;
+    }
+
     public static VirtualFile getAMDImportFile(Project project, String modulePath)
     {
         // TODO find relative path etc.

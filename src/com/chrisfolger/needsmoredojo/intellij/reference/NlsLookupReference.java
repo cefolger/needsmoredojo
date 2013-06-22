@@ -62,18 +62,7 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         // find one that matches
         // check to see if it's an i18n file
         // resolve the reference to the file
-        List<PsiElement> defines = new ArrayList<PsiElement>();
-        List<PsiElement> parameters = new ArrayList<PsiElement>();
-        new DefineResolver().gatherDefineAndParameters(qualifier.getContainingFile(), defines, parameters);
-
-        PsiElement correctDefine = null;
-        for(int i=0;i<parameters.size();i++)
-        {
-            if(parameters.get(i).getText().equals(qualifier.getText()))
-            {
-                correctDefine = defines.get(i);
-            }
-        }
+        PsiElement correctDefine = AMDUtil.getDefineForVariable(qualifier.getContainingFile(), qualifier.getText());
 
         // didn't get a define, so there is no reference to an i18n item
         if(correctDefine == null)

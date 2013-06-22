@@ -43,19 +43,11 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
                 new DefineResolver().gatherDefineAndParameters(file, defines, parameters);
 
                 // find the parameter and define that matches the template parameter
-                PsiElement relevantDefine = null;
-                for(int i = 0;i<parameters.size();i++)
-                {
-                    if(parameters.get(i).getText().equals(template))
-                    {
-                        // TODO support absolute paths (for now only support relative)
-                        relevantDefine = defines.get(i);
-                    }
-                }
+                PsiElement relevantDefine = AMDUtil.getDefineForVariable(file, template);
 
                 String templatePath = relevantDefine.getText().substring(relevantDefine.getText().lastIndexOf('!') + 1);
                 String parsedPath = templatePath.replaceFirst("./", "/").replaceAll("'", "").replaceAll("\"", "");
-                // now open the file and find the reference in it
+                // now open the file and find the reference in it TODO
                 VirtualFile htmlFile = file.getContainingDirectory().getVirtualFile().findFileByRelativePath(parsedPath);
 
                 PsiFile templateFile = PsiManager.getInstance(file.getProject()).findFile(htmlFile);
