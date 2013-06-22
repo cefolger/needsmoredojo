@@ -18,7 +18,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
-public class JumpToAttachPointAction extends AnAction
+public class JumpToAttachPointAction extends JavaScriptAction
 {
     @Override
     public void actionPerformed(AnActionEvent e)
@@ -67,7 +67,7 @@ public class JumpToAttachPointAction extends AnAction
         {
             // this is the last resort, when an attach point is just found because it was invalid, jump back to the previous file
             FileEditorManager.getInstance(templateFile.getProject()).openFile(sourceElement.getContainingFile().getVirtualFile(), true, true);
-            Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Attach point not found in file: '" + sourceElement.getText() + "'", NotificationType.INFORMATION));
+            Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Attach point not found in " + templateFile.getVirtualFile().getName() + ": '" + sourceElement.getText() + "'", NotificationType.INFORMATION));
             return;
         }
 
@@ -96,5 +96,7 @@ public class JumpToAttachPointAction extends AnAction
         {
             e.getPresentation().setEnabled(false);
         }
+
+        super.update(e);
     }
 }
