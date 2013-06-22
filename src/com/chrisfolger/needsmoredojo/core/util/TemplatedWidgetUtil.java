@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.core.util;
 
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.intellij.lang.javascript.psi.JSCallExpression;
+import com.intellij.lang.javascript.psi.JSDefinitionExpression;
 import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -81,6 +82,13 @@ public class TemplatedWidgetUtil {
         // we can exclude JSReferenceExpressions as the parent's parent because you will never have:
         // this.attachpoint.othervariable
         if(element.getParent().getParent() instanceof JSReferenceExpression)
+        {
+            return false;
+        }
+
+        // we can exclude JSDefinitionExpressions as the parent's parent because you will never have:
+        // this.attachpoint.othervariable = <some value>
+        if(element.getParent().getParent() instanceof JSDefinitionExpression)
         {
             return false;
         }

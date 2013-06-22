@@ -62,8 +62,17 @@ public class JumpToAttachPointAction extends AnAction
         Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
 
         String documentText = document.getText();
-        editor.getCaretModel().moveToOffset(documentText.indexOf(TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement)));
-        PsiElement element = templateFile.findElementAt(documentText.indexOf("data-dojo-attach-point=\"" + sourceElement.getText() + "\""));
+        int indexOfAttachPoint = documentText.indexOf(TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement));
+        if(indexOfAttachPoint == -1)
+        {
+            // this is the last resort, when an attach point is just found because it was invalid, jump back to the previous file
+            FileEditorManager.getInstance(templateFile.getProject()).openFile(sourceElement.getContainingFile().getVirtualFile(), true, true);
+            Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Attach point not found in file: '" + sourceElement.getText() + "'", NotificationType.INFORMATION));
+            return;
+        }
+
+        editor.getCaretModel().moveToOffset(indexOfAttachPoint);
+        PsiElement element = templateFile.findElementAt(indexOfAttachPoint);
 
         editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
         HighlightingUtil.highlightElement(templateFile.getProject(), new PsiElement[]{element, element.getNextSibling(), element.getNextSibling().getNextSibling()});
