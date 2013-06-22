@@ -4,12 +4,12 @@ import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.intellij.javascript.JavaScriptReferenceContributor;
 import com.intellij.lang.javascript.psi.JSIndexedPropertyAccessExpression;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceProvider;
-import com.intellij.psi.PsiReferenceRegistrar;
+import com.intellij.psi.*;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PatternUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
@@ -51,12 +51,25 @@ public class NlsLookupReferenceContributor extends JavaScriptReferenceContributo
                     }
 
                     String defineText = correctDefine.getText();
-                    defineText = defineText.substring(defineText.lastIndexOf("!") + 1);
+                    defineText = defineText.substring(defineText.lastIndexOf("!") + 1).replaceAll("'", "");
 
                     // TODO find relative path etc.
+                    PsiFile[] files = FilenameIndex.getFilesByName(correctDefine.getProject(), "dojo.js", GlobalSearchScope.projectScope(correctDefine.getProject()));
+                    PsiFile dojoFile = null;
 
+                    for(PsiFile file : files)
+                    {
+                        if(file.getContainingDirectory().getName().equals("dojo"))
+                        {
+                            dojoFile = file;
+                            break;
+                        }
+                    }
 
-                    int x = 0;
+                    VirtualFile i18nFile = dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath("/" + defineText + ".js");
+                    PsiFile templateFile = PsiManager.getInstance(dojoFile.getProject()).findFile(i18nFile);
+
+                    return new PsiReference[] { new NlsLookupReference((JSLiteralExpression) psiElement, templateFile.getFirstChild()) };
                 }
 
                 return new PsiReference[0];  //To change body of implemented methods use File | Settings | File Templates.
