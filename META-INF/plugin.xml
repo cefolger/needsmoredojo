@@ -108,5 +108,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.UnusedImportsProvider"/>
+
+        <psi.referenceContributor
+                implementation="com.chrisfolger.needsmoredojo.intellij.reference.NlsLookupReferenceContributor"/>
     </extensions>
 </idea-plugin>
