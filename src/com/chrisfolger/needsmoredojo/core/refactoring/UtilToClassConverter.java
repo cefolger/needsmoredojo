@@ -7,6 +7,8 @@ import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class UtilToClassConverter implements DeclareFinder.CompletionCallback
                     @Override
                     public void run() {
                         PsiElement parent = item.getReturnStatement().getParent();
-                        doRefactor(item.getExpressionsToMixin(), methods, item.getReturnStatement(), declarationVariable);
+                        doRefactor(item.getClassName(), item.getExpressionsToMixin(), methods, item.getReturnStatement(), declarationVariable);
                         // all of those deletions creates a ton of whitespace for some reason. So, delete it!
                         cleanupWhiteSpace(parent);
                     }
@@ -44,7 +46,7 @@ public class UtilToClassConverter implements DeclareFinder.CompletionCallback
         parent.replace(JSUtil.createStatement(parent, result));
     }
 
-    public String buildUtilPatternString(JSExpression[] mixins, List<JSExpressionStatement> methods)
+    public @NotNull String buildUtilPatternString(@Nullable JSLiteralExpression className, @NotNull JSExpression[] mixins, @NotNull List<JSExpressionStatement> methods)
     {
         // build an array of mixins for the new declare statement
         StringBuilder mixinArray = new StringBuilder();
@@ -91,15 +93,21 @@ public class UtilToClassConverter implements DeclareFinder.CompletionCallback
             }
         }
 
-        String declareStatement = String.format("return declare([%s], {\n%s\n});", mixinArray.toString(), properties.toString());
+        String classPrefix = "";
+        if(className != null)
+        {
+            classPrefix = String.format("%s, ", className.getText());
+        }
+
+        String declareStatement = String.format("return declare(%s[%s], {\n%s\n});", classPrefix, mixinArray.toString(), properties.toString());
         return declareStatement;
     }
 
-    public void doRefactor(JSExpression[] mixins, List<JSExpressionStatement> methods, JSReturnStatement originalReturnStatement, JSVarStatement declarationVariable)
+    public void doRefactor(JSLiteralExpression className, JSExpression[] mixins, List<JSExpressionStatement> methods, JSReturnStatement originalReturnStatement, JSVarStatement declarationVariable)
     {
         PsiElement parent = originalReturnStatement.getParent();
 
-        String declareStatement = buildUtilPatternString(mixins, methods);
+        String declareStatement = buildUtilPatternString(className, mixins, methods);
         PsiElement declareExpression = JSUtil.createStatement(parent, declareStatement);
         parent.addBefore(declareExpression, originalReturnStatement);
 

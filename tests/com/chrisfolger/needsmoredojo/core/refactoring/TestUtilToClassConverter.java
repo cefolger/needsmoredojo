@@ -29,7 +29,7 @@ public class TestUtilToClassConverter
         List<JSExpressionStatement> methods = new ArrayList<JSExpressionStatement>();
         methods.add(new MockJSExpressionStatement(new MockJSAssignmentExpression("util.", "property", "'value'")));
 
-        String result = converter.buildUtilPatternString(new JSExpression[0], methods);
+        String result = converter.buildUtilPatternString(null, new JSExpression[0], methods);
         assertTrue(result.contains("property: 'value'"));
     }
 
@@ -39,7 +39,7 @@ public class TestUtilToClassConverter
         List<JSExpressionStatement> methods = new ArrayList<JSExpressionStatement>();
         methods.add(new MockJSExpressionStatement(new MockJSAssignmentExpression(new MockJSDefinitionExpressionWithIndexedProperty("util", "'-test-'"), "value")));
 
-        String result = converter.buildUtilPatternString(new JSExpression[0], methods);
+        String result = converter.buildUtilPatternString(null, new JSExpression[0], methods);
         assertTrue(result.contains("-test-': value"));
     }
 }
