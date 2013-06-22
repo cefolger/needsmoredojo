@@ -1,20 +1,12 @@
 package com.chrisfolger.needsmoredojo.intellij.reference;
 
-import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.intellij.javascript.JavaScriptReferenceContributor;
 import com.intellij.lang.javascript.psi.*;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.PatternUtil;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NlsLookupReferenceContributor extends JavaScriptReferenceContributor
 {
@@ -41,7 +33,7 @@ public class NlsLookupReferenceContributor extends JavaScriptReferenceContributo
                     return new PsiReference[] { new NlsLookupReference(qualifier, accessor, (JSLiteralExpression) psiElement) };
                 }
 
-                return new PsiReference[0];  //To change body of implemented methods use File | Settings | File Templates.
+                return new PsiReference[0];
             }
         });
     }

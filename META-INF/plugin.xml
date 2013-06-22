@@ -13,6 +13,7 @@
                 <li>detect inconsistent naming in AMD imports</li>
                 <li>convert util style modules to class style modules and vice-versa</li>
                 <li>Add new AMD imports option for quick and safe importing</li>
+                <li>Ctrl+Click is supported for dojo/i18n resource strings</li>
             </ul>
         Still very much under development. Please contact me with any feedback!
       ]]></description>
@@ -20,6 +21,7 @@
   <change-notes><![CDATA[
             <b>0.3</b>
             <ul>
+                <li>Can now resolve i18n keys that are part of a dojo/i18n!... import. Ctrl + Space also works for this</li>
                 <li>For packages on the same level as the dojo sources, add new import will resolve modules inside them </li>
                 <li>Actions are disabled when not in JavaScript files </li>
                 <li>Now take legacy define(moduleId, ...) syntax into account </li>
