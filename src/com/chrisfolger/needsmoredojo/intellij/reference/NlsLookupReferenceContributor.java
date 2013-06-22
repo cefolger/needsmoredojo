@@ -2,8 +2,7 @@ package com.chrisfolger.needsmoredojo.intellij.reference;
 
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.intellij.javascript.JavaScriptReferenceContributor;
-import com.intellij.lang.javascript.psi.JSIndexedPropertyAccessExpression;
-import com.intellij.lang.javascript.psi.JSLiteralExpression;
+import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PlatformPatterns;
@@ -30,8 +29,8 @@ public class NlsLookupReferenceContributor extends JavaScriptReferenceContributo
             public PsiReference[] getReferencesByElement(@NotNull PsiElement psiElement, @NotNull ProcessingContext processingContext) {
                 PsiElement parent = psiElement.getParent();
                 if(parent instanceof JSIndexedPropertyAccessExpression) {
-                    JSIndexedPropertyAccessExpression accessor = (JSIndexedPropertyAccessExpression) parent;
-                    PsiElement qualifier = accessor.getQualifier();
+                    final JSIndexedPropertyAccessExpression accessor = (JSIndexedPropertyAccessExpression) parent;
+                    final PsiElement qualifier = accessor.getQualifier();
 
                     // get the list of defines
                     // find one that matches
@@ -69,7 +68,27 @@ public class NlsLookupReferenceContributor extends JavaScriptReferenceContributo
                     VirtualFile i18nFile = dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath("/" + defineText + ".js");
                     PsiFile templateFile = PsiManager.getInstance(dojoFile.getProject()).findFile(i18nFile);
 
-                    return new PsiReference[] { new NlsLookupReference((JSLiteralExpression) psiElement, templateFile.getFirstChild()) };
+                    final PsiElement[] i18nElement = {null};
+                    templateFile.acceptChildren(new JSRecursiveElementVisitor() {
+                        @Override
+                        public void visitJSObjectLiteralExpression(JSObjectLiteralExpression node)
+                        {
+                            for(JSProperty property : node.getProperties())
+                            {
+                                String propertyText = accessor.getIndexExpression().getText();
+                                propertyText = propertyText.substring(1, propertyText.length() - 1);
+
+                                if(property.getName().equals(propertyText))
+                                {
+                                    i18nElement[0] = property;
+                                }
+                            }
+
+                            super.visitJSObjectLiteralExpression(node);
+                        }
+                    });
+
+                    return new PsiReference[] { new NlsLookupReference((JSLiteralExpression) psiElement, i18nElement[0]) };
                 }
 
                 return new PsiReference[0];  //To change body of implemented methods use File | Settings | File Templates.
