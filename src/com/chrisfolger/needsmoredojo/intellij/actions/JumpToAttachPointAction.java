@@ -6,7 +6,6 @@ import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -63,7 +62,9 @@ public class JumpToAttachPointAction extends JavaScriptAction
         Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
 
         String documentText = document.getText();
-        int indexOfAttachPoint = documentText.indexOf(TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement));
+        String searchText = TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement);
+
+        int indexOfAttachPoint = documentText.indexOf(searchText);
         if(indexOfAttachPoint == -1)
         {
             // this is the last resort, when an attach point is just found because it was invalid, jump back to the previous file
