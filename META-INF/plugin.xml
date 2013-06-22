@@ -14,6 +14,7 @@
                 <li>convert util style modules to class style modules and vice-versa</li>
                 <li>Add new AMD imports option for quick and safe importing</li>
                 <li>Ctrl+Click is supported for dojo/i18n resource strings</li>
+                <li>Jump to attach points inside modules that mixin _TemplatedWidget with Ctrl+Shift+O, A</li>
             </ul>
         Still very much under development. Please contact me with any feedback!
       ]]></description>
@@ -25,6 +26,7 @@
                 <li>For packages on the same level as the dojo sources, add new import will resolve modules inside them </li>
                 <li>Actions are disabled when not in JavaScript files </li>
                 <li>Now take legacy define(moduleId, ...) syntax into account </li>
+                <li>Can now jump to attach points inside modules that mixin _TemplatedWidget</li>
             </ul>
 
             <b>0.22</b> (Maintenance release)
@@ -88,6 +90,14 @@
 
             <separator/>
         </group>
+
+        <action id="com.chrisfolger.needsmoredojo.actions.jumptoattachpoint"
+                class="com.chrisfolger.needsmoredojo.intellij.actions.JumpToAttachPointAction" text="Attach Point..."
+                description="Jump to a dojo attach point in the widget's template html file ">
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="A"/>
+            <add-to-group group-id="GoToTargetEx"/>
+        </action>
+
         <group id="com.chrisfolger.needsmoredojo.code">
             <add-to-group group-id="CodeMenu" anchor="first"/>
 
@@ -101,9 +111,6 @@
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removeunusedimports" class="com.chrisfolger.needsmoredojo.intellij.actions.DeleteAction" text="Remove Unused Imports" description="Removes unused AMD imports">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="3"/>
                 </action>
-                <action id="com.chrisfolger.needsmoredojo.actions.jumptoattachpoint"
-                        class="com.chrisfolger.needsmoredojo.intellij.actions.JumpToAttachPointAction" text="Jump to attach point "
-                        description="Jump to a dojo attach point in the widget's template html file "/>
             </group>
 
             <separator/>

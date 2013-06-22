@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.util.HighlightingUtil;
 import com.chrisfolger.needsmoredojo.core.util.TemplatedWidgetUtil;
+import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -86,9 +87,16 @@ public class JumpToAttachPointAction extends JavaScriptAction
 
         e.getPresentation().setEnabled(true);
 
+        if(!(file.getFileType() instanceof JavaScriptFileType))
+        {
+            e.getPresentation().setEnabled(false);
+            return;
+        }
+
         if(editor == null || file == null)
         {
             e.getPresentation().setEnabled(false);
+            return;
         }
 
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
@@ -96,7 +104,5 @@ public class JumpToAttachPointAction extends JavaScriptAction
         {
             e.getPresentation().setEnabled(false);
         }
-
-        super.update(e);
     }
 }

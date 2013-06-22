@@ -93,7 +93,6 @@ public class TemplatedWidgetUtil {
             return false;
         }
 
-
         return true;
     }
 
