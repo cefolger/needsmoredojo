@@ -17,6 +17,7 @@ import java.util.List;
 public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
     private PsiElement qualifier;
     private JSIndexedPropertyAccessExpression accessor;
+    private PsiFile file;
 
     public NlsLookupReference(PsiElement qualifier, JSIndexedPropertyAccessExpression accessor, JSLiteralExpression sourceElement)
     {
@@ -53,6 +54,11 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
 
     public PsiFile getFileContainingI18nKeys()
     {
+        if(file != null)
+        {
+            return file;
+        }
+
         // get the list of defines
         // find one that matches
         // check to see if it's an i18n file
@@ -95,6 +101,7 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         VirtualFile i18nFile = dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath("/" + defineText + ".js");
         PsiFile templateFile = PsiManager.getInstance(dojoFile.getProject()).findFile(i18nFile);
 
+        file = templateFile;
         return templateFile;
     }
 
@@ -125,8 +132,8 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
     @NotNull
     @Override
     public Object[] getVariants() {
-        PsiFile file = getFileContainingI18nKeys();
-        if(file == null)
+        PsiFile templateFile = getFileContainingI18nKeys();
+        if(templateFile == null)
         {
             return new Object[0];
         }
