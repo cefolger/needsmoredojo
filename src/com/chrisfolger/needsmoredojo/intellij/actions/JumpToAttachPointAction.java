@@ -53,7 +53,7 @@ public class JumpToAttachPointAction extends AnAction
     {
         if(!TemplatedWidgetUtil.elementIsAttachPoint(sourceElement))
         {
-            Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Element is not an attach point: '" + sourceElement.getText() + "'", NotificationType.INFORMATION));
+            Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Element is not an attach point or is in an invalid statement with an attach point: '" + sourceElement.getText() + "'", NotificationType.INFORMATION));
             return;
         }
 

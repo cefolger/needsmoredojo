@@ -78,6 +78,14 @@ public class TemplatedWidgetUtil {
             return false;
         }
 
+        // we can exclude JSReferenceExpressions as the parent's parent because you will never have:
+        // this.attachpoint.othervariable
+        if(element.getParent().getParent() instanceof JSReferenceExpression)
+        {
+            return false;
+        }
+
+
         return true;
     }
 
