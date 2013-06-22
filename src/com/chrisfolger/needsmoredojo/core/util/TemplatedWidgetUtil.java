@@ -2,22 +2,17 @@ package com.chrisfolger.needsmoredojo.core.util;
 
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
-import com.intellij.find.actions.FindUsagesInFileAction;
-import com.intellij.lang.javascript.psi.JSCallExpression;
-import com.intellij.lang.javascript.psi.JSFunction;
 import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.roots.FileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.PsiSearchScopeUtil;
-import com.intellij.psi.search.SearchScope;
 
 import java.util.ArrayList;
 
@@ -69,6 +64,10 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
                 Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
                 String documentText = document.getText();
                 editor.getCaretModel().moveToOffset(documentText.indexOf("data-dojo-attach-point=\"" + sourceElement.getText() + "\""));
+                PsiElement element = templateFile.findElementAt(documentText.indexOf("data-dojo-attach-point=\"" + sourceElement.getText() + "\""));
+
+                editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
+                HighlightingUtil.highlightElement(templateFile.getProject(), new PsiElement[]{element, element.getNextSibling(), element.getNextSibling().getNextSibling()});
                 int i=0;
             }
         }
