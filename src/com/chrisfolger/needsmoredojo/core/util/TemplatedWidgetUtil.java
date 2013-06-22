@@ -28,7 +28,23 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
         this.sourceElement = sourceElement;
     }
 
-    // TODO document flow
+    public void findTemplatePath()
+    {
+        // this will call run() when the declare object is found
+        file.acceptChildren(new DeclareFinder().getDefineVisitorToRetrieveDeclareObject(this));
+    }
+
+    @Override
+    public void run(Object[] result)
+    {
+        final DeclareUtil.DeclareStatementItems utilItem = new DeclareUtil().getDeclareStatementFromParsedStatement(result);
+
+        // this will call findTemplateFromDeclare when it finds the template that was referenced by the attach point
+        this.onTemplatePathFound.run(new Object[] {
+                findTemplateFromDeclare(utilItem)
+        });
+    }
+
     public String findTemplateFromDeclare(DeclareUtil.DeclareStatementItems statement)
     {
         for(JSProperty property : statement.getMethodsToConvert())
@@ -65,20 +81,5 @@ public class TemplatedWidgetUtil implements DeclareFinder.CompletionCallback {
         }
 
         return "";
-    }
-
-    public void findTemplatePath()
-    {
-        file.acceptChildren(new DeclareFinder().getDefineVisitorToRetrieveDeclareObject(this));
-    }
-
-    @Override
-    public void run(Object[] result)
-    {
-        final DeclareUtil.DeclareStatementItems utilItem = new DeclareUtil().getDeclareStatementFromParsedStatement(result);
-
-        this.onTemplatePathFound.run(new Object[] {
-            findTemplateFromDeclare(utilItem)
-        });
     }
 }
