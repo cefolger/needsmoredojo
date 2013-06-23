@@ -87,7 +87,7 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
 
         if(templateFile == null)
         {
-            return null;
+            return accessor.getIndexExpression();
         }
 
         for(JSProperty property : getI18nKeys(templateFile))
@@ -101,7 +101,7 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
             }
         }
 
-        return null;
+        return accessor.getIndexExpression();
     }
 
     @NotNull
