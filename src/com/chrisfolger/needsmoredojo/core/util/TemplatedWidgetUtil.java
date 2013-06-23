@@ -41,7 +41,7 @@ public class TemplatedWidgetUtil {
             {
                 String template = property.getValue().getText();
 
-                if(property.getValue() instanceof JSLiteralExpression)
+                if(property.getValue() instanceof JSLiteralExpression || property.getValue() instanceof JSBinaryExpression)
                 {
                     return property.getContainingFile();
                 }
