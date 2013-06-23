@@ -25,6 +25,7 @@
                 <li>Fix for case when trailing comma still remained in define statement after import removal (Issue #57)</li>
                 <li>Support older dojoAttachPoint syntax (Issue #56)</li>
                 <li>Support attach point jumping to inline template strings (Issue #54)</li>
+                <li>Check index on defines when resolving i18n keys (Issue #58)</li>
             </ul>
 
             <b>0.3</b>
