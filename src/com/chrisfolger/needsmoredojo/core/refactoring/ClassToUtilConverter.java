@@ -18,13 +18,13 @@ public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
         DeclareUtil util = new DeclareUtil();
 
         final DeclareUtil.DeclareStatementItems utilItem = util.getDeclareStatementFromParsedStatement(result);
-        CommandProcessor.getInstance().executeCommand(utilItem.getReturnStatement().getProject(), new Runnable() {
+        CommandProcessor.getInstance().executeCommand(utilItem.getDeclareContainingStatement().getProject(), new Runnable() {
             @Override
             public void run() {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        doRefactor(utilItem.getClassName(), utilItem.getReturnStatement(), utilItem.getExpressionsToMixin(), utilItem.getMethodsToConvert());
+                        doRefactor(utilItem.getClassName(), utilItem.getDeclareContainingStatement(), utilItem.getExpressionsToMixin(), utilItem.getMethodsToConvert());
                     }
                 });
             }
@@ -33,7 +33,7 @@ public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
         "Convert class module to util module");
     }
 
-    public void doRefactor(@Nullable JSLiteralExpression className, @NotNull JSReturnStatement originalReturnStatement, @NotNull JSExpression[] mixins, @NotNull JSProperty[] properties) {
+    public void doRefactor(@Nullable JSLiteralExpression className, @NotNull JSElement originalReturnStatement, @NotNull JSExpression[] mixins, @NotNull JSProperty[] properties) {
         // insert new items before the return statement
         PsiElement parent = originalReturnStatement.getParent();
 

@@ -2,10 +2,7 @@ package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.refactoring.ClassToUtilConverter;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
-import com.intellij.lang.javascript.psi.JSCallExpression;
-import com.intellij.lang.javascript.psi.JSFunction;
-import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
-import com.intellij.lang.javascript.psi.JSReturnStatement;
+import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiFile;
 
 public class DeclareFinder
@@ -24,10 +21,22 @@ public class DeclareFinder
         file.acceptChildren(getDefineVisitor());
     }
 
-    public JSRecursiveElementVisitor getDefineCallbackVisitor(final CompletionCallback onReturnFound)
+    public JSRecursiveElementVisitor getVisitorToRetrieveDeclare(final CompletionCallback onReturnFound)
     {
         // TODO account for the case where the define passes a class name as the first argument
         return new JSRecursiveElementVisitor() {
+            @Override
+            public void visitJSLocalVariable(JSLocalVariable variable)
+            {
+                if(variable.getInitializer() instanceof JSCallExpression && variable.getInitializer().getText().startsWith("declare"))
+                {
+                    onReturnFound.run(new Object[] { variable.getInitializer(), variable});
+                    return;
+                }
+
+                super.visitJSLocalVariable(variable);
+            }
+
             @Override
             public void visitJSReturnStatement(JSReturnStatement statement)
             {
@@ -69,7 +78,7 @@ public class DeclareFinder
 
                 // get the function
                 JSFunction function = (JSFunction) element.getArguments()[1];
-                function.acceptChildren(getDefineCallbackVisitor(onDeclareFound));
+                function.acceptChildren(getVisitorToRetrieveDeclare(onDeclareFound));
 
                 return;
             }
@@ -90,7 +99,7 @@ public class DeclareFinder
 
                 // get the function
                 JSFunction function = (JSFunction) element.getArguments()[1];
-                function.acceptChildren(getDefineCallbackVisitor(new ClassToUtilConverter()));
+                function.acceptChildren(getVisitorToRetrieveDeclare(new ClassToUtilConverter()));
 
                 return;
             }

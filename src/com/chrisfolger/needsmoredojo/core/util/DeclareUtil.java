@@ -9,17 +9,17 @@ public class DeclareUtil
     {
         private JSExpression[] expressionsToMixin;
         private JSProperty[] methodsToConvert;
-        private JSReturnStatement returnStatement;
+        private JSElement declareContainingStatement;
         private JSLiteralExpression className;
 
-        public DeclareStatementItems(JSExpression[] expressionsToMixin, JSProperty[] methodsToConvert, JSReturnStatement returnStatement) {
+        public DeclareStatementItems(JSExpression[] expressionsToMixin, JSProperty[] methodsToConvert, JSElement returnStatement) {
             this.expressionsToMixin = expressionsToMixin;
             this.methodsToConvert = methodsToConvert;
-            this.returnStatement = returnStatement;
+            this.declareContainingStatement = returnStatement;
         }
 
-        public DeclareStatementItems(JSLiteralExpression className, JSExpression[] expressionsToMixin, JSProperty[] methodsToConvert, JSReturnStatement returnStatement) {
-            this(expressionsToMixin, methodsToConvert, returnStatement);
+        public DeclareStatementItems(JSLiteralExpression className, JSExpression[] expressionsToMixin, JSProperty[] methodsToConvert, JSElement declareContainingStatement) {
+            this(expressionsToMixin, methodsToConvert, declareContainingStatement);
 
             this.className = className;
         }
@@ -29,8 +29,8 @@ public class DeclareUtil
             return className;
         }
 
-        public JSReturnStatement getReturnStatement() {
-            return returnStatement;
+        public JSElement getDeclareContainingStatement() {
+            return declareContainingStatement;
         }
 
         public JSExpression[] getExpressionsToMixin() {
@@ -50,7 +50,6 @@ public class DeclareUtil
     public DeclareStatementItems getDeclareStatementFromParsedStatement(Object[] result, boolean parseMethodsFromObjectLiteral)
     {
         JSCallExpression expression = (JSCallExpression) result[0];
-        JSReturnStatement returnStatement = (JSReturnStatement) result[1];
 
         // this will be used to determine what we mixin to the util
         JSExpression[] expressionsToMixin = new JSExpression[0];
@@ -85,6 +84,6 @@ public class DeclareUtil
         JSObjectLiteralExpression literal = (JSObjectLiteralExpression) expression.getArguments()[objectLiteralIndex];
         JSProperty[] methodsToConvert = literal.getProperties();
 
-        return new DeclareStatementItems(className, expressionsToMixin, methodsToConvert, returnStatement);
+        return new DeclareStatementItems(className, expressionsToMixin, methodsToConvert, (JSElement) result[1]);
     }
 }

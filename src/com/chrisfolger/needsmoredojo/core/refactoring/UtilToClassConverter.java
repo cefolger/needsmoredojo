@@ -22,14 +22,14 @@ public class UtilToClassConverter implements DeclareFinder.CompletionCallback
         final List<JSExpressionStatement> methods = (List<JSExpressionStatement>) result[2];
         final JSVarStatement declarationVariable = (JSVarStatement) result[3];
 
-        CommandProcessor.getInstance().executeCommand(item.getReturnStatement().getProject(), new Runnable() {
+        CommandProcessor.getInstance().executeCommand(item.getDeclareContainingStatement().getProject(), new Runnable() {
             @Override
             public void run() {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        PsiElement parent = item.getReturnStatement().getParent();
-                        doRefactor(item.getClassName(), item.getExpressionsToMixin(), methods, item.getReturnStatement(), declarationVariable);
+                        PsiElement parent = item.getDeclareContainingStatement().getParent();
+                        doRefactor(item.getClassName(), item.getExpressionsToMixin(), methods, item.getDeclareContainingStatement(), declarationVariable);
                         // all of those deletions creates a ton of whitespace for some reason. So, delete it!
                         cleanupWhiteSpace(parent);
                     }
@@ -103,7 +103,7 @@ public class UtilToClassConverter implements DeclareFinder.CompletionCallback
         return declareStatement;
     }
 
-    public void doRefactor(JSLiteralExpression className, JSExpression[] mixins, List<JSExpressionStatement> methods, JSReturnStatement originalReturnStatement, JSVarStatement declarationVariable)
+    public void doRefactor(JSLiteralExpression className, JSExpression[] mixins, List<JSExpressionStatement> methods, JSElement originalReturnStatement, JSVarStatement declarationVariable)
     {
         PsiElement parent = originalReturnStatement.getParent();
 
