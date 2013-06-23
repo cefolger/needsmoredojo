@@ -55,17 +55,28 @@ public class DeclareUtil
         JSExpression[] expressionsToMixin = new JSExpression[0];
 
         /*
-            three possible syntax'es for declare:
+            so many different possibilities...
 
             declare(null, {});
             declare([], {});
             declare(string, [], {});
+            declare(string, mixin, {});
+            declare(mixin, {});
          */
         int objectLiteralIndex = 1;
         if(expression.getArguments()[0] instanceof JSArrayLiteralExpression)
         {
             JSArrayLiteralExpression arrayLiteral = (JSArrayLiteralExpression) expression.getArguments()[0];
             expressionsToMixin = arrayLiteral.getExpressions();
+        }
+        else if (expression.getArguments()[0] instanceof JSReferenceExpression)
+        {
+            expressionsToMixin = new JSExpression[] { expression.getArguments()[0] };
+        }
+        else if (expression.getArguments().length == 3 && expression.getArguments()[1] instanceof JSReferenceExpression)
+        {
+            expressionsToMixin = new JSExpression[] { expression.getArguments()[1] };
+            objectLiteralIndex = 2;
         }
         else if (expression.getArguments().length == 3 && expression.getArguments()[1] instanceof JSArrayLiteralExpression)
         {

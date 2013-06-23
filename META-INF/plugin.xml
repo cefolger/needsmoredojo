@@ -29,6 +29,7 @@
                 <li>Can now jump to attach points inside modules that mixin _TemplatedWidget</li>
                 <li>Fix dojo/test modules appearing first instead of dojo modules (Issue #38)</li>
                 <li>Fix class->util/util->class conversion not preserving the declared class name (Issue #33)</li>
+                <li>Account for declare statement where there is only one mixin not specified in an array (Issue #48)</li>
             </ul>
 
             <b>0.21</b> (Maintenance release)
