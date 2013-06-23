@@ -66,8 +66,17 @@ public class JumpToAttachPointAction extends JavaScriptAction
         Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
 
         String documentText = document.getText();
-        Pattern searchPattern = TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement);
-        int indexOfAttachPoint = TemplatedWidgetUtil.indexOf(searchPattern, documentText);
+        Pattern[] searchPatterns = TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement);
+        int indexOfAttachPoint = -1;
+
+        for(Pattern pattern : searchPatterns)
+        {
+            indexOfAttachPoint = TemplatedWidgetUtil.indexOf(pattern, documentText);
+            if(indexOfAttachPoint > -1)
+            {
+                break;
+            }
+        }
 
         if(indexOfAttachPoint == -1)
         {

@@ -95,9 +95,14 @@ public class TemplatedWidgetUtil {
         return matcher.find() ? matcher.start() : -1;
     }
 
-    public static Pattern getAttachPointStringFromReference(PsiElement reference)
+    public static Pattern[] getAttachPointStringFromReference(PsiElement reference)
     {
         // have to use a regex in case there are multiple attach points specified
-        return Pattern.compile("data-dojo-attach-point=\\\"(\\w|,)*" + reference.getText() + "\\w*\\\"");
+        // there is also a legacy attribute format that we want to support because
+        // alot of the dojo library
+        return new Pattern[] {
+                Pattern.compile("data-dojo-attach-point=\\\"(\\w|,)*" + reference.getText() + "\\w*\\\""),
+                Pattern.compile("dojoAttachPoint=\\\"(\\w|,)*" + reference.getText() + "\\w*\\\"")
+        };
     }
 }
