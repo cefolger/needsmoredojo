@@ -37,6 +37,13 @@ public class TemplatedWidgetUtil {
     {
         for(JSProperty property : statement.getMethodsToConvert())
         {
+            /**
+             * have to account for these scenarios
+             * templateString: <reference to an imported template>
+             * templateString: 'inline template'
+             * templateString: 'inline template ' +
+             *                  ' spanning multiple lines '
+             */
             if(property.getName().equals("templateString"))
             {
                 String template = property.getValue().getText();

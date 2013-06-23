@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.refactoring.ClassToUtilConverter;
+import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiFile;
@@ -53,7 +54,7 @@ public class DeclareFinder
                 }
 
                 JSCallExpression expression = (JSCallExpression) statement.getChildren()[0];
-                if(expression.getMethodExpression().getText().equals("declare"))
+                if(DeclareUtil.isDeclareFunction(expression.getMethodExpression()))
                 {
                     onReturnFound.run(new Object[] { expression, statement});
                     return;
