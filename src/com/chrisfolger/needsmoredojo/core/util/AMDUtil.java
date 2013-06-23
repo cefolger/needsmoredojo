@@ -14,6 +14,9 @@ import java.util.List;
 
 public class AMDUtil
 {
+    public static final String I18NPLUGIN = "dojo/i18n!";
+    public static final String TEXTPLUGIN = "dojo/text!";
+
     public static PsiElement getDefineForVariable(PsiFile file, String textToCompare)
     {
         List<PsiElement> defines = new ArrayList<PsiElement>();
@@ -66,7 +69,7 @@ public class AMDUtil
             return "baseFx";
         }
 
-        if(define.startsWith("dojo/text") || define.startsWith("dojo/i18n"))
+        if(define.startsWith(TEXTPLUGIN) || define.startsWith(I18NPLUGIN))
         {
             String postPlugin = define.substring(define.indexOf('!') + 1);
 
@@ -80,7 +83,7 @@ public class AMDUtil
                 postPlugin = postPlugin.substring(0, postPlugin.indexOf('.'));
             }
 
-            if(!define.startsWith("dojo/i18n"))
+            if(!define.startsWith(I18NPLUGIN))
             {
                 postPlugin = postPlugin.toLowerCase() + "Template";
             }

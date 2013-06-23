@@ -160,4 +160,10 @@ public class TestMismatchedImportsDetector
 
         return result;
     }
+
+    @Test
+    public void testI18nModule()
+    {
+        assertFalse(detector.defineMatchesParameter("dojo/i18n", "resources"));
+    }
 }
