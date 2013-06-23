@@ -10,6 +10,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TemplatedWidgetUtil {
     private PsiFile file;
 
@@ -82,8 +85,15 @@ public class TemplatedWidgetUtil {
         return true;
     }
 
-    public static String getAttachPointStringFromReference(PsiElement reference)
+    /** @return index of pattern in s or -1, if not found */
+    public static int indexOf(Pattern pattern, String s) {
+        Matcher matcher = pattern.matcher(s);
+        return matcher.find() ? matcher.start() : -1;
+    }
+
+    public static Pattern getAttachPointStringFromReference(PsiElement reference)
     {
-        return "data-dojo-attach-point=\"" + reference.getText() + "\"";
+        // have to use a regex in case there are multiple attach points specified
+        return Pattern.compile("data-dojo-attach-point=\\\"(\\w|,)*" + reference.getText() + "\\w*\\\"");
     }
 }

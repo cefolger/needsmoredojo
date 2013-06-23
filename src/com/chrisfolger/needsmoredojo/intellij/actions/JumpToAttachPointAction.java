@@ -18,6 +18,8 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
+import java.util.regex.Pattern;
+
 public class JumpToAttachPointAction extends JavaScriptAction
 {
     @Override
@@ -62,9 +64,9 @@ public class JumpToAttachPointAction extends JavaScriptAction
         Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
 
         String documentText = document.getText();
-        String searchText = TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement);
+        Pattern searchPattern = TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement);
+        int indexOfAttachPoint = TemplatedWidgetUtil.indexOf(searchPattern, documentText);
 
-        int indexOfAttachPoint = documentText.indexOf(searchText);
         if(indexOfAttachPoint == -1)
         {
             // this is the last resort, when an attach point is just found because it was invalid, jump back to the previous file
