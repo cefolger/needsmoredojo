@@ -1,10 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
-import com.intellij.lang.javascript.psi.JSCallExpression;
-import com.intellij.lang.javascript.psi.JSDefinitionExpression;
-import com.intellij.lang.javascript.psi.JSProperty;
-import com.intellij.lang.javascript.psi.JSReferenceExpression;
+import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -44,15 +41,22 @@ public class TemplatedWidgetUtil {
             {
                 String template = property.getValue().getText();
 
-                // find the parameter and define that matches the template parameter
-                PsiElement relevantDefine = AMDUtil.getDefineForVariable(file, template);
+                if(property.getValue() instanceof JSLiteralExpression)
+                {
+                    return property.getContainingFile();
+                }
+                else
+                {
+                    // find the parameter and define that matches the template parameter
+                    PsiElement relevantDefine = AMDUtil.getDefineForVariable(file, template);
 
-                String templatePath = relevantDefine.getText().substring(relevantDefine.getText().lastIndexOf('!') + 1);
-                // now open the file and find the reference in it
-                VirtualFile htmlFile = AMDUtil.getAMDImportFile(relevantDefine.getProject(), templatePath, relevantDefine.getContainingFile().getContainingDirectory());
+                    String templatePath = relevantDefine.getText().substring(relevantDefine.getText().lastIndexOf('!') + 1);
+                    // now open the file and find the reference in it
+                    VirtualFile htmlFile = AMDUtil.getAMDImportFile(relevantDefine.getProject(), templatePath, relevantDefine.getContainingFile().getContainingDirectory());
 
-                PsiFile templateFile = PsiManager.getInstance(file.getProject()).findFile(htmlFile);
-                return templateFile;
+                    PsiFile templateFile = PsiManager.getInstance(file.getProject()).findFile(htmlFile);
+                    return templateFile;
+                }
             }
         }
 

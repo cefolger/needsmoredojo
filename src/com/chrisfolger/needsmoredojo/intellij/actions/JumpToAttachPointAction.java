@@ -18,6 +18,8 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class JumpToAttachPointAction extends JavaScriptAction
@@ -79,7 +81,19 @@ public class JumpToAttachPointAction extends JavaScriptAction
         PsiElement element = templateFile.findElementAt(indexOfAttachPoint);
 
         editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
-        HighlightingUtil.highlightElement(templateFile.getProject(), new PsiElement[]{element, element.getNextSibling(), element.getNextSibling().getNextSibling()});
+
+        List<PsiElement> elementsToHighlight = new ArrayList<PsiElement>();
+        elementsToHighlight.add(element);
+        if(element.getNextSibling() != null)
+        {
+            elementsToHighlight.add(element.getNextSibling());
+            if(element.getNextSibling().getNextSibling() != null)
+            {
+                elementsToHighlight.add(element.getNextSibling().getNextSibling());
+            }
+        }
+
+        HighlightingUtil.highlightElement(templateFile.getProject(), elementsToHighlight.toArray(new PsiElement[0]));
     }
 
     @Override
