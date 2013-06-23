@@ -1,27 +1,25 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
-import com.intellij.lang.javascript.psi.JSNewExpression;
-import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
-import com.intellij.lang.javascript.psi.JSReferenceExpression;
+import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class UnusedImportsRemover
 {
     public class RemovalResult
     {
-        private List<PsiElement> elementsToDelete;
+        private Set<PsiElement> elementsToDelete;
         private String deletedElementNames;
 
-        public RemovalResult(List<PsiElement> elementsToDelete, String deletedElementNames) {
+        public RemovalResult(Set<PsiElement> elementsToDelete, String deletedElementNames) {
             this.elementsToDelete = elementsToDelete;
             this.deletedElementNames = deletedElementNames;
         }
 
-        public List<PsiElement> getElementsToDelete() {
+        public Set<PsiElement> getElementsToDelete() {
             return elementsToDelete;
         }
 
@@ -33,7 +31,7 @@ public class UnusedImportsRemover
     private PsiElement getNearestComma(PsiElement start)
     {
         PsiElement sibling = start.getPrevSibling();
-        while(sibling != null)
+        while(sibling != null && !(sibling instanceof JSLiteralExpression))
         {
             if(sibling.getText().equals(","))
             {
@@ -48,8 +46,10 @@ public class UnusedImportsRemover
 
     public RemovalResult removeUnusedParameters(List<PsiElement> parameters, List<PsiElement> defines)
     {
+        JSArrayLiteralExpression literal = (JSArrayLiteralExpression) defines.get(0).getParent();
+
         final StringBuilder results = new StringBuilder();
-        List<PsiElement> elementsToDelete = new ArrayList<PsiElement>();
+        Set<PsiElement> elementsToDelete = new LinkedHashSet<PsiElement>();
 
         for(PsiElement element : parameters)
         {
@@ -86,7 +86,7 @@ public class UnusedImportsRemover
             PsiElement sibling = element.getNextSibling();
             if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
             {
-                getNearestComma(sibling).delete();
+                elementsToDelete.add(getNearestComma(sibling));
             }
 
             // only remove the next sibling if it's a comma
@@ -101,6 +101,13 @@ public class UnusedImportsRemover
         {
             try
             {
+                if(element instanceof LeafPsiElement)
+                {
+                    if(((LeafPsiElement) element).getTreeParent() == null)
+                    {
+                        continue;
+                    }
+                }
                 element.delete();
             }
             catch(Exception e)
@@ -108,6 +115,20 @@ public class UnusedImportsRemover
 
             }
         }
+
+        try
+        {
+            PsiElement trailingComma = getNearestComma(literal.getLastChild());
+            if(trailingComma != null)
+            {
+                trailingComma.delete();
+            }
+        }
+        catch(Exception e)
+        {
+
+        }
+
 
         RemovalResult result = new RemovalResult(elementsToDelete, results.toString());
         return result;
