@@ -1,5 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.configurable;
 
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 
@@ -22,8 +24,11 @@ public class DojoSettingsConfigurable implements Configurable {
 
     public JComponent createComponent() {
         myComponent = (JComponent) myPanel;
-        return myComponent;
+        FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
 
+        projectSourcesText.addBrowseFolderListener("Project Sources", "Select the root of your project sources to support certain features of Needs More Dojo", null, descriptor);
+        dojoSourcesText.addBrowseFolderListener("Dojo Sources", "Select the root of the dojo library sources to support certain features of Needs More Dojo", null, descriptor);
+        return myComponent;
     }
 
     public Icon getIcon() {
