@@ -26,6 +26,7 @@
                 <li>Support older dojoAttachPoint syntax (Issue #56)</li>
                 <li>Support attach point jumping to inline template strings (Issue #54)</li>
                 <li>Check index on defines when resolving i18n keys (Issue #58)</li>
+                <li>Fix for various npes in menu items (Issues #59, #60)</li>
             </ul>
 
             <b>0.3</b>
