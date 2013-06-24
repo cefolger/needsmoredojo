@@ -119,6 +119,8 @@
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.UnusedImportsProvider"/>
 
+        <applicationConfigurable implementation="com.chrisfolger.needsmoredojo.intellij.configurable.MyExtensConfigurable"></applicationConfigurable>
+
         <psi.referenceContributor
                 implementation="com.chrisfolger.needsmoredojo.intellij.reference.NlsLookupReferenceContributor"/>
     </extensions>
