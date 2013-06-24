@@ -11,6 +11,12 @@ public class PsiFileUtil
     public static PsiFile getPsiFileInCurrentEditor(Project project)
     {
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+
+        if(editor == null)
+        {
+            return null;
+        }
+
         PsiFile psiFile = PsiUtilBase.getPsiFileInEditor(editor, editor.getProject());
 
         return psiFile;

@@ -109,17 +109,24 @@ public class JumpToAttachPointAction extends JavaScriptAction
     public void update(AnActionEvent e)
     {
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
-        PsiFile file = e.getData(LangDataKeys.PSI_FILE);
 
-        e.getPresentation().setEnabled(true);
-
-        if(!(file.getFileType() instanceof JavaScriptFileType))
+        if(editor == null)
         {
             e.getPresentation().setEnabled(false);
             return;
         }
 
-        if(editor == null || file == null)
+        PsiFile file = e.getData(LangDataKeys.PSI_FILE);
+
+        if(file == null)
+        {
+            e.getPresentation().setEnabled(false);
+            return;
+        }
+
+        e.getPresentation().setEnabled(true);
+
+        if(!(file.getFileType() instanceof JavaScriptFileType))
         {
             e.getPresentation().setEnabled(false);
             return;
