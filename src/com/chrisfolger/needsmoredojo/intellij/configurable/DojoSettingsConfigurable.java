@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.configurable;
 
 import com.intellij.openapi.options.Configurable;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 
 import javax.swing.*;
 
@@ -8,10 +9,8 @@ public class DojoSettingsConfigurable implements Configurable {
     private JComponent myComponent;
     private JButton autoDetect;
     private JPanel myPanel;
-    private JTextField dojoSourcesText;
-    private JTextField projectSourcesText;
-    private JButton browseDojoSources;
-    private JButton browseProjectSources;
+    private TextFieldWithBrowseButton projectSourcesText;
+    private TextFieldWithBrowseButton dojoSourcesText;
 
     public String getDisplayName() {
         return "Needs More Dojo";
