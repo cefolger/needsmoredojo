@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class UnusedImportsAction extends JavaScriptAction {
     protected boolean deleteMode = false;
@@ -41,7 +42,7 @@ public class UnusedImportsAction extends JavaScriptAction {
                         @Override
                         public void run() {
                             UnusedImportsRemover.RemovalResult result = detector.removeUnusedParameters(parameters, defines);
-                            List<PsiElement> elementsToDelete = result.getElementsToDelete();
+                            Set<PsiElement> elementsToDelete = result.getElementsToDelete();
 
                             if(elementsToDelete.size() > 0)
                             {

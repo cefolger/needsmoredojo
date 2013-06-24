@@ -25,6 +25,11 @@ public class AMDUtil
 
         for(int i=0;i<parameters.size();i++)
         {
+            if(i > defines.size() - 1)
+            {
+                return null; // amd import is being modified
+            }
+
             if(parameters.get(i).getText().equals(textToCompare))
             {
                 return defines.get(i);
