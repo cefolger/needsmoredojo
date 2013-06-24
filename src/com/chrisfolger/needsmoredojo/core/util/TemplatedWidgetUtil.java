@@ -81,7 +81,7 @@ public class TemplatedWidgetUtil {
             ideally we would parse the template file in the beginning and cache all of the attach points,
             maybe that's a todo item...
          */
-        if(element.getParent() == null || !(element.getParent() instanceof JSReferenceExpression))
+        if(element == null || element.getParent() == null || !(element.getParent() instanceof JSReferenceExpression))
         {
             return false;
         }
