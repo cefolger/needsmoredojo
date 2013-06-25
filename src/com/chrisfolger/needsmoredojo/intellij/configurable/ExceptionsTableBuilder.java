@@ -60,6 +60,13 @@ public class ExceptionsTableBuilder
             this.fireTableDataChanged();
         }
 
+        public void removeRow(int row)
+        {
+            String key = exceptionsMap.keySet().toArray(new String[0])[row];
+            exceptionsMap.remove(key);
+            this.fireTableDataChanged();
+        }
+
         public void setValueAt(Object value, int row, int col)
         {
             if(col == 1)

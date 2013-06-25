@@ -119,6 +119,13 @@ public class DojoSettingsConfigurable implements Configurable {
             }
         });
 
+        removeMapping.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                builder.getTableModel().removeRow(moduleExceptionsTable.getSelectedRow());
+            }
+        });
+
         return myComponent;
     }
 
