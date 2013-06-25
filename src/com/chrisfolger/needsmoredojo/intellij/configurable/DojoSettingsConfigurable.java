@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.configurable;
 
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
@@ -23,6 +24,8 @@ public class DojoSettingsConfigurable implements Configurable {
     private TextFieldWithBrowseButton projectSourcesText;
     private TextFieldWithBrowseButton dojoSourcesText;
     private Project project;
+    private String dojoSourceString;
+    private String projectSourceString;
 
     public String getDisplayName() {
         return "Needs More Dojo";
@@ -42,7 +45,7 @@ public class DojoSettingsConfigurable implements Configurable {
         public void actionPerformed(ActionEvent e) {
             super.actionPerformed(e);
 
-            String projectSources = projectSourcesText.getText();
+            projectSourceString = projectSourcesText.getText();
         }
     }
 
@@ -56,8 +59,7 @@ public class DojoSettingsConfigurable implements Configurable {
         public void actionPerformed(ActionEvent e) {
             super.actionPerformed(e);
 
-            String dojoSources = dojoSourcesText.getText();
-
+            dojoSourceString = dojoSourcesText.getText();
         }
     }
 
@@ -73,15 +75,28 @@ public class DojoSettingsConfigurable implements Configurable {
         Project project = DataKeys.PROJECT.getData(context);
         this.project = project;
 
+        dojoSourceString = DojoSettings.getInstance().getDojoSourcesDirectory(project);
+        dojoSourcesText.setText(dojoSourceString);
+
         return myComponent;
     }
 
-    public Icon getIcon() {
+    public Icon getIcon()
+    {
         return null;
-
     }
 
-    public void apply() {
+    public void apply()
+    {
+        if(dojoSourceString != null)
+        {
+            DojoSettings.getInstance().setDojoSourcesDirectory(project, dojoSourceString);
+        }
+
+        if(projectSourceString != null)
+        {
+
+        }
     }
 
     public void disposeUIResources() {
