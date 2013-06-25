@@ -18,9 +18,9 @@ import java.util.LinkedHashMap;
 )
 public class DojoSettings implements PersistentStateComponent<DojoSettings>
 {
-    public LinkedHashMap<String, String> amdImportNamingExceptions;
-    public String dojoSourcesDirectory;
-    public String projectSourcesDirectory;
+    private LinkedHashMap<String, String> amdImportNamingExceptions;
+    private String dojoSourcesDirectory;
+    private String projectSourcesDirectory;
 
     public DojoSettings()
     {
@@ -47,24 +47,28 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         }
     }
 
-    public String getDojoSourcesDirectory(Project project)
-    {
+    public LinkedHashMap<String, String> getAmdImportNamingExceptions() {
+        return amdImportNamingExceptions;
+    }
+
+    public void setAmdImportNamingExceptions(LinkedHashMap<String, String> amdImportNamingExceptions) {
+        this.amdImportNamingExceptions = amdImportNamingExceptions;
+    }
+
+    public String getDojoSourcesDirectory() {
         return dojoSourcesDirectory;
     }
 
-    public void setDojoSourcesDirectory(Project project, String value)
-    {
-        dojoSourcesDirectory = value;
+    public void setDojoSourcesDirectory(String dojoSourcesDirectory) {
+        this.dojoSourcesDirectory = dojoSourcesDirectory;
     }
 
-    public String getProjectSourcesDirectory(Project project)
-    {
+    public String getProjectSourcesDirectory() {
         return projectSourcesDirectory;
     }
 
-    public void setProjectSourcesDirectory(Project project, String value)
-    {
-        projectSourcesDirectory = value;
+    public void setProjectSourcesDirectory(String projectSourcesDirectory) {
+        this.projectSourcesDirectory = projectSourcesDirectory;
     }
 
     @Nullable

@@ -98,10 +98,10 @@ public class DojoSettingsConfigurable implements Configurable {
 
         settingsService = ServiceManager.getService(project, DojoSettings.class);
 
-        dojoSourceString = settingsService.getDojoSourcesDirectory(project);
+        dojoSourceString = settingsService.getDojoSourcesDirectory();
         dojoSourcesText.setText(dojoSourceString);
 
-        projectSourceString =settingsService.getProjectSourcesDirectory(project);
+        projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
 
         ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project);
@@ -118,12 +118,12 @@ public class DojoSettingsConfigurable implements Configurable {
     {
         if(dojoSourceString != null)
         {
-           settingsService.setDojoSourcesDirectory(project, dojoSourceString);
+           settingsService.setDojoSourcesDirectory(dojoSourceString);
         }
 
         if(projectSourceString != null)
         {
-           settingsService.setProjectSourcesDirectory(project, projectSourceString);
+           settingsService.setProjectSourcesDirectory(projectSourceString);
         }
     }
 
@@ -137,10 +137,10 @@ public class DojoSettingsConfigurable implements Configurable {
 
     public void reset()
     {
-        dojoSourceString =settingsService.getDojoSourcesDirectory(project);
+        dojoSourceString =settingsService.getDojoSourcesDirectory();
         dojoSourcesText.setText(dojoSourceString);
 
-        projectSourceString =settingsService.getProjectSourcesDirectory(project);
+        projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
     }
 }
