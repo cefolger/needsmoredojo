@@ -31,4 +31,14 @@ public class DojoSettings
     {
         PropertiesComponent.getInstance(project).setValue("com.chrisfolger.needsmoredojo.core.settings.dojosources", value);
     }
+
+    public String getProjectSourcesDirectory(Project project)
+    {
+        return PropertiesComponent.getInstance(project).getValue("com.chrisfolger.needsmoredojo.core.settings.projectsources", "");
+    }
+
+    public void setProjectSourcesDirectory(Project project, String value)
+    {
+        PropertiesComponent.getInstance(project).setValue("com.chrisfolger.needsmoredojo.core.settings.projectsources", value);
+    }
 }

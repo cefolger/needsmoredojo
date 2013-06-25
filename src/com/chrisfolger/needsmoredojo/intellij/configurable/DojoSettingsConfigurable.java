@@ -8,7 +8,6 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -78,6 +77,9 @@ public class DojoSettingsConfigurable implements Configurable {
         dojoSourceString = DojoSettings.getInstance().getDojoSourcesDirectory(project);
         dojoSourcesText.setText(dojoSourceString);
 
+        projectSourceString = DojoSettings.getInstance().getProjectSourcesDirectory(project);
+        projectSourcesText.setText(projectSourceString);
+
         return myComponent;
     }
 
@@ -95,7 +97,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
         if(projectSourceString != null)
         {
-
+            DojoSettings.getInstance().setProjectSourcesDirectory(project, projectSourceString);
         }
     }
 
@@ -107,9 +109,12 @@ public class DojoSettingsConfigurable implements Configurable {
         return "";
     }
 
-    public void reset() {
+    public void reset()
+    {
+        dojoSourceString = DojoSettings.getInstance().getDojoSourcesDirectory(project);
+        dojoSourcesText.setText(dojoSourceString);
 
+        projectSourceString = DojoSettings.getInstance().getProjectSourcesDirectory(project);
+        projectSourcesText.setText(projectSourceString);
     }
-
-
 }
