@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.psi.PsiElement;
 
@@ -65,6 +66,11 @@ public class MismatchedImportsDetector
         // also case insensitive because the programmer can use any casing for the parameter
         String defineComparison = define.toLowerCase().replaceAll("'|\"", "").replace("\"", "");
         String parameterComparison = parameter.toLowerCase();
+
+        if(DojoSettings.getInstance().getException(defineComparison) != null)
+        {
+            return parameterComparison.equals(DojoSettings.getInstance().getException(defineComparison));
+        }
 
         if(defineComparison.contains("/_base/fx"))
         {

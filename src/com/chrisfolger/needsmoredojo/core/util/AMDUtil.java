@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -85,6 +86,12 @@ public class AMDUtil
         if(define.contains("/_base/fx"))
         {
             return "baseFx";
+        }
+
+        // check all exceptions
+        if(DojoSettings.getInstance().getException(define) != null)
+        {
+            return DojoSettings.getInstance().getException(define);
         }
 
         if(define.startsWith(TEXTPLUGIN) || define.startsWith(I18NPLUGIN))

@@ -2,6 +2,11 @@ package com.chrisfolger.needsmoredojo.core.settings;
 
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DojoSettings
 {
@@ -12,6 +17,8 @@ public class DojoSettings
         instance = inst;
     }
 
+    private Map<String, String> amdImportNamingExceptions;
+
     public static DojoSettings getInstance()
     {
         if(instance == null)
@@ -20,6 +27,26 @@ public class DojoSettings
         }
 
         return instance;
+    }
+
+    public DojoSettings()
+    {
+        // in the future, the user will be able to add their own exceptions
+        // for now though, they are just hard-coded.
+        amdImportNamingExceptions = new HashMap<String, String>();
+        amdImportNamingExceptions.put("dojo/sniff", "has");
+    }
+
+    public @Nullable String getException(@NotNull String module)
+    {
+        if(amdImportNamingExceptions.containsKey(module))
+        {
+            return amdImportNamingExceptions.get(module);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public String getDojoSourcesDirectory(Project project)
