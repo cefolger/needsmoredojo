@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.configurable;
 
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
+import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
@@ -11,10 +12,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.psi.PsiDirectory;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class DojoSettingsConfigurable implements Configurable {
     private JComponent myComponent;
@@ -44,7 +47,19 @@ public class DojoSettingsConfigurable implements Configurable {
         public void actionPerformed(ActionEvent e) {
             super.actionPerformed(e);
 
-            projectSourceString = projectSourcesText.getText();
+            projectSourceString = projectSourcesText.getText().replace('\\', '/');;
+            projectSourcesText.setText(projectSourceString);
+        }
+    }
+
+    private class AutoDetectDojoSources implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            PsiDirectory directory = AMDUtil.getDojoSourcesDirectory(project);
+            dojoSourcesText.setText(directory.getVirtualFile().getCanonicalPath());
+            dojoSourceString = directory.getVirtualFile().getCanonicalPath();
         }
     }
 
@@ -58,7 +73,8 @@ public class DojoSettingsConfigurable implements Configurable {
         public void actionPerformed(ActionEvent e) {
             super.actionPerformed(e);
 
-            dojoSourceString = dojoSourcesText.getText();
+            dojoSourceString = dojoSourcesText.getText().replace('\\', '/');
+            dojoSourcesText.setText(dojoSourceString);
         }
     }
 
@@ -68,6 +84,8 @@ public class DojoSettingsConfigurable implements Configurable {
 
         projectSourcesText.addBrowseFolderListener(null, new ProjectSourcesChosen("Project Sources", "Select the root of your project's sources to support certain features of Needs More Dojo", descriptor));
         dojoSourcesText.addBrowseFolderListener(null, new DojoSourcesChosen("Dojo Sources", "Select the root of the dojo library sources to support certain features of Needs More Dojo", descriptor));
+
+        autoDetect.addActionListener(new AutoDetectDojoSources());
 
         // don't know how else to get the current project???
         DataContext context = DataManager.getInstance().getDataContext();

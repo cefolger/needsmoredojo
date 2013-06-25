@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class AMDUtil
         return null;
     }
 
-    public static VirtualFile getAMDImportFile(Project project, String modulePath, PsiDirectory sourceFileParentDirectory)
+    public static @Nullable PsiDirectory getDojoSourcesDirectory(Project project)
     {
         // TODO other source roots
         PsiFile[] files = FilenameIndex.getFilesByName(project, "dojo.js", GlobalSearchScope.projectScope(project));
@@ -54,11 +55,23 @@ public class AMDUtil
             }
         }
 
+        if(dojoFile != null)
+        {
+            return dojoFile.getContainingDirectory().getParent();
+        }
+
+        return null;
+    }
+
+    public static VirtualFile getAMDImportFile(Project project, String modulePath, PsiDirectory sourceFileParentDirectory)
+    {
+        PsiDirectory dojoSourcesRoot = getDojoSourcesDirectory(project);
+
         String parsedPath = modulePath.replaceAll("('|\")", "");
         if(parsedPath.charAt(0) != '.') // this means it's not a relative path, but rather a defined package path
         {
             parsedPath = "/" + parsedPath;
-            return dojoFile.getContainingDirectory().getParent().getVirtualFile().findFileByRelativePath(parsedPath);
+            return dojoSourcesRoot.getVirtualFile().findFileByRelativePath(parsedPath);
         }
         else
         {
