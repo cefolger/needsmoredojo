@@ -13,6 +13,7 @@ import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.ui.table.TableView;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JPanel myPanel;
     private TextFieldWithBrowseButton projectSourcesText;
     private TextFieldWithBrowseButton dojoSourcesText;
+    private JTable moduleExceptionsTable;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -97,6 +99,8 @@ public class DojoSettingsConfigurable implements Configurable {
 
         projectSourceString = DojoSettings.getInstance().getProjectSourcesDirectory(project);
         projectSourcesText.setText(projectSourceString);
+
+        ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable);
 
         return myComponent;
     }
