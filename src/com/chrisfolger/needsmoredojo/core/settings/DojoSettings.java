@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DojoSettings
@@ -17,7 +18,7 @@ public class DojoSettings
         instance = inst;
     }
 
-    private Map<String, String> amdImportNamingExceptions;
+    private LinkedHashMap<String, String> amdImportNamingExceptions;
 
     public static DojoSettings getInstance()
     {
@@ -33,8 +34,13 @@ public class DojoSettings
     {
         // in the future, the user will be able to add their own exceptions
         // for now though, they are just hard-coded.
-        amdImportNamingExceptions = new HashMap<String, String>();
+        amdImportNamingExceptions = new LinkedHashMap<String, String>();
         amdImportNamingExceptions.put("dojo/sniff", "has");
+    }
+
+    public @NotNull LinkedHashMap<String, String> getExceptionsMap()
+    {
+        return amdImportNamingExceptions;
     }
 
     public @Nullable String getException(@NotNull String module)
