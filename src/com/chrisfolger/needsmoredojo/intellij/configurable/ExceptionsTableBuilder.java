@@ -52,14 +52,16 @@ public class ExceptionsTableBuilder
 
         public boolean isCellEditable(int row, int col)
         {
-            return true;
+            return col != 0;
         }
 
         public void setValueAt(Object value, int row, int col)
         {
-
-           /* rowData[row][col] = value;
-            fireTableCellUpdated(row, col); */
+            if(col == 1)
+            {
+                exceptionsMap.put(exceptionsMap.keySet().toArray(new String[0])[row], (String) value);
+                fireTableCellUpdated(row, col);
+            }
         }
     }
 
