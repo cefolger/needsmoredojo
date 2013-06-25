@@ -1,9 +1,11 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
@@ -150,7 +152,7 @@ public class ImportCreator
         else
         {
             JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
-            JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], AMDUtil.defineToParameter(module) + ",", " ");
+            JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], AMDUtil.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap()) + ",", " ");
         }
     }
 

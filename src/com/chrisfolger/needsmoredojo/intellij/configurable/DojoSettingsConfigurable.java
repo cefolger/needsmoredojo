@@ -5,6 +5,7 @@ import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
@@ -30,6 +31,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
+    private DojoSettings settingsService;
 
     public String getDisplayName() {
         return "Needs More Dojo";
@@ -94,13 +96,15 @@ public class DojoSettingsConfigurable implements Configurable {
         Project project = DataKeys.PROJECT.getData(context);
         this.project = project;
 
-        dojoSourceString = DojoSettings.getInstance().getDojoSourcesDirectory(project);
+        settingsService = ServiceManager.getService(project, DojoSettings.class);
+
+        dojoSourceString = settingsService.getDojoSourcesDirectory(project);
         dojoSourcesText.setText(dojoSourceString);
 
-        projectSourceString = DojoSettings.getInstance().getProjectSourcesDirectory(project);
+        projectSourceString =settingsService.getProjectSourcesDirectory(project);
         projectSourcesText.setText(projectSourceString);
 
-        ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable);
+        ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project);
 
         return myComponent;
     }
@@ -114,12 +118,12 @@ public class DojoSettingsConfigurable implements Configurable {
     {
         if(dojoSourceString != null)
         {
-            DojoSettings.getInstance().setDojoSourcesDirectory(project, dojoSourceString);
+           settingsService.setDojoSourcesDirectory(project, dojoSourceString);
         }
 
         if(projectSourceString != null)
         {
-            DojoSettings.getInstance().setProjectSourcesDirectory(project, projectSourceString);
+           settingsService.setProjectSourcesDirectory(project, projectSourceString);
         }
     }
 
@@ -133,10 +137,10 @@ public class DojoSettingsConfigurable implements Configurable {
 
     public void reset()
     {
-        dojoSourceString = DojoSettings.getInstance().getDojoSourcesDirectory(project);
+        dojoSourceString =settingsService.getDojoSourcesDirectory(project);
         dojoSourcesText.setText(dojoSourceString);
 
-        projectSourceString = DojoSettings.getInstance().getProjectSourcesDirectory(project);
+        projectSourceString =settingsService.getProjectSourcesDirectory(project);
         projectSourcesText.setText(projectSourceString);
     }
 }

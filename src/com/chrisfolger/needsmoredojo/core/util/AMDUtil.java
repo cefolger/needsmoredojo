@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AMDUtil
 {
@@ -80,7 +81,7 @@ public class AMDUtil
         }
     }
 
-    public static String defineToParameter(String define)
+    public static String defineToParameter(String define, Map<String, String> exceptions)
     {
         // since there are two fx modules we have this exception
         if(define.contains("/_base/fx"))
@@ -89,9 +90,9 @@ public class AMDUtil
         }
 
         // check all exceptions
-        if(DojoSettings.getInstance().getException(define) != null)
+        if(exceptions.containsKey(define))
         {
-            return DojoSettings.getInstance().getException(define);
+            return exceptions.get(define);
         }
 
         if(define.startsWith(TEXTPLUGIN) || define.startsWith(I18NPLUGIN))

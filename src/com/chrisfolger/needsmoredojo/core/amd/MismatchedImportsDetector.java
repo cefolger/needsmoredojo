@@ -4,11 +4,15 @@ import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.psi.PsiElement;
 
+import javax.jnlp.ServiceManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MismatchedImportsDetector
 {
+    private DojoSettings settingsService;
+
     public class Mismatch
     {
         private PsiElement define;
@@ -29,7 +33,7 @@ public class MismatchedImportsDetector
         }
     }
 
-    public List<Mismatch> matchOnList(PsiElement[] defines, PsiElement[] parameters)
+    public List<Mismatch> matchOnList(PsiElement[] defines, PsiElement[] parameters, Map<String, String> exceptions)
     {
         List<Mismatch> results = new ArrayList<Mismatch>();
 
@@ -51,7 +55,7 @@ public class MismatchedImportsDetector
                 continue; // we've already accounted for the mismatch here
             }
 
-            if(!defineMatchesParameter(defines[i].getText(), parameters[i].getText()))
+            if(!defineMatchesParameter(defines[i].getText(), parameters[i].getText(), exceptions))
             {
                 results.add(new Mismatch(defines[i], parameters[i]));
             }
@@ -60,16 +64,16 @@ public class MismatchedImportsDetector
         return results;
     }
 
-    public boolean defineMatchesParameter(String define, String parameter)
+    public boolean defineMatchesParameter(String define, String parameter, Map<String, String> exceptions)
     {
         // simple case can be taken care of by just matching the stuff after / with the parameter
         // also case insensitive because the programmer can use any casing for the parameter
         String defineComparison = define.toLowerCase().replaceAll("'|\"", "").replace("\"", "");
         String parameterComparison = parameter.toLowerCase();
 
-        if(DojoSettings.getInstance().getException(defineComparison) != null)
+        if(exceptions.containsKey(defineComparison))
         {
-            return parameterComparison.equals(DojoSettings.getInstance().getException(defineComparison));
+            return parameterComparison.equals(exceptions.get(defineComparison));
         }
 
         if(defineComparison.contains("/_base/fx"))

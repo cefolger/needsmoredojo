@@ -2,7 +2,9 @@ package com.chrisfolger.needsmoredojo.intellij.inspections;
 
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.MismatchedImportsDetector;
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.codeInspection.*;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.graph.algo.Groups;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -66,7 +68,7 @@ public class MismatchedImportsInspection extends LocalInspectionTool
         resolver.gatherDefineAndParameters(file, defines, parameters);
 
         LocalQuickFix fix = null;
-        List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(defines.toArray(new PsiElement[0]), parameters.toArray(new PsiElement[0]));
+        List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(defines.toArray(new PsiElement[0]), parameters.toArray(new PsiElement[0]), ServiceManager.getService(file.getProject(), DojoSettings.class).getExceptionsMap());
         for(int i=0;i<mismatches.size();i++)
         {
             MismatchedImportsDetector.Mismatch mismatch = mismatches.get(i);

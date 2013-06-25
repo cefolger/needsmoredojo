@@ -1,34 +1,26 @@
 package com.chrisfolger.needsmoredojo.core.settings;
 
-import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-public class DojoSettings
-{
-    private static DojoSettings instance;
 
-    public void setInstance(DojoSettings inst)
-    {
-        instance = inst;
-    }
-
-    private LinkedHashMap<String, String> amdImportNamingExceptions;
-
-    public static DojoSettings getInstance()
-    {
-        if(instance == null)
-        {
-            instance = new DojoSettings();
+@State(
+        name = "NeedsMoreDojoConfiguration",
+        storages = {
+                @Storage(id = "default", file = StoragePathMacros.PROJECT_FILE),
+                @Storage(id = "dir", file = StoragePathMacros.PROJECT_CONFIG_DIR + "/needsmoredojoconfig.xml", scheme = StorageScheme.DIRECTORY_BASED)
         }
-
-        return instance;
-    }
+)
+public class DojoSettings implements PersistentStateComponent<DojoSettings>
+{
+    public LinkedHashMap<String, String> amdImportNamingExceptions;
+    public String dojoSourcesDirectory;
+    public String projectSourcesDirectory;
 
     public DojoSettings()
     {
@@ -57,21 +49,32 @@ public class DojoSettings
 
     public String getDojoSourcesDirectory(Project project)
     {
-        return PropertiesComponent.getInstance(project).getValue("com.chrisfolger.needsmoredojo.core.settings.dojosources", "");
+        return dojoSourcesDirectory;
     }
 
     public void setDojoSourcesDirectory(Project project, String value)
     {
-        PropertiesComponent.getInstance(project).setValue("com.chrisfolger.needsmoredojo.core.settings.dojosources", value);
+        dojoSourcesDirectory = value;
     }
 
     public String getProjectSourcesDirectory(Project project)
     {
-        return PropertiesComponent.getInstance(project).getValue("com.chrisfolger.needsmoredojo.core.settings.projectsources", "");
+        return projectSourcesDirectory;
     }
 
     public void setProjectSourcesDirectory(Project project, String value)
     {
-        PropertiesComponent.getInstance(project).setValue("com.chrisfolger.needsmoredojo.core.settings.projectsources", value);
+        projectSourcesDirectory = value;
+    }
+
+    @Nullable
+    @Override
+    public DojoSettings getState() {
+        return this;
+    }
+
+    @Override
+    public void loadState(DojoSettings state) {
+        XmlSerializerUtil.copyBean(state, this);
     }
 }

@@ -1,6 +1,8 @@
 package com.chrisfolger.needsmoredojo.intellij.configurable;
 
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -14,10 +16,12 @@ public class ExceptionsTableBuilder
     {
         private String[] columnNames = new String[] { "Dojo Module", "Parameter Name" };
         private LinkedHashMap<String, String> exceptionsMap;
+        private DojoSettings settingsService;
 
-        public ExceptionsModel()
+        public ExceptionsModel(Project project)
         {
-            exceptionsMap = DojoSettings.getInstance().getExceptionsMap();
+            settingsService = ServiceManager.getService(project, DojoSettings.class);
+            exceptionsMap = settingsService.getExceptionsMap();
         }
 
         public String getColumnName(int col) {
@@ -59,9 +63,9 @@ public class ExceptionsTableBuilder
         }
     }
 
-    public ExceptionsTableBuilder(JTable table)
+    public ExceptionsTableBuilder(JTable table, Project project)
     {
-        table.setModel(new ExceptionsModel());
+        table.setModel(new ExceptionsModel(project));
         table.setTableHeader(new JTableHeader(table.getColumnModel()));
         table.updateUI();
     }
