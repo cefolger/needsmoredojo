@@ -41,4 +41,11 @@ public class TestAMDUtil
     {
         assertEquals("resources", AMDUtil.defineToParameter("dojo/i18n!nls/resources"));
     }
+
+    @Test
+    public void testException()
+    {
+        // has is an explicit exception
+        assertEquals("has", AMDUtil.defineToParameter("dojo/sniff"));
+    }
 }

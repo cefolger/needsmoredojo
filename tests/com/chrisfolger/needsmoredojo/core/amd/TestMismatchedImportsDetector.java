@@ -153,6 +153,13 @@ public class TestMismatchedImportsDetector
         assertTrue(detector.defineMatchesParameter("dojo/_base/fx", "fx"));
     }
 
+    @Test
+    public void testException()
+    {
+        // has is an explicit exception
+        assertTrue(detector.defineMatchesParameter("dojo/sniff", "has"));
+    }
+
     private PsiElement createPsiElement(String text)
     {
         PsiElement result = mock(PsiElement.class);
