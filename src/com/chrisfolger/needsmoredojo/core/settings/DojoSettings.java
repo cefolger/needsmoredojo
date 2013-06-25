@@ -1,5 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.settings;
 
+import com.intellij.openapi.project.Project;
+
 public class DojoSettings
 {
     private static DojoSettings instance;
@@ -14,8 +16,8 @@ public class DojoSettings
         return instance;
     }
 
-    public String[] getSourcePathsRelativeToDojo()
+    public String getDojoSourcesDirectory(Project project)
     {
-        return new String[] { "../"};
+        return "";
     }
 }
