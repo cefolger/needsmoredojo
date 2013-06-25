@@ -110,29 +110,12 @@ public class DojoSettingsConfigurable implements Configurable {
         projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
 
-        ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project);
+        final ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project);
 
-        addParameterText.addFocusListener(new FocusListener() {
+        addMapping.addActionListener(new ActionListener() {
             @Override
-            public void focusGained(FocusEvent e) {
-                addParameterText.setText("");
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                addParameterText.setText("Parameter");
-            }
-        });
-
-        addModuleText.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                addModuleText.setText("");
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                addModuleText.setText("Module");
+            public void actionPerformed(ActionEvent e) {
+                builder.getTableModel().addRow(new String[] { addModuleText.getText(), addParameterText.getText()});
             }
         });
 
@@ -167,7 +150,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
     public void reset()
     {
-        dojoSourceString =settingsService.getDojoSourcesDirectory();
+        dojoSourceString = settingsService.getDojoSourcesDirectory();
         dojoSourcesText.setText(dojoSourceString);
 
         projectSourceString =settingsService.getProjectSourcesDirectory();

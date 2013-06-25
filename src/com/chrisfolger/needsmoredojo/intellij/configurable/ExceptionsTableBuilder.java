@@ -7,12 +7,11 @@ import com.intellij.openapi.project.Project;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
 import java.util.LinkedHashMap;
 
 public class ExceptionsTableBuilder
 {
-    private class ExceptionsModel extends AbstractTableModel
+    public class ExceptionsModel extends AbstractTableModel
     {
         private String[] columnNames = new String[] { "Dojo Module", "Parameter Name" };
         private LinkedHashMap<String, String> exceptionsMap;
@@ -30,7 +29,7 @@ public class ExceptionsTableBuilder
 
         public int getRowCount()
         {
-            return 1;
+            return exceptionsMap.size();
         }
 
         public int getColumnCount()
@@ -55,6 +54,12 @@ public class ExceptionsTableBuilder
             return col != 0;
         }
 
+        public void addRow(String[] rowData)
+        {
+            exceptionsMap.put(rowData[0], rowData[1]);
+            this.fireTableDataChanged();
+        }
+
         public void setValueAt(Object value, int row, int col)
         {
             if(col == 1)
@@ -62,13 +67,26 @@ public class ExceptionsTableBuilder
                 exceptionsMap.put(exceptionsMap.keySet().toArray(new String[0])[row], (String) value);
                 fireTableCellUpdated(row, col);
             }
+            else
+            {
+                exceptionsMap.put((String) value, "");
+                fireTableCellUpdated(row, col);
+            }
         }
     }
 
+    private ExceptionsModel model;
+
     public ExceptionsTableBuilder(JTable table, Project project)
     {
-        table.setModel(new ExceptionsModel(project));
+        this.model = new ExceptionsModel(project);
+        table.setModel(model);
         table.setTableHeader(new JTableHeader(table.getColumnModel()));
         table.updateUI();
+    }
+
+    public ExceptionsModel getTableModel()
+    {
+        return this.model;
     }
 }
