@@ -28,6 +28,10 @@ public class DojoSettingsConfigurable implements Configurable {
     private TextFieldWithBrowseButton projectSourcesText;
     private TextFieldWithBrowseButton dojoSourcesText;
     private JTable moduleExceptionsTable;
+    private JButton addMapping;
+    private JTextField addModuleText;
+    private JTextField addParameterText;
+    private JButton removeMapping;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
