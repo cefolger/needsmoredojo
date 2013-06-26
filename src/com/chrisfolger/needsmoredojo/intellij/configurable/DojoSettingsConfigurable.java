@@ -69,9 +69,11 @@ public class DojoSettingsConfigurable implements Configurable {
         @Override
         public void actionPerformed(ActionEvent e)
         {
+            autoDetectDojoSources.setEnabled(false);
             VirtualFile directory = AMDUtil.getDojoSourcesDirectory(project, false);
             dojoSourcesText.setText(directory.getCanonicalPath());
             dojoSourceString = directory.getCanonicalPath();
+            autoDetectDojoSources.setEnabled(true);
         }
     }
 
@@ -131,7 +133,9 @@ public class DojoSettingsConfigurable implements Configurable {
         autoDetectProjectSources.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                autoDetectProjectSources.setEnabled(false);
                 addAutoDetectedSource(new SourcesAutoDetector().getPossibleSourceRoots(project));
+                autoDetectProjectSources.setEnabled(true);
             }
         });
 
