@@ -56,7 +56,7 @@ public class DojoSettingsDetectionComponent implements ProjectComponent {
         new Notification("needsmoredojo", "Needs More Dojo: Setup Sources", "It looks like you haven't set up dojo or project sources, which might make some features of Needs More Dojo work incorrectly. <a href=\"setup\">Set them up now...</a>", NotificationType.WARNING, new NotificationListener.Adapter() {
             @Override
             protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent hyperlinkEvent) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, DojoSettings.class);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, "Needs More Dojo");
             }
         }).notify(project);
     }

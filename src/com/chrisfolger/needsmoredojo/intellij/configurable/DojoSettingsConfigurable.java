@@ -5,7 +5,7 @@ import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -103,7 +103,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
         // don't know how else to get the current project???
         DataContext context = DataManager.getInstance().getDataContext();
-        final Project project = DataKeys.PROJECT.getData(context);
+        final Project project = PlatformDataKeys.PROJECT.getData(context);
         this.project = project;
 
         settingsService = ServiceManager.getService(project, DojoSettings.class);
