@@ -71,6 +71,14 @@ public class DojoSettingsConfigurable implements Configurable {
         {
             autoDetectDojoSources.setEnabled(false);
             VirtualFile directory = AMDUtil.getDojoSourcesDirectory(project, false);
+
+            if(directory == null)
+            {
+                Messages.showInfoMessage("Could not find any dojo sources via auto-detection", "Auto-detect Dojo Sources");
+                autoDetectDojoSources.setEnabled(true);
+                return;
+            }
+
             dojoSourcesText.setText(directory.getCanonicalPath());
             dojoSourceString = directory.getCanonicalPath();
             autoDetectDojoSources.setEnabled(true);
