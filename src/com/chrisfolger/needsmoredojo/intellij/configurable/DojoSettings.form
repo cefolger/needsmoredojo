@@ -155,7 +155,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="Auto-detect"/>
+          <text value="Auto-detect (experimental)"/>
         </properties>
       </component>
     </children>

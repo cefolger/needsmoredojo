@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.configurable;
 
+import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.ide.DataManager;
@@ -98,7 +99,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
         // don't know how else to get the current project???
         DataContext context = DataManager.getInstance().getDataContext();
-        Project project = DataKeys.PROJECT.getData(context);
+        final Project project = DataKeys.PROJECT.getData(context);
         this.project = project;
 
         settingsService = ServiceManager.getService(project, DojoSettings.class);
@@ -122,6 +123,13 @@ public class DojoSettingsConfigurable implements Configurable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 builder.getTableModel().removeRow(moduleExceptionsTable.getSelectedRow());
+            }
+        });
+
+        autoDetectProjectSources.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new SourcesAutoDetector().getPossibleSourceRoots(project);
             }
         });
 
