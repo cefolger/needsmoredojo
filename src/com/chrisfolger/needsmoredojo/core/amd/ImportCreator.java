@@ -40,7 +40,7 @@ public class ImportCreator
         return 0;
     }
 
-    public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module)
+    public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule)
     {
         List<String> choices = new ArrayList<String>();
 
@@ -143,7 +143,7 @@ public class ImportCreator
 
         PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
-        return getChoicesFromFiles(filesArray, libraries.toArray(new SourceLibrary[0]), module);
+        return getChoicesFromFiles(filesArray, libraries.toArray(new SourceLibrary[0]), module, psiFile);
     }
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)

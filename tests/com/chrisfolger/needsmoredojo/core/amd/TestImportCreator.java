@@ -39,7 +39,7 @@ public class TestImportCreator
                 new MockPsiFile("BorderContainer.js", "js/dijit/layout")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "BorderContainer");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "BorderContainer", null);
 
         assertEquals("dijit/layout/BorderContainer", choices[0]);
     }
@@ -52,7 +52,7 @@ public class TestImportCreator
                 new MockPsiFile("functional.js", "js/util/docscripts/tests")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "functional");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "functional", null);
 
         assertEquals("dojox/lang/functional", choices[0]);
     }
@@ -65,7 +65,7 @@ public class TestImportCreator
                 new MockPsiFile("_WidgetBase.js", "js/dijit")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "_WidgetBase");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "_WidgetBase", null);
 
         assertEquals("dijit/_WidgetBase", choices[0]);
     }
@@ -78,7 +78,7 @@ public class TestImportCreator
                 new MockPsiFile("__WidgetBase.js", "js/dijit")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "__WidgetBase");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "__WidgetBase", null);
 
         assertEquals("dijit/__WidgetBase", choices[0]);
     }
@@ -93,7 +93,7 @@ public class TestImportCreator
                 new MockPsiFile("Grid.js", "js/dojox/charting/plot2d")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "Grid");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "Grid", null);
 
         assertEquals("dgrid/Grid", choices[0]);
     }
@@ -106,7 +106,7 @@ public class TestImportCreator
                 new MockPsiFile("on.js", "js/dojo")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "on");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "on", null);
 
         assertEquals("dojo/on", choices[0]);
     }
@@ -120,7 +120,7 @@ public class TestImportCreator
 
         libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website"));
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" );
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , null);
 
         assertEquals("website/StandbyWrapper", choices[0]);
     }
@@ -133,7 +133,7 @@ public class TestImportCreator
         };
 
         libraries.add(new SourceLibrary("dojo", "website/static/js"));
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "Grid" );
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "Grid", null );
 
         assertEquals("dojo/foo/Grid", choices[0]);
     }
@@ -146,7 +146,7 @@ public class TestImportCreator
                 new MockPsiFile("BorderContainer.js", "js/dojo")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "BorderContainer");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "BorderContainer", null);
 
         assertEquals("dojo/BorderContainer", choices[0]);
     }
@@ -161,7 +161,7 @@ public class TestImportCreator
         libraries = new ArrayList<SourceLibrary>();
         libraries.add(new SourceLibrary("dijit", "website/static/deps/dijit"));
         libraries.add(new SourceLibrary("website", "website/static/js/website"));
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "ContentPane" );
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "ContentPane", null );
 
         assertEquals("dijit/layout/ContentPane", choices[0]);
     }
