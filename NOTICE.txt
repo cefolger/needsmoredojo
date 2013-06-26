@@ -1,0 +1,2 @@
+   Includes code from the Needs More Dojo IntelliJ IDEA plugin 
+   Copyright(C) 2013 Chris Folger <http://chrisfolger.com>
