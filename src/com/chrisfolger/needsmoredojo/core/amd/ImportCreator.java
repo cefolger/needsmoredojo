@@ -12,14 +12,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.LocalSearchScope;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class ImportCreator
 {
-    public static final String[] dojoLibraries = new String[] { "dojo", "dijit", "dojox", "dgrid", "util"};
-
     private int getScore(String item)
     {
         Map<String, Integer> scores = new LinkedHashMap<String, Integer>();
@@ -40,7 +39,12 @@ public class ImportCreator
         return 0;
     }
 
-    public String[] getChoicesFromFiles(PsiFile[] filesArray, String[] dojoLibraries, String module, @Nullable String sourcesBasePath)
+    // go through each source directory
+    // if source is substring of file then file is part of that module, so substring it
+
+
+
+    public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module)
     {
         List<String> choices = new ArrayList<String>();
 
@@ -50,22 +54,22 @@ public class ImportCreator
 
             PsiDirectory directory = file.getContainingDirectory();
             String result = directory.getVirtualFile().getCanonicalPath();
-            if(sourcesBasePath != null && result.indexOf(sourcesBasePath) > -1)
+            /*if(sourcesBasePath != null && result.indexOf(sourcesBasePath) > -1)
             {
                 result = result.substring(result.indexOf(sourcesBasePath) + sourcesBasePath.length());
-            }
+            }*/
 
             // parse dojo libraries only
             int firstIndex = Integer.MAX_VALUE;
             String firstLibrary = null;
 
-            for(String library : dojoLibraries)
+            for(SourceLibrary library : libraries)
             {
-                int index = result.indexOf(library);
+                int index = result.indexOf(library.getName());
                 if(index > -1 && index < firstIndex)
                 {
                     firstIndex = index;
-                    firstLibrary = library;
+                    firstLibrary = library.getName();
                 }
             }
 
@@ -93,8 +97,7 @@ public class ImportCreator
         PsiFile[] files = null;
         PsiFile[] filesWithUnderscore = null;
 
-        List<String> otherLibraries = new ArrayList<String>();
-        String basePath = "";
+        List<SourceLibrary> libraries = new ArrayList<SourceLibrary>();
 
         try
         {
@@ -119,9 +122,10 @@ public class ImportCreator
                 PsiDirectory sourceDirectory = dojoSourceModule.getContainingDirectory().getParentDirectory();
                 for(PsiDirectory directory : sourceDirectory.getSubdirectories())
                 {
-                    otherLibraries.add(directory.getName());
+                    SourceLibrary library = new SourceLibrary(directory.getName(), directory.getVirtualFile().getCanonicalPath());
+                    libraries.add(library);
                 }
-                basePath = sourceDirectory.getVirtualFile().getCanonicalPath();
+
             }
 
             files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
@@ -139,7 +143,7 @@ public class ImportCreator
 
         PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
-        return getChoicesFromFiles(filesArray, otherLibraries.toArray(new String[0]), module, basePath);
+        return getChoicesFromFiles(filesArray, libraries.toArray(new SourceLibrary[0]), module);
     }
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
