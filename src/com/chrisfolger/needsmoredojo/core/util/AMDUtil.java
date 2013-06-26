@@ -11,6 +11,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -42,6 +43,21 @@ public class AMDUtil
         }
 
         return null;
+    }
+
+    public static @NotNull VirtualFile[] getProjectSourceDirectories(Project project, boolean pullFromSettings)
+    {
+        DojoSettings settingsService = ServiceManager.getService(project, DojoSettings.class);
+        String projectLibrary = settingsService.getProjectSourcesDirectory();
+
+        // it's an array in case I decide to add multiple non-dojo source library capability
+        if(projectLibrary != null && !projectLibrary.equals("") && pullFromSettings)
+        {
+            VirtualFile file = LocalFileSystem.getInstance().findFileByPath(projectLibrary);
+            return new VirtualFile[] {  file };
+        }
+
+        return new VirtualFile[0];
     }
 
     public static @Nullable VirtualFile getDojoSourcesDirectory(Project project, boolean pullFromSettings)

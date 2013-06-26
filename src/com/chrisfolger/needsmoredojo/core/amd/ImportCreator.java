@@ -7,6 +7,7 @@ import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -105,30 +106,29 @@ public class ImportCreator
 
         try
         {
-            /*
-            this block of code checks to see if there are any non-dojo libraries on the same level as the dojo
-            folder. If this is the case, then we can resolve imports in those folders as well.
-             */
-            PsiFile[] dojoSources = FilenameIndex.getFilesByName(psiFile.getProject(), "dojo.js", GlobalSearchScope.projectScope(psiFile.getProject()));
-            if(dojoSources.length > 0)
+            VirtualFile dojoSourcesParentDirectory = AMDUtil.getDojoSourcesDirectory(psiFile.getProject(), true);
+            if(dojoSourcesParentDirectory != null)
             {
-                PsiFile dojoSourceModule = dojoSources[0];
-                for(int i=0;i<dojoSources.length;i++)
+                for(VirtualFile directory : dojoSourcesParentDirectory.getChildren())
                 {
-                    if(dojoSources[i].getContainingDirectory().getName().contains("dojo"))
-                    {
-                        dojoSourceModule = dojoSources[i];
-                        break;
-                    }
-                }
-
-                PsiDirectory sourceDirectory = dojoSourceModule.getContainingDirectory().getParentDirectory();
-                for(PsiDirectory directory : sourceDirectory.getSubdirectories())
-                {
-                    SourceLibrary library = new SourceLibrary(directory.getName(), directory.getVirtualFile().getCanonicalPath());
+                    SourceLibrary library = new SourceLibrary(directory.getName(), directory.getCanonicalPath());
                     libraries.add(library);
                 }
+            }
 
+            VirtualFile[] otherSourceDirectories = AMDUtil.getProjectSourceDirectories(psiFile.getProject(), true);
+            for(VirtualFile directory : otherSourceDirectories)
+            {
+                for(VirtualFile sourceDirectory : directory.getChildren())
+                {
+                    if(sourceDirectory.getName().contains("."))
+                    {
+                        continue; // file or hidden directory
+                    }
+
+                    SourceLibrary library = new SourceLibrary(sourceDirectory.getName(), sourceDirectory.getCanonicalPath());
+                    libraries.add(library);
+                }
             }
 
             files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
