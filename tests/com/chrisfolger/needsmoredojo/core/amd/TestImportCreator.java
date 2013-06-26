@@ -165,4 +165,19 @@ public class TestImportCreator
 
         assertEquals("dijit/layout/ContentPane", choices[0]);
     }
+
+    @Test
+    public void testRelativePathWithExternalModule()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("StandbyWrapper.js", "C:/foo/path/website/static/js/website")
+        };
+
+        libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website", true));
+
+        PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/website/anotherpackage");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule);
+
+        assertEquals("../StandbyWrapper", choices[0]);
+    }
 }

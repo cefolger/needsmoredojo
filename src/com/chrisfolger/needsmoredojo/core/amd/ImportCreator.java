@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.amd;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
+import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.components.ServiceManager;
@@ -79,6 +80,17 @@ public class ImportCreator
                 }
                 result = result.substring(result.indexOf(firstLibrary.getName()));
                 result = result.replace('\\', '/') + '/' + file.getName().substring(0, file.getName().indexOf('.'));
+
+                String originalModulePath = null;
+                if(originalModule != null && firstLibrary.isCanUseRelativePaths())
+                {
+                    originalModulePath = originalModule.getVirtualFile().getCanonicalPath();
+                    originalModulePath = firstLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(firstLibrary.getPath()) + firstLibrary.getPath().length());
+                    String relativePath = FileUtil.convertToRelativePath(originalModulePath, result);
+
+                    choices.add(relativePath);
+                }
+
                 choices.add(result);
             }
         }
