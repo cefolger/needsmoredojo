@@ -108,7 +108,7 @@ public class SourcesAutoDetector
                     }
                 }
 
-                super.visitXmlAttribute(attribute);    //To change body of overridden methods use File | Settings | File Templates.
+                super.visitXmlAttribute(attribute);
             }
         });
 

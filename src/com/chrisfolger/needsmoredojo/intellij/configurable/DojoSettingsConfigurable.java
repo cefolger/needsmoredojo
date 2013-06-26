@@ -177,6 +177,10 @@ public class DojoSettingsConfigurable implements Configurable {
         if(choices.length > 1)
         {
             result = Messages.showEditableChooseDialog("Found these possible source roots: ", "Auto-detect Project Sources", null, choices, choices[0], null);
+            if(result == null || result.equals(""))
+            {
+                return;
+            }
         }
 
         projectSourceString = result;
