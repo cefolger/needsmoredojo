@@ -3,17 +3,16 @@ package com.chrisfolger.needsmoredojo.core.amd;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
+import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.LocalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,15 +85,19 @@ public class ImportCreator
                 {
                     originalModulePath = originalModule.getContainingDirectory().getVirtualFile().getCanonicalPath();
                     originalModulePath = firstLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(firstLibrary.getPath()) + firstLibrary.getPath().length());
-                    String relativePath = FileUtil.getRelativePath(originalModulePath, result.replace("/" + module, ""), '/');
+
+                    String relativePath = FileUtil.convertToRelativePath(originalModulePath, result);
 
                     // need to use dojo syntax when two files are in the same directory
                     if(relativePath.equals("."))
                     {
                         relativePath = "./";
                     }
-
-                    relativePath = relativePath + module;
+                    else if (relativePath.charAt(0) != '.' && relativePath.charAt(0) != '/')
+                    {
+                        // top level module
+                        relativePath = "./" + relativePath;
+                    }
 
                     choices.add(relativePath);
                 }

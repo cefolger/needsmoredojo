@@ -210,4 +210,19 @@ public class TestImportCreator
 
         assertEquals("./package/StandbyWrapper", choices[0]);
     }
+
+    @Test
+    public void testRelativePathWithExternalModuleInAnotherPackage()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("StandbyWrapper.js", "C:/foo/path/website/static/js/theroot/website/package")
+        };
+
+        libraries.add(new SourceLibrary("theroot", "C:/foo/path/website/static/js/theroot", true));
+
+        PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/theroot/other");
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule);
+
+        assertEquals("../website/package/StandbyWrapper", choices[0]);
+    }
 }
