@@ -5,17 +5,17 @@ import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.XmlRecursiveElementVisitor;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SourcesAutoDetector
 {
@@ -26,7 +26,39 @@ public class SourcesAutoDetector
 
     private boolean isInDojoSources(String directory)
     {
-        return directory.contains("/dojo/") || directory.contains("/dijit/") || directory.contains("/dojox/") || directory.contains("/dgrid/") || directory.contains("/util/buildscripts/");
+        return directory.contains("/xstyle/") || directory.contains("/nls/") || directory.contains("/dojo/") || directory.contains("/dijit/") || directory.contains("/dojox/") || directory.contains("/dgrid/") || directory.contains("/util/buildscripts/");
+    }
+
+    private Set<String> getDojoModulesInJavaScriptFiles(Project project)
+    {
+        Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, "js");
+        Set<PsiFile> potentialFiles = new HashSet<PsiFile>();
+
+        for(VirtualFile file : files)
+        {
+            if(isInDojoSources(file.getCanonicalPath())) continue;
+
+            PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
+            potentialFiles.add(psiFile);
+        }
+
+        Set<String> matches = new HashSet<String>();
+        HashSet<PsiDirectory> attemptedDirectories = new HashSet<PsiDirectory>();
+        for(PsiFile file : potentialFiles)
+        {
+            if(attemptedDirectories.contains(file.getParent())) continue;
+
+            attemptedDirectories.add(file.getParent());
+            if(file.getText().contains("define("))
+            {
+                String path = file.getVirtualFile().getCanonicalPath();
+                path = path.substring(path.lastIndexOf('/') + 1);
+                path = path.substring(0, path.length() - 3);
+                matches.add(path);
+            }
+        }
+
+        return matches;
     }
 
     private Set<String> getDojoModulesInHtmlFile(PsiFile file)
@@ -124,6 +156,7 @@ public class SourcesAutoDetector
         /**
          * here's how we guess where the project root is:
          * open index.html to search for amd module references
+         * open javascript files and look for dojo modules inside
          */
 
         PsiFile[] files = FilenameIndex.getFilesByName(project, "index.html", GlobalSearchScope.projectScope(project));
@@ -144,6 +177,7 @@ public class SourcesAutoDetector
             possibleSourceModules.addAll(getDojoModulesInHtmlFile(file));
         }
         possibleDirectories.addAll(getDirectoriesForDojoModules(project, possibleSourceModules));
+        possibleDirectories.addAll(getDirectoriesForDojoModules(project, getDojoModulesInJavaScriptFiles(project)));
 
         return possibleDirectories;
     }
