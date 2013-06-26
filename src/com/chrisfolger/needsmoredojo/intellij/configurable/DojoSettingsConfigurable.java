@@ -13,6 +13,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.table.TableView;
 import org.jetbrains.annotations.Nullable;
@@ -67,9 +68,9 @@ public class DojoSettingsConfigurable implements Configurable {
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            PsiDirectory directory = AMDUtil.getDojoSourcesDirectory(project);
-            dojoSourcesText.setText(directory.getVirtualFile().getCanonicalPath());
-            dojoSourceString = directory.getVirtualFile().getCanonicalPath();
+            VirtualFile directory = AMDUtil.getDojoSourcesDirectory(project, false);
+            dojoSourcesText.setText(directory.getCanonicalPath());
+            dojoSourceString = directory.getCanonicalPath();
         }
     }
 

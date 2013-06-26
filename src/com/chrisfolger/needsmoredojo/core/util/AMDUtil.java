@@ -2,7 +2,9 @@ package com.chrisfolger.needsmoredojo.core.util;
 
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -42,24 +44,34 @@ public class AMDUtil
         return null;
     }
 
-    public static @Nullable PsiDirectory getDojoSourcesDirectory(Project project)
+    public static @Nullable VirtualFile getDojoSourcesDirectory(Project project, boolean pullFromSettings)
     {
-        // TODO other source roots
-        PsiFile[] files = FilenameIndex.getFilesByName(project, "dojo.js", GlobalSearchScope.projectScope(project));
-        PsiFile dojoFile = null;
+        DojoSettings settingsService = ServiceManager.getService(project, DojoSettings.class);
+        String dojoLibrary = settingsService.getDojoSourcesDirectory();
 
-        for(PsiFile file : files)
+        if(dojoLibrary != null && !dojoLibrary.equals("") && pullFromSettings)
         {
-            if(file.getContainingDirectory().getName().equals("dojo"))
-            {
-                dojoFile = file;
-                break;
-            }
+            VirtualFile file = LocalFileSystem.getInstance().findFileByPath(dojoLibrary);
+            return file;
         }
-
-        if(dojoFile != null)
+        else
         {
-            return dojoFile.getContainingDirectory().getParent();
+            PsiFile[] files = FilenameIndex.getFilesByName(project, "dojo.js", GlobalSearchScope.projectScope(project));
+            PsiFile dojoFile = null;
+
+            for(PsiFile file : files)
+            {
+                if(file.getContainingDirectory().getName().equals("dojo"))
+                {
+                    dojoFile = file;
+                    break;
+                }
+            }
+
+            if(dojoFile != null)
+            {
+                return dojoFile.getContainingDirectory().getParent().getVirtualFile();
+            }
         }
 
         return null;
@@ -67,13 +79,13 @@ public class AMDUtil
 
     public static VirtualFile getAMDImportFile(Project project, String modulePath, PsiDirectory sourceFileParentDirectory)
     {
-        PsiDirectory dojoSourcesRoot = getDojoSourcesDirectory(project);
+        VirtualFile dojoSourcesRoot = getDojoSourcesDirectory(project, true);
 
         String parsedPath = modulePath.replaceAll("('|\")", "");
         if(parsedPath.charAt(0) != '.') // this means it's not a relative path, but rather a defined package path
         {
             parsedPath = "/" + parsedPath;
-            return dojoSourcesRoot.getVirtualFile().findFileByRelativePath(parsedPath);
+            return dojoSourcesRoot.findFileByRelativePath(parsedPath);
         }
         else
         {

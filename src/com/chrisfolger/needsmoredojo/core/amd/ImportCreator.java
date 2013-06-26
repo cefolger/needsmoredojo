@@ -108,7 +108,6 @@ public class ImportCreator
             /*
             this block of code checks to see if there are any non-dojo libraries on the same level as the dojo
             folder. If this is the case, then we can resolve imports in those folders as well.
-            (ideal TODO: have optional source directory configurations??)
              */
             PsiFile[] dojoSources = FilenameIndex.getFilesByName(psiFile.getProject(), "dojo.js", GlobalSearchScope.projectScope(psiFile.getProject()));
             if(dojoSources.length > 0)
