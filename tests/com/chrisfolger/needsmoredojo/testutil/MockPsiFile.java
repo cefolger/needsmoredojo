@@ -49,4 +49,12 @@ public class MockPsiFile extends PsiFileImpl
     {
         return this.name;
     }
+
+    @Override
+    public VirtualFile getVirtualFile()
+    {
+        VirtualFile file = mock(VirtualFile.class);
+        when(file.getCanonicalPath()).thenReturn(this.path);
+        return file;
+    }
 }
