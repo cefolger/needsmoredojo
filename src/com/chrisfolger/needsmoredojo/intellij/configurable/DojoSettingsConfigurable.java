@@ -14,19 +14,15 @@ import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.ui.table.TableView;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 public class DojoSettingsConfigurable implements Configurable {
     private JComponent myComponent;
-    private JButton autoDetect;
+    private JButton autoDetectDojoSources;
     private JPanel myPanel;
     private TextFieldWithBrowseButton projectSourcesText;
     private TextFieldWithBrowseButton dojoSourcesText;
@@ -36,6 +32,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JTextField addParameterText;
     private JButton removeMapping;
     private JCheckBox preferRelativePathsWhenCheckBox;
+    private JButton autoDetectProjectSources;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -97,7 +94,7 @@ public class DojoSettingsConfigurable implements Configurable {
         projectSourcesText.addBrowseFolderListener(null, new ProjectSourcesChosen("Project Sources", "Select the root of your project's sources to support certain features of Needs More Dojo", descriptor));
         dojoSourcesText.addBrowseFolderListener(null, new DojoSourcesChosen("Dojo Sources", "Select the root of the dojo library sources to support certain features of Needs More Dojo", descriptor));
 
-        autoDetect.addActionListener(new AutoDetectDojoSources());
+        autoDetectDojoSources.addActionListener(new AutoDetectDojoSources());
 
         // don't know how else to get the current project???
         DataContext context = DataManager.getInstance().getDataContext();
