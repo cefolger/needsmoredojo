@@ -46,7 +46,7 @@ public class UtilToClassConverter implements DeclareFinder.CompletionCallback
         parent.replace(JSUtil.createStatement(parent, result));
     }
 
-    public @NotNull String buildUtilPatternString(@Nullable JSLiteralExpression className, @NotNull JSExpression[] mixins, @NotNull List<JSExpressionStatement> methods)
+    public @NotNull String buildUtilPatternString(@Nullable JSLiteralExpression className, @NotNull JSExpression[] mixins, @NotNull List<JSExpressionStatement> methods, @NotNull String utilVariableName)
     {
         // build an array of mixins for the new declare statement
         StringBuilder mixinArray = new StringBuilder();
@@ -81,7 +81,7 @@ public class UtilToClassConverter implements DeclareFinder.CompletionCallback
                 definition = ((JSIndexedPropertyAccessExpression)reference).getIndexExpression().getText();
             }
 
-            String content = expression.getChildren()[1].getText();
+            String content = expression.getChildren()[1].getText().replaceAll(utilVariableName, "this");
 
             if(i < methods.size() - 1)
             {
@@ -107,7 +107,9 @@ public class UtilToClassConverter implements DeclareFinder.CompletionCallback
     {
         PsiElement parent = originalReturnStatement.getParent();
 
-        String declareStatement = buildUtilPatternString(className, mixins, methods);
+        JSVariable variable = declarationVariable.getVariables()[0];
+
+        String declareStatement = buildUtilPatternString(className, mixins, methods, variable.getName());
         PsiElement declareExpression = JSUtil.createStatement(parent, declareStatement);
         parent.addBefore(declareExpression, originalReturnStatement);
 
