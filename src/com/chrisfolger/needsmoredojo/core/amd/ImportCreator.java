@@ -42,6 +42,11 @@ public class ImportCreator
 
     public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule)
     {
+        return getChoicesFromFiles(filesArray, libraries, module, originalModule, false);
+    }
+
+    public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths)
+    {
         List<String> choices = new ArrayList<String>();
 
         for(int i=0;i<filesArray.length;i++)
@@ -81,6 +86,9 @@ public class ImportCreator
                 result = result.replace('\\', '/') + '/' + file.getName().substring(0, file.getName().indexOf('.'));
 
                 String originalModulePath = null;
+                String relativePathOption = null;
+                String absolutePathOption = null;
+
                 if(originalModule != null && firstLibrary.isCanUseRelativePaths())
                 {
                     originalModulePath = originalModule.getContainingDirectory().getVirtualFile().getCanonicalPath();
@@ -99,10 +107,24 @@ public class ImportCreator
                         relativePath = "./" + relativePath;
                     }
 
-                    choices.add(relativePath);
+                    relativePathOption = relativePath;
                 }
 
-                choices.add(result);
+                absolutePathOption = result;
+
+                if(prioritizeRelativePaths && relativePathOption != null)
+                {
+                    choices.add(relativePathOption);
+                    choices.add(absolutePathOption);
+                }
+                else
+                {
+                    choices.add(absolutePathOption);
+                    if(relativePathOption != null)
+                    {
+                        choices.add(relativePathOption);
+                    }
+                }
             }
         }
 
@@ -117,7 +139,7 @@ public class ImportCreator
         return choices.toArray(new String[0]);
     }
 
-    public String[] getPossibleDojoImports(PsiFile psiFile, String module)
+    public String[] getPossibleDojoImports(PsiFile psiFile, String module, boolean prioritizeRelativeImports)
     {
         PsiFile[] files = null;
         PsiFile[] filesWithUnderscore = null;
@@ -166,7 +188,7 @@ public class ImportCreator
 
         PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
-        return getChoicesFromFiles(filesArray, libraries.toArray(new SourceLibrary[0]), module, psiFile);
+        return getChoicesFromFiles(filesArray, libraries.toArray(new SourceLibrary[0]), module, psiFile, prioritizeRelativeImports);
     }
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)

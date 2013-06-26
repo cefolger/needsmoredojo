@@ -176,7 +176,7 @@ public class TestImportCreator
         libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website", true));
 
         PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/website/anotherpackage");
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule);
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
 
         assertEquals("../StandbyWrapper", choices[0]);
     }
@@ -191,7 +191,7 @@ public class TestImportCreator
         libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website", true));
 
         PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/website");
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule);
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
 
         assertEquals("./StandbyWrapper", choices[0]);
     }
@@ -206,7 +206,7 @@ public class TestImportCreator
         libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website", true));
 
         PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/website");
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule);
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
 
         assertEquals("./package/StandbyWrapper", choices[0]);
     }
@@ -221,7 +221,7 @@ public class TestImportCreator
         libraries.add(new SourceLibrary("theroot", "C:/foo/path/website/static/js/theroot", true));
 
         PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/theroot/other");
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule);
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
 
         assertEquals("../website/package/StandbyWrapper", choices[0]);
     }

@@ -1,11 +1,12 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiFile;
 
@@ -22,7 +23,8 @@ public class AddNewImportAction extends JavaScriptAction
             return;
         }
 
-        String[] choices = new ImportCreator().getPossibleDojoImports(psiFile, importModule);
+        DojoSettings settingsService = ServiceManager.getService(psiFile.getProject(), DojoSettings.class);
+        String[] choices = new ImportCreator().getPossibleDojoImports(psiFile, importModule, settingsService.isPreferRelativeImports());
         // there will be always one choice (the original module)
         if(choices.length > 0)
         {
