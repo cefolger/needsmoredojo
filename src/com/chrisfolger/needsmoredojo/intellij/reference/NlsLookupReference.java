@@ -7,6 +7,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReferenceBase;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,6 +76,14 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         defineText = defineText.substring(defineText.lastIndexOf("!") + 1).replaceAll("'", "");
 
         VirtualFile i18nFile = AMDUtil.getAMDImportFile(correctDefine.getProject(), defineText + ".js", correctDefine.getContainingFile().getContainingDirectory());
+
+        if(i18nFile == null)
+        {
+            // probably not in the same directory as the dojo sources
+            Logger.getLogger(NlsLookupReference.class).log(Priority.DEBUG, "can't find " + defineText + ".js");
+            return file;
+        }
+
         PsiFile templateFile = PsiManager.getInstance(correctDefine.getProject()).findFile(i18nFile);
 
         file = templateFile;
