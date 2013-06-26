@@ -60,6 +60,18 @@ public class AMDUtil
         return new VirtualFile[0];
     }
 
+    public static @NotNull VirtualFile[] getAllSourceDirectories(Project project, boolean pullFromSettings)
+    {
+        List<VirtualFile> sourceFiles = new ArrayList<VirtualFile>();
+        for(VirtualFile file : getProjectSourceDirectories(project, pullFromSettings))
+        {
+            sourceFiles.add(file);
+        }
+        sourceFiles.add(getDojoSourcesDirectory(project, true));
+
+        return sourceFiles.toArray(new VirtualFile[0]);
+    }
+
     public static @Nullable VirtualFile getDojoSourcesDirectory(Project project, boolean pullFromSettings)
     {
         DojoSettings settingsService = ServiceManager.getService(project, DojoSettings.class);
@@ -93,20 +105,30 @@ public class AMDUtil
         return null;
     }
 
-    public static VirtualFile getAMDImportFile(Project project, String modulePath, PsiDirectory sourceFileParentDirectory)
+    public static @Nullable VirtualFile getAMDImportFile(Project project, String modulePath, PsiDirectory sourceFileParentDirectory)
     {
-        VirtualFile dojoSourcesRoot = getDojoSourcesDirectory(project, true);
+        for(VirtualFile source : getAllSourceDirectories(project, true))
+        {
+            VirtualFile result = null;
 
-        String parsedPath = modulePath.replaceAll("('|\")", "");
-        if(parsedPath.charAt(0) != '.') // this means it's not a relative path, but rather a defined package path
-        {
-            parsedPath = "/" + parsedPath;
-            return dojoSourcesRoot.findFileByRelativePath(parsedPath);
+            String parsedPath = modulePath.replaceAll("('|\")", "");
+            if(parsedPath.charAt(0) != '.') // this means it's not a relative path, but rather a defined package path
+            {
+                parsedPath = "/" + parsedPath;
+                result = source.findFileByRelativePath(parsedPath);
+            }
+            else
+            {
+                result = sourceFileParentDirectory.getVirtualFile().findFileByRelativePath(parsedPath);
+            }
+
+            if(result != null)
+            {
+                return result;
+            }
         }
-        else
-        {
-            return sourceFileParentDirectory.getVirtualFile().findFileByRelativePath(parsedPath);
-        }
+
+        return null;
     }
 
     public static String defineToParameter(String define, Map<String, String> exceptions)
