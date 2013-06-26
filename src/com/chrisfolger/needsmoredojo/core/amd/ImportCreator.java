@@ -40,11 +40,6 @@ public class ImportCreator
         return 0;
     }
 
-    // go through each source directory
-    // if source is substring of file then file is part of that module, so substring it
-
-
-
     public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module)
     {
         List<String> choices = new ArrayList<String>();
