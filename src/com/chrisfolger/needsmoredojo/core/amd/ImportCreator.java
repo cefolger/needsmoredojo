@@ -55,10 +55,6 @@ public class ImportCreator
 
             PsiDirectory directory = file.getContainingDirectory();
             String result = directory.getVirtualFile().getCanonicalPath();
-            /*if(sourcesBasePath != null && result.indexOf(sourcesBasePath) > -1)
-            {
-                result = result.substring(result.indexOf(sourcesBasePath) + sourcesBasePath.length());
-            }*/
 
             // parse dojo libraries only
             int firstIndex = Integer.MAX_VALUE;
@@ -66,7 +62,13 @@ public class ImportCreator
 
             for(SourceLibrary library : libraries)
             {
-                int index = result.indexOf(library.getName());
+                String fileWithoutLibraryPath = result;
+                if(fileWithoutLibraryPath.indexOf(library.getPath()) != -1)
+                {
+                    fileWithoutLibraryPath = library.getName() + fileWithoutLibraryPath.substring(fileWithoutLibraryPath.indexOf(library.getPath()) + library.getPath().length());
+                }
+
+                int index = fileWithoutLibraryPath.indexOf(library.getName());
                 if(index > -1 && index < firstIndex)
                 {
                     firstIndex = index;
