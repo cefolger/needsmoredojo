@@ -21,6 +21,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private LinkedHashMap<String, String> amdImportNamingExceptions;
     private String dojoSourcesDirectory;
     private String projectSourcesDirectory;
+    private boolean preferRelativeImports;
 
     public DojoSettings()
     {
@@ -28,6 +29,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         // for now though, they are just hard-coded.
         amdImportNamingExceptions = new LinkedHashMap<String, String>();
         amdImportNamingExceptions.put("dojo/sniff", "has");
+        preferRelativeImports = false;
     }
 
     public @NotNull LinkedHashMap<String, String> getExceptionsMap()
@@ -69,6 +71,14 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public void setProjectSourcesDirectory(String projectSourcesDirectory) {
         this.projectSourcesDirectory = projectSourcesDirectory;
+    }
+
+    public boolean isPreferRelativeImports() {
+        return preferRelativeImports;
+    }
+
+    public void setPreferRelativeImports(boolean preferRelativeImports) {
+        this.preferRelativeImports = preferRelativeImports;
     }
 
     @Nullable

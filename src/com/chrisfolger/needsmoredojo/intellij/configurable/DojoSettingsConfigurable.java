@@ -35,6 +35,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JTextField addModuleText;
     private JTextField addParameterText;
     private JButton removeMapping;
+    private JCheckBox preferRelativePathsWhenCheckBox;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -124,6 +125,14 @@ public class DojoSettingsConfigurable implements Configurable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 builder.getTableModel().removeRow(moduleExceptionsTable.getSelectedRow());
+            }
+        });
+
+        preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
+        preferRelativePathsWhenCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                settingsService.setPreferRelativeImports(preferRelativePathsWhenCheckBox.isSelected());
             }
         });
 
