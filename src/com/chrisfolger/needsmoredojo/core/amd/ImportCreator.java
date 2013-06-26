@@ -3,11 +3,11 @@ package com.chrisfolger.needsmoredojo.core.amd;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
-import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
@@ -84,9 +84,17 @@ public class ImportCreator
                 String originalModulePath = null;
                 if(originalModule != null && firstLibrary.isCanUseRelativePaths())
                 {
-                    originalModulePath = originalModule.getVirtualFile().getCanonicalPath();
+                    originalModulePath = originalModule.getContainingDirectory().getVirtualFile().getCanonicalPath();
                     originalModulePath = firstLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(firstLibrary.getPath()) + firstLibrary.getPath().length());
-                    String relativePath = FileUtil.convertToRelativePath(originalModulePath, result);
+                    String relativePath = FileUtil.getRelativePath(originalModulePath, result.replace("/" + module, ""), '/');
+
+                    // need to use dojo syntax when two files are in the same directory
+                    if(relativePath.equals("."))
+                    {
+                        relativePath = "./";
+                    }
+
+                    relativePath = relativePath + module;
 
                     choices.add(relativePath);
                 }
