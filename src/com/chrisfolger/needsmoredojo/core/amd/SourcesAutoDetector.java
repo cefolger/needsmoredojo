@@ -142,6 +142,7 @@ public class SourcesAutoDetector
                     }
 
                     possibleDirectories.add(path);
+                    possibleDirectories.add(file.getParent().getParent().getVirtualFile().getCanonicalPath());
                 }
             }
         }
