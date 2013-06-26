@@ -12,6 +12,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
 
 public class DojoSettingsConfigurable implements Configurable {
     private JComponent myComponent;
@@ -129,7 +131,7 @@ public class DojoSettingsConfigurable implements Configurable {
         autoDetectProjectSources.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new SourcesAutoDetector().getPossibleSourceRoots(project);
+                addAutoDetectedSource(new SourcesAutoDetector().getPossibleSourceRoots(project));
             }
         });
 
@@ -147,6 +149,26 @@ public class DojoSettingsConfigurable implements Configurable {
     public Icon getIcon()
     {
         return null;
+    }
+
+    private void addAutoDetectedSource(Set<String> possibleSourceRoots)
+    {
+        String[] choices = possibleSourceRoots.toArray(new String[0]);
+
+        if(choices.length == 0)
+        {
+            Messages.showInfoMessage("Could not find any source roots via auto-detection", "Auto-detect Project Sources");
+            return;
+        }
+
+        String result = choices[0];
+        if(choices.length > 1)
+        {
+            result = Messages.showEditableChooseDialog("Found these possible source roots: ", "Auto-detect Project Sources", null, choices, choices[0], null);
+        }
+
+        projectSourceString = result;
+        projectSourcesText.setText(result);
     }
 
     public void apply()

@@ -1,15 +1,15 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
-import com.intellij.lang.StdLanguages;
-import com.intellij.lang.javascript.JavascriptLanguage;
+import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.lang.javascript.psi.JSCallExpression;
+import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.XmlRecursiveElementVisitor;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 
 import java.util.ArrayList;
@@ -42,6 +42,20 @@ public class SourcesAutoDetector
                     return;
                 }
 
+                if(node.getArguments().length > 0 && node.getArguments()[0] instanceof JSArrayLiteralExpression)
+                {
+                    JSArrayLiteralExpression arguments = (JSArrayLiteralExpression) node.getArguments()[0];
+                    for(JSExpression literal : arguments.getExpressions())
+                    {
+                        String literalText = literal.getText().replaceAll("'", "").replaceAll("\"", "");
+
+                        if(!isDojoModule(literalText))
+                        {
+                            modules.add(literalText);
+                        }
+                    }
+                }
+
                 super.visitJSCallExpression(node);
             }
         });
@@ -69,12 +83,47 @@ public class SourcesAutoDetector
         return modules;
     }
 
-    public PsiFile[] getPossibleSourceRoots(Project project)
+    private Set<String> getDirectoriesForDojoModules(Project project, Set<String> modules)
     {
+        Set<String> possibleDirectories = new HashSet<String>();
+
+        for(String module : modules)
+        {
+            String moduleParent = module;
+
+            if(module.contains("/"))
+            {
+                module = module.substring(module.lastIndexOf("/") + 1);
+            }
+
+            PsiFile[] files = FilenameIndex.getFilesByName(project, module + ".js", GlobalSearchScope.projectScope(project));
+
+            for(PsiFile file : files)
+            {
+                if( file.getVirtualFile().getCanonicalPath().contains(moduleParent))
+                {
+                    String path = file.getVirtualFile().getCanonicalPath();
+                    path = path.substring(0, path.indexOf(moduleParent));
+                    if(path.charAt(path.length() - 1) == '/')
+                    {
+                        path = path.substring(0, path.length()-1);
+                    }
+
+                    possibleDirectories.add(path);
+                }
+            }
+        }
+
+        return possibleDirectories;
+    }
+
+    public Set<String> getPossibleSourceRoots(Project project)
+    {
+        Set<String> possibleDirectories = new HashSet<String>();
+
         /**
          * here's how we guess where the project root is:
          * open index.html to search for amd module references
-         * open javascript files, check if they are amd modules, and if so find the root of them
          */
 
         PsiFile[] files = FilenameIndex.getFilesByName(project, "index.html", GlobalSearchScope.projectScope(project));
@@ -89,11 +138,13 @@ public class SourcesAutoDetector
             }
         }
 
+        Set<String> possibleSourceModules = new HashSet<String>();
         for(PsiFile file : potentialFiles)
         {
-            getDojoModulesInHtmlFile(file);
+            possibleSourceModules.addAll(getDojoModulesInHtmlFile(file));
         }
+        possibleDirectories.addAll(getDirectoriesForDojoModules(project, possibleSourceModules));
 
-        return files;
+        return possibleDirectories;
     }
 }
