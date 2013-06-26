@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.3.1</version>
+  <version>0.4</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -12,7 +12,7 @@
                 <li>organize AMD imports by sorting alphabetically (aware of plugins and other things tacked on the end)</li>
                 <li>detect inconsistent naming in AMD imports</li>
                 <li>convert util style modules to class style modules and vice-versa</li>
-                <li>Add new AMD imports option for quick and safe importing</li>
+                <li>Add new AMD imports option for quick and safe importing using absolute or relative path syntax</li>
                 <li>Ctrl+Click is supported for dojo/i18n resource strings</li>
                 <li>Jump to attach points inside modules that mixin _TemplatedWidget with Ctrl+Shift+O, A</li>
             </ul>
@@ -20,6 +20,15 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>0.4</b>
+            <ul>
+                <li>Project sources no longer have to be on the same level as the dojo sources for some features to work </li>
+                <li>Settings dialog to configure location of project and dojo sources</li>
+                <li>Module naming exceptions for the mismatched define/parameter inspection</li>
+                <li>Relative paths are now supported in the add AMD imports popup</li>
+                <li>Auto-detection for dojo and project sources (experimental)
+            </ul>
+
             <b>0.3.1 (Maintenance release)</b>
             <ul>
                 <li>Fix for case when trailing comma still remained in define statement after import removal (Issue #57)</li>
