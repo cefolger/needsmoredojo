@@ -115,14 +115,14 @@ public class TestImportCreator
     public void testExternalLibrary()
     {
         PsiFile[] files = new PsiFile[] {
-                new MockPsiFile("Grid.js", "website/static/js/website/foo")
+                new MockPsiFile("StandbyWrapper.js", "C:/foo/path/website/static/js/website")
         };
 
-        libraries.add(new SourceLibrary("website", "website/static/js"));
+        libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website"));
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "Grid" );
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" );
 
-        assertEquals("website/foo/Grid", choices[0]);
+        assertEquals("website/StandbyWrapper", choices[0]);
     }
 
     @Test

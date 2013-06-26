@@ -80,7 +80,7 @@ public class ImportCreator
             {
                 if(!firstLibrary.getPath().equals(""))
                 {
-                    result = result.substring(result.indexOf(firstLibrary.getPath()) + 1);
+                    result = firstLibrary.getName() + result.substring(result.indexOf(firstLibrary.getPath()) + firstLibrary.getPath().length());
                 }
                 result = result.substring(result.indexOf(firstLibrary.getName()));
                 result = result.replace('\\', '/') + '/' + file.getName().substring(0, file.getName().indexOf('.'));
