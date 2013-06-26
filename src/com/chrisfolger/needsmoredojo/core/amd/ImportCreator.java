@@ -61,7 +61,7 @@ public class ImportCreator
 
             // parse dojo libraries only
             int firstIndex = Integer.MAX_VALUE;
-            String firstLibrary = null;
+            SourceLibrary firstLibrary = null;
 
             for(SourceLibrary library : libraries)
             {
@@ -69,13 +69,17 @@ public class ImportCreator
                 if(index > -1 && index < firstIndex)
                 {
                     firstIndex = index;
-                    firstLibrary = library.getName();
+                    firstLibrary = library;
                 }
             }
 
             if(firstLibrary != null)
             {
-                result = result.substring(result.indexOf(firstLibrary));
+                if(!firstLibrary.getPath().equals(""))
+                {
+                    result = result.substring(result.indexOf(firstLibrary.getPath()) + 1);
+                }
+                result = result.substring(result.indexOf(firstLibrary.getName()));
                 result = result.replace('\\', '/') + '/' + file.getName().substring(0, file.getName().indexOf('.'));
                 choices.add(result);
             }

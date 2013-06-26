@@ -26,6 +26,7 @@ public class TestImportCreator
 
         libraries.add(new SourceLibrary("dijit", ""));
         libraries.add(new SourceLibrary("dojox", ""));
+        libraries.add(new SourceLibrary("dojo", ""));
         libraries.add(new SourceLibrary("util", ""));
         libraries.add(new SourceLibrary("dgrid", ""));
     }
