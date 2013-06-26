@@ -146,14 +146,14 @@ public class DojoSettingsConfigurable implements Configurable {
 
     public void apply()
     {
-        if(dojoSourceString != null)
+        if(dojoSourcesText.getText() != null)
         {
-           settingsService.setDojoSourcesDirectory(dojoSourceString);
+           settingsService.setDojoSourcesDirectory(dojoSourcesText.getText());
         }
 
-        if(projectSourceString != null)
+        if(projectSourcesText.getText() != null)
         {
-           settingsService.setProjectSourcesDirectory(projectSourceString);
+           settingsService.setProjectSourcesDirectory(projectSourcesText.getText());
         }
     }
 
