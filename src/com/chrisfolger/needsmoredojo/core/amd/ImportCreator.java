@@ -108,7 +108,7 @@ public class ImportCreator
             {
                 for(VirtualFile directory : dojoSourcesParentDirectory.getChildren())
                 {
-                    SourceLibrary library = new SourceLibrary(directory.getName(), directory.getCanonicalPath());
+                    SourceLibrary library = new SourceLibrary(directory.getName(), directory.getCanonicalPath(), false);
                     libraries.add(library);
                 }
             }
@@ -123,7 +123,7 @@ public class ImportCreator
                         continue; // file or hidden directory
                     }
 
-                    SourceLibrary library = new SourceLibrary(sourceDirectory.getName(), sourceDirectory.getCanonicalPath());
+                    SourceLibrary library = new SourceLibrary(sourceDirectory.getName(), sourceDirectory.getCanonicalPath(), true);
                     libraries.add(library);
                 }
             }
