@@ -10,6 +10,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -228,5 +229,72 @@ public class ImportCreator
         });
 
         file.acceptChildren(visitor);
+    }
+
+    /**
+     * when the user adds a new import, this code searches for the nearest possible element
+     * to the cursor that they may have wanted to import and returns a suggested choice.
+     *
+     * I know this method is crude/hard to read and could be way more elegant, however it's good enough for now
+     * and produces quite a lot of benefit for low effort
+     *
+     * TODO this is a good candidate for unit testing...
+     */
+    public String getSuggestedImport(@Nullable PsiElement element)
+    {
+        if(element == null)
+        {
+            return "";
+        }
+
+        String initialChoice = "";
+        PsiElement parent = element.getParent();
+        PsiElement previousSibling = element.getPrevSibling();
+
+        // (underscore represents cursor)
+        // we're just over a reference. Example: Site_Util
+        if (element.getParent() != null && element.getParent() instanceof JSReferenceExpression)
+        {
+            initialChoice = element.getText();
+        }
+        // we're inside a constructor. Example: new Button({_});
+        if(element.getParent() instanceof JSObjectLiteralExpression)
+        {
+            JSObjectLiteralExpression literal = (JSObjectLiteralExpression) element.getParent();
+            if(literal.getParent() != null && literal.getParent().getParent() != null && literal.getParent().getParent() instanceof JSNewExpression)
+            {
+                initialChoice = ((JSNewExpression)literal.getParent().getParent()).getMethodExpression().getText();
+            }
+        }
+        // we're inside a new expression Example: new Button_
+        if(parent != null && element.getParent().getParent() != null && parent.getParent() instanceof JSNewExpression)
+        {
+            initialChoice = ((JSNewExpression)parent.getParent()).getMethodExpression().getText();
+        }
+        // we're right after a new expression. Example: new Button({}) _
+        else if (previousSibling != null && previousSibling.getChildren().length > 0 && previousSibling.getChildren()[0] instanceof JSNewExpression)
+        {
+            initialChoice = ((JSNewExpression)previousSibling.getChildren()[0]).getMethodExpression().getText();
+        }
+        // right after a reference. Example: SiteUtil_
+        else if (previousSibling != null && previousSibling.getChildren().length > 0 && previousSibling.getChildren()[0] instanceof JSReferenceExpression)
+        {
+            initialChoice = previousSibling.getChildren()[0].getText();
+        }
+        // after a variable declaration. Example: var x = new Button({})_
+        else if (previousSibling != null && element.getPrevSibling() instanceof JSVarStatement)
+        {
+            JSVarStatement statement = (JSVarStatement) element.getPrevSibling();
+            for(JSVariable variable : statement.getVariables())
+            {
+                if(variable.getInitializer() instanceof JSNewExpression)
+                {
+                    JSNewExpression expression = (JSNewExpression) variable.getInitializer();
+                    initialChoice = expression.getMethodExpression().getText();
+                }
+            }
+        }
+
+        return initialChoice;
     }
 }
