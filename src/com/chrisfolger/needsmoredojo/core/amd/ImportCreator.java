@@ -89,25 +89,28 @@ public class ImportCreator
                 String relativePathOption = null;
                 String absolutePathOption = null;
 
-                if(originalModule != null && firstLibrary.isCanUseRelativePaths())
+                if(originalModule != null)
                 {
                     originalModulePath = originalModule.getContainingDirectory().getVirtualFile().getCanonicalPath();
                     originalModulePath = firstLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(firstLibrary.getPath()) + firstLibrary.getPath().length());
 
                     String relativePath = FileUtil.convertToRelativePath(originalModulePath, result);
 
-                    // need to use dojo syntax when two files are in the same directory
-                    if(relativePath.equals("."))
+                    if(relativePath != null)
                     {
-                        relativePath = "./";
-                    }
-                    else if (relativePath.charAt(0) != '.' && relativePath.charAt(0) != '/')
-                    {
-                        // top level module
-                        relativePath = "./" + relativePath;
-                    }
+                        // need to use dojo syntax when two files are in the same directory
+                        if(relativePath.equals("."))
+                        {
+                            relativePath = "./";
+                        }
+                        else if (relativePath.charAt(0) != '.' && relativePath.charAt(0) != '/')
+                        {
+                            // top level module
+                            relativePath = "./" + relativePath;
+                        }
 
-                    relativePathOption = relativePath;
+                        relativePathOption = relativePath;
+                    }
                 }
 
                 absolutePathOption = result;
@@ -153,7 +156,7 @@ public class ImportCreator
             {
                 for(VirtualFile directory : dojoSourcesParentDirectory.getChildren())
                 {
-                    SourceLibrary library = new SourceLibrary(directory.getName(), directory.getCanonicalPath(), false);
+                    SourceLibrary library = new SourceLibrary(directory.getName(), directory.getCanonicalPath(), true);
                     libraries.add(library);
                 }
             }
