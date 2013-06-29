@@ -87,6 +87,8 @@ public class DojoSettingsConfigurable implements Configurable {
             dojoSourcesText.setText(directory.getCanonicalPath());
             dojoSourceString = directory.getCanonicalPath();
             autoDetectDojoSources.setEnabled(true);
+
+            updateModifiedState();
         }
     }
 
@@ -172,6 +174,7 @@ public class DojoSettingsConfigurable implements Configurable {
                 autoDetectProjectSources.setEnabled(false);
                 addAutoDetectedSource(new SourcesAutoDetector().getPossibleSourceRoots(project));
                 autoDetectProjectSources.setEnabled(true);
+                updateModifiedState();
             }
         });
 
@@ -257,5 +260,7 @@ public class DojoSettingsConfigurable implements Configurable {
         projectSourcesText.setText(projectSourceString);
 
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
+
+        modified = false;
     }
 }
