@@ -41,6 +41,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private String dojoSourceString;
     private String projectSourceString;
     private DojoSettings settingsService;
+    private boolean modified = false;
 
     public String getDisplayName() {
         return "Needs More Dojo";
@@ -149,12 +150,6 @@ public class DojoSettingsConfigurable implements Configurable {
         });
 
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
-        preferRelativePathsWhenCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                settingsService.setPreferRelativeImports(preferRelativePathsWhenCheckBox.isSelected());
-            }
-        });
 
         return myComponent;
     }
@@ -204,6 +199,8 @@ public class DojoSettingsConfigurable implements Configurable {
         {
            settingsService.setProjectSourcesDirectory(projectSourcesText.getText());
         }
+
+        settingsService.setPreferRelativeImports(preferRelativePathsWhenCheckBox.isSelected());
     }
 
     public void disposeUIResources() {
