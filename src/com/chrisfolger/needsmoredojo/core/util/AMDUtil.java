@@ -56,8 +56,11 @@ public class AMDUtil
             VirtualFile file = LocalFileSystem.getInstance().findFileByPath(projectLibrary);
             return new VirtualFile[] {  file };
         }
-
-        return new VirtualFile[0];
+        else
+        {
+            // return the dojo library sources
+            return new VirtualFile[] { getDojoSourcesDirectory(project, pullFromSettings) };
+        }
     }
 
     public static @NotNull VirtualFile[] getAllSourceDirectories(Project project, boolean pullFromSettings)
