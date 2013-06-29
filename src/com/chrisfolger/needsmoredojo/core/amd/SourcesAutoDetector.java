@@ -134,14 +134,7 @@ public class SourcesAutoDetector
             {
                 if( file.getVirtualFile().getCanonicalPath().contains(moduleParent))
                 {
-                    String path = file.getVirtualFile().getCanonicalPath();
-                    path = path.substring(0, path.indexOf(moduleParent));
-                    if(path.charAt(path.length() - 1) == '/')
-                    {
-                        path = path.substring(0, path.length()-1);
-                    }
-
-                    possibleDirectories.add(file.getParent().getParent().getVirtualFile().getCanonicalPath());
+                    possibleDirectories.add(file.getParent().getParent().getName() +  " (" + file.getParent().getParent().getVirtualFile().getCanonicalPath() + ")");
                 }
             }
         }
@@ -180,6 +173,7 @@ public class SourcesAutoDetector
         possibleDirectories.addAll(getDirectoriesForDojoModules(project, getDojoModulesInJavaScriptFiles(project)));
 
         List<String> choices = new ArrayList<String>(possibleDirectories);
+
         Collections.sort(choices, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {

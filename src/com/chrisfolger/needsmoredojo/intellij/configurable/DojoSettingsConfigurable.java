@@ -182,6 +182,11 @@ public class DojoSettingsConfigurable implements Configurable {
             {
                 return;
             }
+
+            if(result.contains("(") && result.contains(")"))
+            {
+                result = result.substring(result.indexOf('(') + 1, result.indexOf(')'));
+            }
         }
 
         projectSourceString = result;
