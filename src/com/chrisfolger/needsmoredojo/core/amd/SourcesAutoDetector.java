@@ -149,7 +149,7 @@ public class SourcesAutoDetector
         return possibleDirectories;
     }
 
-    public Set<String> getPossibleSourceRoots(Project project)
+    public List<String> getPossibleSourceRoots(Project project)
     {
         Set<String> possibleDirectories = new HashSet<String>();
 
@@ -179,6 +179,14 @@ public class SourcesAutoDetector
         possibleDirectories.addAll(getDirectoriesForDojoModules(project, possibleSourceModules));
         possibleDirectories.addAll(getDirectoriesForDojoModules(project, getDojoModulesInJavaScriptFiles(project)));
 
-        return possibleDirectories;
+        List<String> choices = new ArrayList<String>(possibleDirectories);
+        Collections.sort(choices, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.length() - o2.length();
+            }
+        });
+
+        return choices;
     }
 }

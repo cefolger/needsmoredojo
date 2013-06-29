@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.Set;
 
 public class DojoSettingsConfigurable implements Configurable {
@@ -163,7 +164,7 @@ public class DojoSettingsConfigurable implements Configurable {
         return null;
     }
 
-    private void addAutoDetectedSource(Set<String> possibleSourceRoots)
+    private void addAutoDetectedSource(Collection<String> possibleSourceRoots)
     {
         String[] choices = possibleSourceRoots.toArray(new String[0]);
 
