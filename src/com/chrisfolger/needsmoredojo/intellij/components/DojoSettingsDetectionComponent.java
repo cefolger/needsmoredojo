@@ -15,10 +15,9 @@ import javax.swing.event.HyperlinkEvent;
 public class DojoSettingsDetectionComponent implements ProjectComponent {
     private Project project;
 
-    private class SetupNotification extends NotificationListener.Adapter
-    {
+    private class SetupNotification implements NotificationListener {
         @Override
-        protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent hyperlinkEvent) {
+        public void hyperlinkUpdate(@NotNull Notification notification, @NotNull HyperlinkEvent hyperlinkEvent) {
             ShowSettingsUtil.getInstance().showSettingsDialog(project, "Needs More Dojo");
         }
     }
