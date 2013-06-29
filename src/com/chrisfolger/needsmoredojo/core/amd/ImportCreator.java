@@ -6,6 +6,8 @@ import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -203,16 +205,26 @@ public class ImportCreator
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
+        String parameter = AMDUtil.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
+
         if(imports.getChildren().length == 0)
         {
             Messages.showInfoMessage("Need at least one import already present", "Add new AMD import");
             return;
         }
-        else
+
+        for(JSParameter element : parameters.getParameters())
         {
-            JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
-            JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], AMDUtil.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap()) + ",", " ");
+            if(element.getName().equals(parameter))
+            {
+                // already defined, so just exit
+                new Notification("needsmoredojo", "Add new AMD import", parameter + " is already defined ", NotificationType.INFORMATION).notify(parameters.getProject());
+                return;
+            }
         }
+
+        JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
+        JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
     }
 
     public void addImport(PsiFile file, final String module)
