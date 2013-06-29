@@ -26,7 +26,8 @@
                 <li>Settings dialog to configure location of project and dojo sources</li>
                 <li>Module naming exceptions for the mismatched define/parameter inspection</li>
                 <li>Relative paths are now supported in the add AMD imports popup</li>
-                <li>Auto-detection for dojo and project sources (experimental)
+                <li>Auto-detection for dojo and project sources (experimental)</li>
+                <li>When adding an import, an initial value is used based on what's near the current caret position</li>
             </ul>
 
             <b>0.3.1 (Maintenance release)</b>
