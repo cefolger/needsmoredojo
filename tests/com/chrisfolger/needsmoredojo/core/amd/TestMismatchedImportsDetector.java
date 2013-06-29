@@ -179,4 +179,10 @@ public class TestMismatchedImportsDetector
     {
         assertFalse(detector.defineMatchesParameter("dojo/i18n", "resources", exceptions));
     }
+
+    @Test
+    public void testNamingResourcesIsValidForI18n()
+    {
+        assertTrue(detector.defineMatchesParameter("dojo/i18n!./foo/foonls", "resources", exceptions));
+    }
 }

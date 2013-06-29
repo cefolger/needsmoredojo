@@ -142,6 +142,10 @@ public class MismatchedImportsDetector
             {
                 return true;
             }
+            else if (isI18n && parameterComparison.startsWith("resources"))
+            {
+                return true;
+            }
             else if(isI18n && parameterComparison.startsWith("nls"))
             {
                 return true;
