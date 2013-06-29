@@ -20,20 +20,26 @@ import java.util.*;
 
 public class ImportCreator
 {
+    private static final Map<String, Integer> libraryScores = new HashMap<String, Integer>();
+
+    static
+    {
+        libraryScores.put("dojo/tests", 0);
+        libraryScores.put("dojo/", 5);
+        libraryScores.put("dijit/", 4);
+        libraryScores.put("dgrid/", 2);
+        libraryScores.put("dojox/", 1);
+    }
+
     private int getScore(String item)
     {
-        Map<String, Integer> scores = new LinkedHashMap<String, Integer>();
-        scores.put("dojo/tests", 0);
-        scores.put("dojo/", 5);
-        scores.put("dijit/", 4);
-        scores.put("dgrid/", 2);
-        scores.put("dojox/", 1);
+        int baseScore = 0;
 
-        for(String key : scores.keySet().toArray(new String[0]))
+        for(String key : libraryScores.keySet().toArray(new String[0]))
         {
             if(item.indexOf(key) != -1)
             {
-                return scores.get(key);
+                return libraryScores.get(key);
             }
         }
 
