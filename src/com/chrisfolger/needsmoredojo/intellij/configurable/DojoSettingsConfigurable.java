@@ -19,10 +19,13 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Collection;
-import java.util.Set;
 
 public class DojoSettingsConfigurable implements Configurable {
     private JComponent myComponent;
@@ -48,7 +51,7 @@ public class DojoSettingsConfigurable implements Configurable {
     }
 
     public boolean isModified() {
-        return true;
+        return modified;
     }
 
     private class ProjectSourcesChosen extends ComponentWithBrowseButton.BrowseFolderActionListener<JTextField>
@@ -102,6 +105,29 @@ public class DojoSettingsConfigurable implements Configurable {
         }
     }
 
+    private class TextChangedListener implements KeyListener
+    {
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {}
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            updateModifiedState();
+        }
+    }
+
+    private void updateModifiedState()
+    {
+        modified = !dojoSourcesText.getText().equals(settingsService.getDojoSourcesDirectory()) ||
+                !projectSourcesText.getText().equals(settingsService.getProjectSourcesDirectory()) ||
+                preferRelativePathsWhenCheckBox.isSelected() != settingsService.isPreferRelativeImports();
+
+    }
+
     public JComponent createComponent() {
         myComponent = (JComponent) myPanel;
         FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
@@ -150,6 +176,16 @@ public class DojoSettingsConfigurable implements Configurable {
         });
 
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
+
+        dojoSourcesText.getTextField().addKeyListener(new TextChangedListener());
+        projectSourcesText.getTextField().addKeyListener(new TextChangedListener());
+
+        preferRelativePathsWhenCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updateModifiedState();
+            }
+        });
 
         return myComponent;
     }
@@ -201,6 +237,7 @@ public class DojoSettingsConfigurable implements Configurable {
         }
 
         settingsService.setPreferRelativeImports(preferRelativePathsWhenCheckBox.isSelected());
+        modified = false;
     }
 
     public void disposeUIResources() {
@@ -218,5 +255,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
         projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
+
+        preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
     }
 }
