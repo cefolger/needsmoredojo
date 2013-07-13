@@ -118,6 +118,11 @@ public class AMDUtil
             if(parsedPath.charAt(0) != '.') // this means it's not a relative path, but rather a defined package path
             {
                 parsedPath = "/" + parsedPath;
+                if(source == null)
+                {
+                    return null;
+                }
+
                 result = source.findFileByRelativePath(parsedPath);
             }
             else
