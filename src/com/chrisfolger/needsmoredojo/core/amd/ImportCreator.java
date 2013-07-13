@@ -302,7 +302,11 @@ public class ImportCreator
                 if(variable.getInitializer() instanceof JSNewExpression)
                 {
                     JSNewExpression expression = (JSNewExpression) variable.getInitializer();
-                    initialChoice = expression.getMethodExpression().getText();
+                    // if these conditions are false, it just means the new expression is not complete
+                    if(expression != null && expression.getMethodExpression() != null)
+                    {
+                        initialChoice = expression.getMethodExpression().getText();
+                    }
                 }
             }
         }
