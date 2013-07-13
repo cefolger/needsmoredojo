@@ -16,11 +16,12 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 In version 0.4 and later, you can set up your project source location and dojo source location to enable certain features. By default, Needs More Dojo assumes that
 your project sources are on the same level as the dojo sources.
 
-To setup your sources:
 - If you haven't setup your sources, you will get the following warning each time you load the project:
 <img here>
 - Open the settings dialog via the File menu or keyboard shortcut
 - Navigate to "Needs More Dojo" under project settings which will look like this:
+
+**Dojo Sources**
 - The dojo sources directory should be set one level above the dojo sources. So, if you store your dojo sources in a folder called "deps":
     - deps
         - dojo
@@ -30,6 +31,7 @@ To setup your sources:
 
 Then set your dojo sources folder to "deps"
 
+**Project Sources**
 - Your project source directory should be set one level above all of your project packages. For example, if your sources look like this:
    - Source
         - JavaScript
@@ -39,14 +41,20 @@ Then set your dojo sources folder to "deps"
 
 And you reference your packages absolutely as "package/subfolder/module" Then set your source directory to "Source/JavaScript"
 
+*Relative paths vs absolute paths*: When using the "Add new import" feature to import project modules, you will get both
+absolute and relative path syntax. If you want the relative path option to appear as the first item, check the "Prefer relative paths"
+checkbox.
+
 Finally, you can use the auto-detection features to get suggestions on your source locations. For the dojo sources, it will scan
 for "dojo.js." For your project, it will scan for JavaScript files that have dojo modules and give you a list of possible choices.
+
+Hit "apply" to make sure your settings are saved.
 
 ##### Functionality
 
 The plugin adds the following options under the Code menu:
 - **Organize AMD Imports**: Sorts imports alphabetically, removes duplicates, and normalizes quotes
-- **Add new AMD Import**: pops up a dialog. Type in the name of a dojo module OR the full path of your module. A second dialog will popup giving a list of suggestions.
+- **Add new AMD Import**: pops up a dialog. Type in the name of a dojo module. A second dialog will popup giving a list of suggestions.
 The module will then be inserted in the define argument list and corresponding function parameter. For example:
     - Press Ctrl+Shift+O, 2
     - Enter 'BorderContainer', press enter
@@ -57,7 +65,6 @@ The module will then be inserted in the define argument list and corresponding f
 
 These three items require configuring your dojo source and project source locations. If you do not do this, it will still work as long as your
 sources have the same parent as the dojo sources.
-- **Import non-dojo module**: Press Ctrl+Shift+O, 2 and type one of your source module names. The path will be resolved and the import inserted for you.
 - **Go to attach point (appears under Navigate)**. Inside a module that uses _TemplatedMixin, use this option with the caret over an attach point reference.
 The attach point will be looked up in the widget's template file (specified by the templateString property) and highlighted. Press Esc to remove the highlighting
 - **Navigate -> Declaration** is supported for keys imported via the dojo/i18n! plugin. In the example below, the resources module has been imported via dojo/i18n!
