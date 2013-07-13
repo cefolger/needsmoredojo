@@ -17,9 +17,10 @@ In version 0.4 and later, you can set up your project source location and dojo s
 your project sources are on the same level as the dojo sources.
 
 - If you haven't setup your sources, you will get the following warning each time you load the project:
-<img here>
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/projectwarning.png)
 - Open the settings dialog via the File menu or keyboard shortcut
 - Navigate to "Needs More Dojo" under project settings which will look like this:
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/needsmoredojosettings.png)
 
 **Dojo Sources**
 - The dojo sources directory should be set one level above the dojo sources. So, if you store your dojo sources in a folder called "deps":
