@@ -61,6 +61,16 @@ The module will then be inserted in the define argument list and corresponding f
     - Enter 'BorderContainer', press enter
     - 'dijit/layout/BorderContainer' is the first choice presented. Press enter
     - The import will be inserted in both the define's argument list and the function's parameter list
+    - You can also press Ctrl+Shift+O, 2 when the cursor is over a module. For example, the following scenarios will result in "Button"
+being filled in the add module text field (the cursor is represented by an underscore):
+<pre>
+    new Button_({});
+</pre>
+<pre>
+    new Button({
+        _
+    });
+</pre>
 
 - **Remove unused imports**: Removes imports that have been crossed out
 
