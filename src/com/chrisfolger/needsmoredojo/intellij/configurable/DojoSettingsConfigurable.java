@@ -167,6 +167,20 @@ public class DojoSettingsConfigurable implements Configurable {
             }
         });
 
+        addRUIModule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ruiBuilder.getTableModel().addRow(new String[] { addRUIExceptionModuleText.getText(), addRUIExceptionParameterText.getText()});
+            }
+        });
+
+        removeRUIModule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ruiBuilder.getTableModel().removeRow(removeUnusedImportExceptionsTable.getSelectedRow());
+            }
+        });
+
         removeMapping.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
