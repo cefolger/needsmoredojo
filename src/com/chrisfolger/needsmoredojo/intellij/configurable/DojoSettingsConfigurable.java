@@ -40,6 +40,11 @@ public class DojoSettingsConfigurable implements Configurable {
     private JButton removeMapping;
     private JCheckBox preferRelativePathsWhenCheckBox;
     private JButton autoDetectProjectSources;
+    private JTable removeUnusedImportExceptionsTable;
+    private JTextField addRUIExceptionModuleText;
+    private JTextField addRUIExceptionParameterText;
+    private JButton addRUIModule;
+    private JButton removeRUIModule;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
