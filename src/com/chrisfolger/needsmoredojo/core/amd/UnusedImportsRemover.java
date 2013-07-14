@@ -134,16 +134,28 @@ public class UnusedImportsRemover
         return result;
     }
 
-    // TODO add exceptions?
     // TODO detect registry.byNode and registry.byId
-    public JSRecursiveElementVisitor getVisitorToRemoveUsedParameters(final List<PsiElement> parameters, final List<PsiElement> defines)
+    public JSRecursiveElementVisitor getVisitorToRemoveUsedParameters(final List<PsiElement> parameters, final List<PsiElement> defines, LinkedHashMap<String, String> exceptions)
     {
+        final Collection<String> parameterExceptions = exceptions.values();
+
         JSRecursiveElementVisitor visitor = new JSRecursiveElementVisitor() {
             @Override
             public void visitJSReferenceExpression(JSReferenceExpression node)
             {
                 for(int i=0;i<parameters.size();i++)
                 {
+                    if(parameterExceptions.contains(parameters.get(i).getText()))
+                    {
+                        parameters.remove(i);
+                        if(i < defines.size())
+                        {
+                            defines.remove(i);
+                        }
+                        i--;
+                        continue;
+                    }
+
                     if(node.getText().equals(parameters.get(i).getText()))
                     {
                         parameters.remove(i);
@@ -164,6 +176,17 @@ public class UnusedImportsRemover
             {
                 for(int i=0;i<parameters.size();i++)
                 {
+                    if(parameterExceptions.contains(parameters.get(i).getText()))
+                    {
+                        parameters.remove(i);
+                        if(i < defines.size())
+                        {
+                            defines.remove(i);
+                        }
+                        i--;
+                        continue;
+                    }
+
                     if(node.getText().startsWith("new " + parameters.get(i).getText()))
                     {
                         parameters.remove(i);

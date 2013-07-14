@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.UnusedImportsRemover;
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -10,6 +11,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +33,7 @@ public class UnusedImportsAction extends JavaScriptAction {
         resolver.gatherDefineAndParameters(psiFile, defines, parameters);
 
         final UnusedImportsRemover detector = new UnusedImportsRemover();
-        psiFile.accept(detector.getVisitorToRemoveUsedParameters(parameters, defines));
+        psiFile.accept(detector.getVisitorToRemoveUsedParameters(parameters, defines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions()));
 
         if(this.deleteMode)
         {
