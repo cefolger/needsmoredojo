@@ -157,7 +157,7 @@ public class DojoSettingsConfigurable implements Configurable {
         projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
 
-        final ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project);
+        final ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project, settingsService.getExceptionsMap());
 
         addMapping.addActionListener(new ActionListener() {
             @Override
