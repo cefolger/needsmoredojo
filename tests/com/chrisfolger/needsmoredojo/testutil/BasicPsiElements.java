@@ -33,6 +33,11 @@ public class BasicPsiElements
         return new MockJSElement(",");
     }
 
+    public static MockJSElement space()
+    {
+        return new MockJSElement(" ");
+    }
+
     public static JSExpression expressionFromText(final String text)
     {
         return new JSExpressionImpl(mock(ASTNode.class)) {
