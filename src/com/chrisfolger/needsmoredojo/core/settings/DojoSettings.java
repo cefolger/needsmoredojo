@@ -19,12 +19,16 @@ import java.util.LinkedHashMap;
 public class DojoSettings implements PersistentStateComponent<DojoSettings>
 {
     private LinkedHashMap<String, String> amdImportNamingExceptions;
+    private LinkedHashMap<String, String> ruiImportExceptions;
     private String dojoSourcesDirectory;
     private String projectSourcesDirectory;
     private boolean preferRelativeImports;
 
     public DojoSettings()
     {
+        ruiImportExceptions = new LinkedHashMap<String, String>();
+        ruiImportExceptions.put("dojox/form/Uploader/IFrame", "IFrame");
+
         amdImportNamingExceptions = new LinkedHashMap<String, String>();
         amdImportNamingExceptions.put("dojo/sniff", "has");
         preferRelativeImports = false;
@@ -77,6 +81,14 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public void setPreferRelativeImports(boolean preferRelativeImports) {
         this.preferRelativeImports = preferRelativeImports;
+    }
+
+    public LinkedHashMap<String, String> getRuiImportExceptions() {
+        return ruiImportExceptions;
+    }
+
+    public void setRuiImportExceptions(LinkedHashMap<String, String> ruiImportExceptions) {
+        this.ruiImportExceptions = ruiImportExceptions;
     }
 
     @Nullable
