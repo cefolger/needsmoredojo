@@ -37,7 +37,7 @@ public class MockJSElement extends JSElementImpl
         return prevSibling;
     }
 
-    public MockJSElement comesAfter(MockJSElement element)
+    public MockJSElement comesBefore(MockJSElement element)
     {
         element.prevSibling = this;
         this.nextSibling = element;
@@ -45,7 +45,7 @@ public class MockJSElement extends JSElementImpl
         return this;
     }
 
-    public MockJSElement comesBefore(MockJSElement element)
+    public MockJSElement comesAfter(MockJSElement element)
     {
         element.nextSibling = this;
         this.prevSibling = element;

@@ -26,6 +26,18 @@ public class UnusedImportsRemover
         public String getDeletedElementNames() {
             return deletedElementNames;
         }
+
+        public String getDeletedElementsString()
+        {
+            String result = "";
+
+            for(PsiElement element : elementsToDelete)
+            {
+                result += element.getText();
+            }
+
+            return result;
+        }
     }
 
     private PsiElement getNearestComma(PsiElement start)

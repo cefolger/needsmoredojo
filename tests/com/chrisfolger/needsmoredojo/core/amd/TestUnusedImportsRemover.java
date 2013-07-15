@@ -2,7 +2,6 @@ package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.testutil.BasicPsiElements;
 import com.chrisfolger.needsmoredojo.testutil.MockJSElement;
-import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.psi.PsiElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,44 +52,83 @@ public class TestUnusedImportsRemover
      */
     public void itemsThatComeAtTheEndHaveTrailingCommasRemoved()
     {
+        MockJSElement cDefine = addDefine("a/b/C");
+        MockJSElement dDefine = addDefine("a/b/D");
+        MockJSElement eDefine = addDefine("a/b/E");
+        MockJSElement fDefine = addDefine("a/b/F");
 
+        BasicPsiElements.createChain(new MockJSElement[]{
+                cDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
+                dDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
+                eDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
+                fDefine, BasicPsiElements.lineBreak()
+        });
+
+        defines.add(eDefine);
+        defines.add(fDefine);
+
+        MockJSElement cParameter = addParameter("C");
+        MockJSElement dParameter = addParameter("D");
+        MockJSElement eParameter = addParameter("E");
+        MockJSElement fParameter = addParameter("F");
+
+        BasicPsiElements.createChain(new MockJSElement[]{
+                cParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
+                dParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
+                eParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
+                fParameter
+        });
+
+        parameters.add(eParameter);
+        parameters.add(fParameter);
+
+        UnusedImportsRemover.RemovalResult result = remover.removeUnusedParameters(parameters, defines);
+
+        System.out.println(result.getDeletedElementsString());
+        assertEquals("E,Fa/b/E,a/b/F\n", result.getDeletedElementsString());
     }
 
-    private PsiElement[] addDefine(String module, boolean useComma)
+    private MockJSElement addDefine(String module)
+    {
+        return addDefine(module, false)[0];
+    }
+
+    private MockJSElement[] addDefine(String module, boolean useComma)
     {
         MockJSElement define = new MockJSElement(module);
-
-        defines.add(define);
 
         if(useComma)
         {
             MockJSElement comma = BasicPsiElements.comma();
             comma.comesAfter(define);
-            return new PsiElement[] { define, comma };
+            return new MockJSElement[] { define, comma };
         }
 
-        return new PsiElement[] { define };
+        return new MockJSElement[] { define };
     }
 
-    private PsiElement[] addParameter(String parameter, boolean useComma)
+    private MockJSElement addParameter(String parameter)
+    {
+        return addParameter(parameter, false)[0];
+    }
+
+    private MockJSElement[] addParameter(String parameter, boolean useComma)
     {
         MockJSElement parameterElement = new MockJSElement(parameter);
-
-        parameters.add(parameterElement);
 
         if(useComma)
         {
             MockJSElement comma = BasicPsiElements.comma();
             comma.comesAfter(parameterElement);
-            return new PsiElement[] { parameterElement, comma };
+            return new MockJSElement[] { parameterElement, comma };
         }
 
-        return new PsiElement[] { parameterElement };
+        return new MockJSElement[] { parameterElement };
     }
 
     private void addModule(String module, String name, boolean commas)
     {
-        addDefine(module, commas);
-        addParameter(name, commas);
+        defines.add(addDefine(module, commas)[0]);
+        parameters.add(addParameter(name, commas)[0]);
     }
 }

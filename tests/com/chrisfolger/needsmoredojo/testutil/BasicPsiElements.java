@@ -28,6 +28,14 @@ public class BasicPsiElements
         };
     }
 
+    public static void createChain(MockJSElement[] elementsInSequence)
+    {
+        for(int i=0;i<elementsInSequence.length-1;i++)
+        {
+            elementsInSequence[i].comesBefore(elementsInSequence[i+1]);
+        }
+    }
+
     public static MockJSElement comma()
     {
         return new MockJSElement(",");
