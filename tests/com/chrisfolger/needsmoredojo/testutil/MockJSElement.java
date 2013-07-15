@@ -12,11 +12,17 @@ public class MockJSElement extends JSElementImpl
     private String text;
     private MockJSElement nextSibling;
     private PsiElement prevSibling;
+    private JSElement parent;
+    private JSElement lastChild;
 
     public MockJSElement(String text) {
         super(mock(ASTNode.class));
 
         this.text = text;
+    }
+
+    public void setParent(JSElement parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -35,6 +41,32 @@ public class MockJSElement extends JSElementImpl
     public PsiElement getPrevSibling()
     {
         return prevSibling;
+    }
+
+    public JSElement isLastChildOf(MockJSElement element)
+    {
+        element.lastChild = this;
+        this.parent = element;
+
+        return this;
+    }
+
+    public MockJSElement isParentOf(MockJSElement element)
+    {
+        element.parent = this;
+        return this;
+    }
+
+    @Override
+    public JSElement getLastChild()
+    {
+        return this.lastChild;
+    }
+
+    @Override
+    public JSElement getParent()
+    {
+        return this.parent;
     }
 
     public MockJSElement comesBefore(MockJSElement element)
