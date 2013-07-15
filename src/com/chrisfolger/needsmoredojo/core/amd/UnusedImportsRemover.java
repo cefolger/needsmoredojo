@@ -145,6 +145,10 @@ public class UnusedImportsRemover
             System.out.println(e);
         }
 
+        /*
+        at first this block was not here and for some reason trailing commas in the function argument list
+        were still deleted. I'm not sure why, but I decided to make it explicit.
+         */
         try
         {
             PsiElement trailingComma = getNearestComma(function.getLastChild());

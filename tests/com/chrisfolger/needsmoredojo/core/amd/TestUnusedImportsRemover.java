@@ -120,9 +120,9 @@ public class TestUnusedImportsRemover
 
         BasicPsiElements.createChain(new MockJSElement[]{
                 cParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
-                dParameter, BasicPsiElements.comma().comesBefore((MockJSElement) function.getLastChild()), BasicPsiElements.space(),
+                dParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
                 eParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
-                fParameter
+                fParameter.comesBefore((MockJSElement) function.getLastChild())
         });
 
         parameters.add(eParameter);
