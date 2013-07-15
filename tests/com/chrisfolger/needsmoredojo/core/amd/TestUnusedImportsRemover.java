@@ -12,6 +12,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * I'm not sure how maintainable this class is .. I realize that these unit tests
+ * have a lot of setup involved. BUT, the remove unused imports feature tends to have some weird edge cases
+ * and I figured it'd be a good idea to start trying to unit test it. If this becomes an unmaintainable mess
+ * I will just delete it.
+ */
 public class TestUnusedImportsRemover
 {
     private UnusedImportsRemover remover;
@@ -35,7 +41,8 @@ public class TestUnusedImportsRemover
         UnusedImportsRemover.RemovalResult result = remover.removeUnusedParameters(parameters, defines);
 
         // make sure all modules + commas were deleted
-        assertEquals(4, result.getElementsToDelete().size());
+        System.out.println(result.getDeletedElementsString());
+        assertEquals("C,Da/b/C,a/b/D", result.getDeletedElementsString());
     }
 
     @Test

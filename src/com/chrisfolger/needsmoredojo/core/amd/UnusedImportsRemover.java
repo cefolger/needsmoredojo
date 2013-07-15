@@ -45,7 +45,7 @@ public class UnusedImportsRemover
     private PsiElement getNearestComma(PsiElement start)
     {
         PsiElement sibling = start.getPrevSibling();
-        while(sibling != null && !(sibling instanceof JSLiteralExpression))
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
         {
             if(sibling.getText().equals(","))
             {
