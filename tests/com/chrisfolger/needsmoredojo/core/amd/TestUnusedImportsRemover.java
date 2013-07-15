@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.testutil.BasicPsiElements;
+import com.chrisfolger.needsmoredojo.testutil.MockJSArrayLiteralExpression;
 import com.chrisfolger.needsmoredojo.testutil.MockJSElement;
 import com.intellij.psi.PsiElement;
 import org.junit.Before;
@@ -42,6 +43,45 @@ public class TestUnusedImportsRemover
         Say you have this structure:
 
         define([
+            'a/b/C', // comment
+            'a/b/D'
+        ], function(C, D) {});
+
+        where D is unused. Then the trailing comma should also be removed
+     */
+    public void lineCommentsInDefinesStillRemoveTrailingCommas()
+    {
+        MockJSElement cDefine = addDefine("a/b/C");
+        MockJSElement dDefine = addDefine("a/b/D");
+
+        BasicPsiElements.createChain(new MockJSElement[]{
+                cDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
+                dDefine, BasicPsiElements.lineBreak()
+        });
+
+        defines.add(dDefine);
+
+        MockJSElement cParameter = addParameter("C");
+        MockJSElement dParameter = addParameter("D");
+
+        BasicPsiElements.createChain(new MockJSElement[]{
+                cParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
+                dParameter
+        });
+
+        parameters.add(dParameter);
+
+        UnusedImportsRemover.RemovalResult result = remover.removeUnusedParameters(parameters, defines);
+
+        System.out.println(result.getDeletedElementsString());
+        assertEquals("E,Fa/b/E,a/b/F\n", result.getDeletedElementsString());
+    }
+
+    @Test
+    /*
+        Say you have this structure:
+
+        define([
             'a/b/C',
             'a/b/D',
             'a/b/E',
@@ -57,11 +97,14 @@ public class TestUnusedImportsRemover
         MockJSElement eDefine = addDefine("a/b/E");
         MockJSElement fDefine = addDefine("a/b/F");
 
+        MockJSArrayLiteralExpression literal = BasicPsiElements.define();
+        eDefine.setParent(literal);
+
         BasicPsiElements.createChain(new MockJSElement[]{
                 cDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
                 dDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
                 eDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
-                fDefine, BasicPsiElements.lineBreak()
+                fDefine, BasicPsiElements.lineBreak().comesBefore(literal.getBracket())
         });
 
         defines.add(eDefine);
@@ -72,9 +115,12 @@ public class TestUnusedImportsRemover
         MockJSElement eParameter = addParameter("E");
         MockJSElement fParameter = addParameter("F");
 
+        MockJSElement function = BasicPsiElements.defineFunction();
+        eParameter.setParent(function);
+
         BasicPsiElements.createChain(new MockJSElement[]{
                 cParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
-                dParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
+                dParameter, BasicPsiElements.comma().comesBefore((MockJSElement) function.getLastChild()), BasicPsiElements.space(),
                 eParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
                 fParameter
         });
@@ -85,7 +131,7 @@ public class TestUnusedImportsRemover
         UnusedImportsRemover.RemovalResult result = remover.removeUnusedParameters(parameters, defines);
 
         System.out.println(result.getDeletedElementsString());
-        assertEquals("E,Fa/b/E,a/b/F\n", result.getDeletedElementsString());
+        assertEquals("E,Fa/b/E,a/b/F\n,,", result.getDeletedElementsString());
     }
 
     private MockJSElement addDefine(String module)

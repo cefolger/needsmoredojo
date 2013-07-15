@@ -4,6 +4,8 @@ import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 import java.util.*;
 
@@ -59,6 +61,7 @@ public class UnusedImportsRemover
     public RemovalResult removeUnusedParameters(List<PsiElement> parameters, List<PsiElement> defines)
     {
         JSArrayLiteralExpression literal = (JSArrayLiteralExpression) defines.get(0).getParent();
+        PsiElement function = parameters.get(0).getParent();
 
         final StringBuilder results = new StringBuilder();
         Set<PsiElement> elementsToDelete = new LinkedHashSet<PsiElement>();
@@ -133,12 +136,27 @@ public class UnusedImportsRemover
             PsiElement trailingComma = getNearestComma(literal.getLastChild());
             if(trailingComma != null)
             {
+                elementsToDelete.add(trailingComma);
                 trailingComma.delete();
             }
         }
         catch(Exception e)
         {
+            System.out.println(e);
+        }
 
+        try
+        {
+            PsiElement trailingComma = getNearestComma(function.getLastChild());
+            if(trailingComma != null)
+            {
+                elementsToDelete.add(trailingComma);
+                trailingComma.delete();
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
         }
 
 

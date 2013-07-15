@@ -38,6 +38,22 @@ public class MockJSElement extends JSElementImpl
     }
 
     @Override
+    public void delete()
+    {
+        if(prevSibling != null && prevSibling instanceof MockJSElement)
+        {
+            MockJSElement sibling = (MockJSElement) prevSibling;
+            sibling.nextSibling = this.nextSibling;
+        }
+
+        if(nextSibling != null && nextSibling instanceof MockJSElement)
+        {
+            MockJSElement sibling = nextSibling;
+            sibling.prevSibling = this.prevSibling;
+        }
+    }
+
+    @Override
     public PsiElement getPrevSibling()
     {
         return prevSibling;

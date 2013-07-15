@@ -17,6 +17,25 @@ public class BasicPsiElements
         return new MockJSLiteralExpression("null");
     }
 
+    public static MockJSElement defineFunction()
+    {
+        MockJSElement function = new MockJSElement("function()");
+        MockJSElement paren = new MockJSElement(")");
+        paren.isLastChildOf(function);
+
+        return function;
+    }
+
+    public static MockJSArrayLiteralExpression define()
+    {
+        MockJSArrayLiteralExpression literal = new MockJSArrayLiteralExpression(new String[0]);
+        MockJSElement bracket = new MockJSElement("]");
+        literal.setLastChild(bracket);
+        literal.setBracket(bracket);
+
+        return literal;
+    }
+
     public static JSElement elementFromText(final String text)
     {
         return new JSElementImpl(mock(ASTNode.class)) {

@@ -11,6 +11,7 @@ public class MockJSArrayLiteralExpression extends JSArrayLiteralExpressionImpl
 {
     private JSExpression[] expressions;
     private JSElement lastChild;
+    private MockJSElement bracket;
 
     public MockJSArrayLiteralExpression(String[] defines) {
         super(mock(ASTNode.class));
@@ -20,6 +21,14 @@ public class MockJSArrayLiteralExpression extends JSArrayLiteralExpressionImpl
         {
             expressions[i] = new MockJSLiteralExpression(defines[i]);
         }
+    }
+
+    public MockJSElement getBracket() {
+        return bracket;
+    }
+
+    public void setBracket(MockJSElement bracket) {
+        this.bracket = bracket;
     }
 
     public void setExpressions(JSExpression[] expressions) {
