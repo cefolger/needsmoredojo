@@ -54,9 +54,12 @@ public class TestUnusedImportsRemover
         MockJSElement cDefine = addDefine("a/b/C");
         MockJSElement dDefine = addDefine("a/b/D");
 
+        MockJSArrayLiteralExpression literal = BasicPsiElements.define();
+        dDefine.setParent(literal);
+
         BasicPsiElements.createChain(new MockJSElement[]{
-                cDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
-                dDefine, BasicPsiElements.lineBreak()
+                cDefine, BasicPsiElements.comma(), new MockJSElement("// comment"), BasicPsiElements.lineBreak(),
+                dDefine, BasicPsiElements.lineBreak().comesBefore(literal.getBracket())
         });
 
         defines.add(dDefine);
@@ -64,9 +67,12 @@ public class TestUnusedImportsRemover
         MockJSElement cParameter = addParameter("C");
         MockJSElement dParameter = addParameter("D");
 
+        MockJSElement function = BasicPsiElements.defineFunction();
+        dParameter.setParent(function);
+
         BasicPsiElements.createChain(new MockJSElement[]{
                 cParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
-                dParameter
+                dParameter.comesBefore((MockJSElement) function.getLastChild())
         });
 
         parameters.add(dParameter);
@@ -74,7 +80,7 @@ public class TestUnusedImportsRemover
         UnusedImportsRemover.RemovalResult result = remover.removeUnusedParameters(parameters, defines);
 
         System.out.println(result.getDeletedElementsString());
-        assertEquals("E,Fa/b/E,a/b/F\n", result.getDeletedElementsString());
+        assertEquals("Da/b/D\n,,", result.getDeletedElementsString());
     }
 
     @Test
