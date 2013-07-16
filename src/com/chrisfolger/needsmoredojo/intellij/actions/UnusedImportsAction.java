@@ -7,7 +7,6 @@ import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
@@ -43,6 +42,12 @@ public class UnusedImportsAction extends JavaScriptAction {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
                         @Override
                         public void run() {
+                            if(defines.size() == 0)
+                            {
+                                Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Unused Imports", "No unused imports were detected to delete", NotificationType.INFORMATION));
+                                return;
+                            }
+
                             UnusedImportsRemover.RemovalResult result = detector.removeUnusedParameters(parameters, defines);
                             Set<PsiElement> elementsToDelete = result.getElementsToDelete();
 
