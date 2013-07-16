@@ -40,6 +40,11 @@ public class DojoSettingsConfigurable implements Configurable {
     private JButton removeMapping;
     private JCheckBox preferRelativePathsWhenCheckBox;
     private JButton autoDetectProjectSources;
+    private JTable removeUnusedImportExceptionsTable;
+    private JTextField addRUIExceptionModuleText;
+    private JTextField addRUIExceptionParameterText;
+    private JButton addRUIModule;
+    private JButton removeRUIModule;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -152,12 +157,27 @@ public class DojoSettingsConfigurable implements Configurable {
         projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
 
-        final ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project);
+        final ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project, settingsService.getExceptionsMap());
+        final ExceptionsTableBuilder ruiBuilder = new ExceptionsTableBuilder(removeUnusedImportExceptionsTable, project, settingsService.getRuiImportExceptions());
 
         addMapping.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 builder.getTableModel().addRow(new String[] { addModuleText.getText(), addParameterText.getText()});
+            }
+        });
+
+        addRUIModule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ruiBuilder.getTableModel().addRow(new String[] { addRUIExceptionModuleText.getText(), addRUIExceptionParameterText.getText()});
+            }
+        });
+
+        removeRUIModule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ruiBuilder.getTableModel().removeRow(removeUnusedImportExceptionsTable.getSelectedRow());
             }
         });
 
