@@ -23,6 +23,8 @@
             <b>0.4.1</b>
             <ul>
                 <li>Added unused import exceptions </li>
+                <li>Fix index out of bounds when removing 0 imports (Issue #77)</li>
+                <li>Fix trailing comma when organizing imports with duplicates (Issue #78)</li>
             </ul>
 
             <b>0.4</b>
