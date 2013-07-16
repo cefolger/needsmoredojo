@@ -1,7 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 
@@ -130,6 +130,8 @@ public class AMDImportOrganizer
 
     public void reorder(PsiElement[] unsorted, SortedPsiElementAdapter[] sorted, boolean deleteTrailingComma, SortingResult result)
     {
+        PsiElement parent = unsorted[0].getParent();
+
         char quote = '\'';
         if(result.getDoubleQuotes() > result.getSingleQuotes())
         {
@@ -176,6 +178,26 @@ public class AMDImportOrganizer
             catch(Exception e)
             {
                 // sometimes deleting comma's will throw an exception (ignorant as to why)
+            }
+        }
+
+        /*
+         sometimes you get a trailing comma after removing duplicate imports. Instead of trying to track
+         the cases where this happens, just check for the presence of a trailing comma and delete if necessary
+         */
+        if(deleteTrailingComma)
+        {
+            try
+            {
+                PsiElement trailingComma = DefineUtil.getNearestComma(parent.getLastChild());
+                if(trailingComma != null)
+                {
+                    trailingComma.delete();
+                }
+            }
+            catch(Exception e)
+            {
+                System.out.println(e);
             }
         }
     }
