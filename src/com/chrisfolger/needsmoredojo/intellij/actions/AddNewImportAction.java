@@ -3,6 +3,9 @@ package com.chrisfolger.needsmoredojo.intellij.actions;
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
@@ -50,6 +53,13 @@ public class AddNewImportAction extends JavaScriptAction
         }
 
         final String importedModule = importModule;
+
+        if(importedModule.equals(""))
+        {
+            Notifications.Bus.notify(new Notification("needsmoredojo", "Add new Import", "Invalid module", NotificationType.INFORMATION));
+            return;
+        }
+
         CommandProcessor.getInstance().executeCommand(psiFile.getProject(), new Runnable() {
             @Override
             public void run() {
