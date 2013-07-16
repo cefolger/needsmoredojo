@@ -32,6 +32,8 @@ public class ImportCreator
         libraryScores.put("dijit/", 4);
         libraryScores.put("dgrid/", 2);
         libraryScores.put("dojox/", 1);
+        libraryScores.put("doh/", 1);
+        libraryScores.put("build/", 1);
     }
 
     private int getScore(String item)

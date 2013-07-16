@@ -31,6 +31,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
         amdImportNamingExceptions = new LinkedHashMap<String, String>();
         amdImportNamingExceptions.put("dojo/sniff", "has");
+        amdImportNamingExceptions.put("doh/main", "doh");
         preferRelativeImports = false;
     }
 
