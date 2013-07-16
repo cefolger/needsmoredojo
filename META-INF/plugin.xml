@@ -128,6 +128,13 @@
             <add-to-group group-id="GoToTargetEx"/>
         </action>
 
+        <action id="com.chrisfolger.needsmoredojo.actions.reorderimport"
+                class="com.chrisfolger.needsmoredojo.intellij.actions.ReorderAMDImportAction" text="Move Import Up"
+                description="Move an AMD import up in the list">
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="4"/>
+            <add-to-group group-id="GoToTargetEx"/>
+        </action>
+
         <group id="com.chrisfolger.needsmoredojo.code">
             <add-to-group group-id="CodeMenu" anchor="first"/>
 
