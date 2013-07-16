@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.4</version>
+  <version>0.4.1</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -20,6 +20,11 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>0.4.1</b>
+            <ul>
+                <li>Added unused import exceptions </li>
+            </ul>
+
             <b>0.4</b>
             <ul>
                 <li>Project sources no longer have to be on the same level as the dojo sources for some features to work </li>
