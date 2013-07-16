@@ -25,6 +25,7 @@
                 <li>Added unused import exceptions </li>
                 <li>Fix index out of bounds when removing 0 imports (Issue #77)</li>
                 <li>Fix trailing comma when organizing imports with duplicates (Issue #78)</li>
+                <li>No longer need one module already imported when trying to add one (Issue #70)</li>
             </ul>
 
             <b>0.4</b>
