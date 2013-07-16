@@ -1,11 +1,13 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
-import com.intellij.lang.javascript.psi.*;
+import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
+import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
+import com.intellij.lang.javascript.psi.JSNewExpression;
+import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
+import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 import java.util.*;
 
@@ -40,22 +42,6 @@ public class UnusedImportsRemover
 
             return result;
         }
-    }
-
-    private PsiElement getNearestComma(PsiElement start)
-    {
-        PsiElement sibling = start.getPrevSibling();
-        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
-        {
-            if(sibling.getText().equals(","))
-            {
-                return sibling;
-            }
-
-            sibling = sibling.getPrevSibling();
-        }
-
-        return null;
     }
 
     public RemovalResult removeUnusedParameters(List<PsiElement> parameters, List<PsiElement> defines)
@@ -101,7 +87,7 @@ public class UnusedImportsRemover
             PsiElement sibling = element.getNextSibling();
             if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
             {
-                elementsToDelete.add(getNearestComma(sibling));
+                elementsToDelete.add(DefineUtil.getNearestComma(sibling));
             }
 
             // only remove the next sibling if it's a comma
@@ -133,7 +119,7 @@ public class UnusedImportsRemover
 
         try
         {
-            PsiElement trailingComma = getNearestComma(literal.getLastChild());
+            PsiElement trailingComma = DefineUtil.getNearestComma(literal.getLastChild());
             if(trailingComma != null)
             {
                 elementsToDelete.add(trailingComma);
@@ -151,7 +137,7 @@ public class UnusedImportsRemover
          */
         try
         {
-            PsiElement trailingComma = getNearestComma(function.getLastChild());
+            PsiElement trailingComma = DefineUtil.getNearestComma(function.getLastChild());
             if(trailingComma != null)
             {
                 elementsToDelete.add(trailingComma);

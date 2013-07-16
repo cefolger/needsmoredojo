@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 
 public class DefineUtil
@@ -56,5 +57,21 @@ public class DefineUtil
         JSFunctionExpression function = (JSFunctionExpression) arguments[1 + argumentOffset];
 
         return new DefineStatementItems(literalExpressions, function, className);
+    }
+
+    public static PsiElement getNearestComma(PsiElement start)
+    {
+        PsiElement sibling = start.getPrevSibling();
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
+        {
+            if(sibling.getText().equals(","))
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getPrevSibling();
+        }
+
+        return null;
     }
 }
