@@ -11,7 +11,11 @@ public class JSUtil
     {
         ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
         parent.addBefore(node.getPsi(), element);
-        parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), whitespace).getPsi(), element);
+
+        if(!whitespace.equals(""))
+        {
+            parent.addBefore(JSChangeUtil.createJSTreeFromText(parent.getProject(), whitespace).getPsi(), element);
+        }
 
         return node.getPsi();
     }

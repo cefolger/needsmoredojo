@@ -209,12 +209,6 @@ public class ImportCreator
     {
         String parameter = AMDUtil.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
 
-        if(imports.getChildren().length == 0)
-        {
-            Messages.showInfoMessage("Need at least one import already present", "Add new AMD import");
-            return;
-        }
-
         for(JSParameter element : parameters.getParameters())
         {
             if(element.getName().equals(parameter))
@@ -225,8 +219,42 @@ public class ImportCreator
             }
         }
 
-        JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
-        JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
+        if(imports.getChildren().length == 0)
+        {
+            // how to insert
+            /*
+                a few cases to consider:
+                define([
+
+                ])
+
+                In my opinion, this is the most readable and the one ImportCreator will account for best:
+                define([
+                ])
+
+                define([])
+             */
+            String defineText = imports.getText();
+            if(defineText.contains("\n\n"))
+            {
+                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), String.format("'%s'", module), "\n");
+            }
+            else if(defineText.contains("\n"))
+            {
+                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), String.format("'%s'", module), "\n");
+            }
+            else
+            {
+                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), String.format("'%s'", module), "");
+            }
+
+            JSUtil.addStatementBeforeElement(parameters, parameters.getLastChild(), parameter, "");
+        }
+        else
+        {
+            JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
+            JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
+        }
     }
 
     public void addImport(PsiFile file, final String module)
