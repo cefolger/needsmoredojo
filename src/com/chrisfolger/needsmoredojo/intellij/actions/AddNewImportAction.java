@@ -32,7 +32,7 @@ public class AddNewImportAction extends JavaScriptAction
             initialChoice = new ImportCreator().getSuggestedImport(element);
         }
 
-        String importModule = Messages.showInputDialog("Enter the path to your module or the unqualified name of the dojo module", "Add new AMD import", null, initialChoice, null);
+        String importModule = Messages.showInputDialog("Enter the module name", "Add new AMD import", null, initialChoice, null);
 
         if(importModule == null)
         {
