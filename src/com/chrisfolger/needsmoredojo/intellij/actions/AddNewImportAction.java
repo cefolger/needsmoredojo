@@ -32,7 +32,15 @@ public class AddNewImportAction extends JavaScriptAction
             initialChoice = new ImportCreator().getSuggestedImport(element);
         }
 
-        String importModule = Messages.showInputDialog("Enter the module name", "Add new AMD import", null, initialChoice, null);
+        String warning = "";
+
+        String projectSources = ServiceManager.getService(e.getProject(), DojoSettings.class).getProjectSourcesDirectory();
+        if(projectSources == null || projectSources.equals(""))
+        {
+            warning += "\n*For best results, configure your project sources in the settings dialog*";
+        }
+
+        String importModule = Messages.showInputDialog("Enter the module name" + warning, "Add new AMD import", null, initialChoice, null);
 
         if(importModule == null)
         {
