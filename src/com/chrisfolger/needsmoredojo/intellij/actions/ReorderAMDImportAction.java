@@ -12,6 +12,18 @@ import com.intellij.psi.PsiFile;
 
 public class ReorderAMDImportAction extends JavaScriptAction
 {
+    private final ImportReorderer.Direction direction;
+
+    public ReorderAMDImportAction()
+    {
+        direction = ImportReorderer.Direction.UP;
+    }
+
+    public ReorderAMDImportAction(ImportReorderer.Direction direction)
+    {
+        this.direction = direction;
+    }
+
     @Override
     public void actionPerformed(AnActionEvent e)
     {
@@ -32,7 +44,7 @@ public class ReorderAMDImportAction extends JavaScriptAction
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        reorderer.doSwap(element, editor, ImportReorderer.Direction.UP);
+                        reorderer.doSwap(element, editor, direction);
                     }
                 });
             }

@@ -128,10 +128,17 @@
             <add-to-group group-id="GoToTargetEx"/>
         </action>
 
-        <action id="com.chrisfolger.needsmoredojo.actions.reorderimport"
-                class="com.chrisfolger.needsmoredojo.intellij.actions.ReorderAMDImportAction" text="Move Import Up"
+        <action id="com.chrisfolger.needsmoredojo.actions.reorderimport.moveup"
+                class="com.chrisfolger.needsmoredojo.intellij.actions.MoveImportUpAction" text="Move Import Up"
                 description="Move an AMD import up in the list">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt PAGE_UP"/>
+            <add-to-group group-id="GoToTargetEx"/>
+        </action>
+
+        <action id="com.chrisfolger.needsmoredojo.actions.reorderimport.movedown"
+                class="com.chrisfolger.needsmoredojo.intellij.actions.MoveImportDownAction" text="Move Import Down"
+                description="Move an AMD import down in the list">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt PAGE_DOWN"/>
             <add-to-group group-id="GoToTargetEx"/>
         </action>
 
