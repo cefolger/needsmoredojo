@@ -15,6 +15,7 @@
                 <li>Ctrl+Click is supported for dojo/i18n resource strings</li>
                 <li>Jump to attach points inside modules that mixin _TemplatedWidget with Ctrl+Shift+O, A</li>
                 <li>convert util style modules to class style modules and vice-versa</li>
+                <li>Reorder imports with Ctrl+Alt+Page Up/Down keys
             </ul>
         Still very much under development. Please contact me with any feedback!
       ]]></description>
@@ -23,9 +24,10 @@
             <b>0.4.1</b>
             <ul>
                 <li>Added unused import exceptions </li>
-                <li>Fix index out of bounds when removing 0 imports (Issue #77)</li>
-                <li>Fix trailing comma when organizing imports with duplicates (Issue #78)</li>
+                <li>Fixed index out of bounds when removing 0 imports (Issue #77)</li>
+                <li>Fixed trailing comma when organizing imports with duplicates (Issue #78)</li>
                 <li>No longer need one module already imported when trying to add one (Issue #70)</li>
+                <li>Added ability to move imports up and down with Ctrl+Alt+Page Up/Down</li>
             </ul>
 
             <b>0.4</b>
