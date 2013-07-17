@@ -15,7 +15,7 @@ public class ReorderAMDImportAction extends JavaScriptAction
     @Override
     public void actionPerformed(AnActionEvent e)
     {
-        Editor editor = e.getData(PlatformDataKeys.EDITOR);
+        final Editor editor = e.getData(PlatformDataKeys.EDITOR);
         PsiFile file = e.getData(LangDataKeys.PSI_FILE);
 
         if(editor == null || file == null)
@@ -32,7 +32,7 @@ public class ReorderAMDImportAction extends JavaScriptAction
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        reorderer.doSwap(element);
+                        reorderer.doSwap(element, editor);
                     }
                 });
             }

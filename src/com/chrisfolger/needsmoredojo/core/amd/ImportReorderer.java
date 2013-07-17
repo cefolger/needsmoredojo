@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 
 public class ImportReorderer
@@ -66,13 +67,17 @@ public class ImportReorderer
         return new PsiElement[] { source, destination };
     }
 
-    public void reorder(PsiElement source, PsiElement destination)
+    public PsiElement[] reorder(PsiElement source, PsiElement destination)
     {
-        destination.replace(source);
-        source.replace(destination);
+        PsiElement[] results = new PsiElement[2];
+
+        results[0] = destination.replace(source);
+        results[1] = source.replace(destination);
+
+        return results;
     }
 
-    public void doSwap(PsiElement source)
+    public void doSwap(PsiElement source, Editor editor)
     {
         PsiElement[] defines = getSourceAndDestination(source);
 
@@ -86,7 +91,9 @@ public class ImportReorderer
 
         PsiElement[] parameters = new PsiElement[] { parameterList[sourceIndex], parameterList[destinationIndex] };
 
-        reorder(defines[0], defines[1]);
+        PsiElement[] elementsWithPositions = reorder(defines[0], defines[1]);
         reorder(parameters[0], parameters[1]);
+
+        editor.getCaretModel().moveToOffset(elementsWithPositions[0].getTextOffset());
     }
 }
