@@ -5,38 +5,43 @@ import com.intellij.psi.PsiElement;
 
 public class ImportReorderer
 {
-    public PsiElement[] getSourceAndDestination(PsiElement element)
+    private JSLiteralExpression getNearestLiteralExpression(PsiElement element)
     {
-        // TODO move to testable section
-        // test cases:
-        // comma resolves to real element
-        if(element.getText().equals(","))
-        {
-            element = element.getPrevSibling();
-        }
-
-        JSLiteralExpression source = (JSLiteralExpression) element;
-        // find destination
-        PsiElement node = source.getPrevSibling();
+        PsiElement node = element.getPrevSibling();
         int tries = 0;
         while(tries < 5)
         {
             if(node instanceof  JSLiteralExpression)
             {
-                break;
+                return (JSLiteralExpression) node;
             }
 
             node = node.getPrevSibling();
             tries ++;
         }
 
-        if(!(node instanceof JSLiteralExpression))
+        return null;
+    }
+
+    public PsiElement[] getSourceAndDestination(PsiElement element)
+    {
+        JSLiteralExpression source = null;
+
+        if(element instanceof JSLiteralExpression)
+        {
+            source = (JSLiteralExpression) element;
+        }
+        else
+        {
+            source = getNearestLiteralExpression(element);
+        }
+
+        // find destination
+        JSLiteralExpression destination = getNearestLiteralExpression(source.getPrevSibling());
+        if(destination == null)
         {
             return null;
         }
-
-        JSLiteralExpression destination = (JSLiteralExpression) node;
-        int i=0;
 
         return new PsiElement[] { source, destination };
     }
