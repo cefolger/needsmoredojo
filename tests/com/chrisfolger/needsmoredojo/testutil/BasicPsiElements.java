@@ -17,7 +17,7 @@ public class BasicPsiElements
         return new MockJSLiteralExpression("null");
     }
 
-    public static MockJSElement defineFunction()
+    public static MockJSElementInterface defineFunction()
     {
         MockJSElement function = new MockJSElement("function()");
         MockJSElement paren = new MockJSElement(")");
@@ -47,7 +47,7 @@ public class BasicPsiElements
         };
     }
 
-    public static void createChain(MockJSElement[] elementsInSequence)
+    public static void createChain(MockJSElementInterface[] elementsInSequence)
     {
         for(int i=0;i<elementsInSequence.length-1;i++)
         {

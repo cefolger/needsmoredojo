@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.amd;
 import com.chrisfolger.needsmoredojo.testutil.BasicPsiElements;
 import com.chrisfolger.needsmoredojo.testutil.MockJSArrayLiteralExpression;
 import com.chrisfolger.needsmoredojo.testutil.MockJSElement;
+import com.chrisfolger.needsmoredojo.testutil.MockJSElementInterface;
 import com.intellij.psi.PsiElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,25 +65,25 @@ public class TestUnusedImportsRemover
         MockJSArrayLiteralExpression literal = BasicPsiElements.define();
         dDefine.setParent(literal);
 
-        BasicPsiElements.createChain(new MockJSElement[]{
+        BasicPsiElements.createChain(new MockJSElementInterface[]{
                 cDefine, BasicPsiElements.comma(), new MockJSElement("// comment"), BasicPsiElements.lineBreak(),
                 dDefine, BasicPsiElements.lineBreak().comesBefore(literal.getBracket())
         });
 
         defines.add(dDefine);
 
-        MockJSElement cParameter = addParameter("C");
-        MockJSElement dParameter = addParameter("D");
+        MockJSElementInterface cParameter = addParameter("C");
+        MockJSElementInterface dParameter = addParameter("D");
 
-        MockJSElement function = BasicPsiElements.defineFunction();
+        MockJSElementInterface function = BasicPsiElements.defineFunction();
         dParameter.setParent(function);
 
-        BasicPsiElements.createChain(new MockJSElement[]{
+        BasicPsiElements.createChain(new MockJSElementInterface[]{
                 cParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
                 dParameter.comesBefore((MockJSElement) function.getLastChild())
         });
 
-        parameters.add(dParameter);
+        parameters.add((PsiElement) dParameter);
 
         UnusedImportsRemover.RemovalResult result = remover.removeUnusedParameters(parameters, defines);
 
@@ -113,7 +114,7 @@ public class TestUnusedImportsRemover
         MockJSArrayLiteralExpression literal = BasicPsiElements.define();
         eDefine.setParent(literal);
 
-        BasicPsiElements.createChain(new MockJSElement[]{
+        BasicPsiElements.createChain(new MockJSElementInterface[]{
                 cDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
                 dDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
                 eDefine, BasicPsiElements.comma(), BasicPsiElements.lineBreak(),
@@ -128,14 +129,14 @@ public class TestUnusedImportsRemover
         MockJSElement eParameter = addParameter("E");
         MockJSElement fParameter = addParameter("F");
 
-        MockJSElement function = BasicPsiElements.defineFunction();
+        MockJSElementInterface function = BasicPsiElements.defineFunction();
         eParameter.setParent(function);
 
-        BasicPsiElements.createChain(new MockJSElement[]{
+        BasicPsiElements.createChain(new MockJSElementInterface[]{
                 cParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
                 dParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
                 eParameter, BasicPsiElements.comma(), BasicPsiElements.space(),
-                fParameter.comesBefore((MockJSElement) function.getLastChild())
+                fParameter.comesBefore((MockJSElementInterface) function.getLastChild())
         });
 
         parameters.add(eParameter);

@@ -4,10 +4,11 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.impl.JSArrayLiteralExpressionImpl;
+import org.apache.commons.lang.NotImplementedException;
 
 import static org.mockito.Mockito.mock;
 
-public class MockJSArrayLiteralExpression extends JSArrayLiteralExpressionImpl
+public class MockJSArrayLiteralExpression extends JSArrayLiteralExpressionImpl implements MockJSElementInterface
 {
     private JSExpression[] expressions;
     private JSElement lastChild;
@@ -36,8 +37,28 @@ public class MockJSArrayLiteralExpression extends JSArrayLiteralExpressionImpl
     }
 
     @Override
+    public MockJSElementInterface comesBefore(MockJSElementInterface element) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void setPrevSibling(MockJSElementInterface element) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void setNextSibling(MockJSElementInterface element) {
+        throw new NotImplementedException();
+    }
+
+    @Override
     public JSElement getLastChild() {
         return lastChild;
+    }
+
+    @Override
+    public void setParent(MockJSElementInterface element) {
+        throw new NotImplementedException();
     }
 
     public void setLastChild(JSElement lastChild) {
