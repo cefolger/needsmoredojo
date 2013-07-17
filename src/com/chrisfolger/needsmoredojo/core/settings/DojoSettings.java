@@ -28,6 +28,8 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     {
         ruiImportExceptions = new LinkedHashMap<String, String>();
         ruiImportExceptions.put("dojox/form/Uploader/IFrame", "IFrame");
+        ruiImportExceptions.put("dojox/form/Uploader/Flash", "Flash");
+        ruiImportExceptions.put("dojox/form/Uploader", "Uploader");
 
         amdImportNamingExceptions = new LinkedHashMap<String, String>();
         amdImportNamingExceptions.put("dojo/sniff", "has");
