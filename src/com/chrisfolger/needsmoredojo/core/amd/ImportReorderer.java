@@ -10,9 +10,24 @@ import com.intellij.psi.PsiElement;
 
 public class ImportReorderer
 {
-    private JSLiteralExpression getNearestLiteralExpression(PsiElement element)
+    public enum Direction
     {
-        PsiElement node = element.getPrevSibling();
+        UP,
+        DOWN
+    }
+
+    private JSLiteralExpression getNearestLiteralExpression(PsiElement element, Direction direction)
+    {
+        PsiElement node = element;
+        if(direction == Direction.UP)
+        {
+            node = element.getPrevSibling();
+        }
+        else
+        {
+            node = element.getNextSibling();
+        }
+
         int tries = 0;
         while(tries < 5)
         {
@@ -21,7 +36,15 @@ public class ImportReorderer
                 return (JSLiteralExpression) node;
             }
 
-            node = node.getPrevSibling();
+            if(direction == Direction.UP)
+            {
+                node = node.getPrevSibling();
+            }
+            else
+            {
+                node = node.getNextSibling();
+            }
+
             tries ++;
         }
 
@@ -41,7 +64,7 @@ public class ImportReorderer
         return -1;
     }
 
-    public PsiElement[] getSourceAndDestination(PsiElement element)
+    public PsiElement[] getSourceAndDestination(PsiElement element, Direction direction)
     {
         JSLiteralExpression source = null;
 
@@ -55,11 +78,20 @@ public class ImportReorderer
         }
         else
         {
-            source = getNearestLiteralExpression(element);
+            source = getNearestLiteralExpression(element, direction);
         }
 
         // find destination
-        JSLiteralExpression destination = getNearestLiteralExpression(source.getPrevSibling());
+        JSLiteralExpression destination = null;
+        if(direction == Direction.UP)
+        {
+            destination = getNearestLiteralExpression(source.getPrevSibling(), direction);
+        }
+        else
+        {
+            destination = getNearestLiteralExpression(source.getNextSibling(), direction);
+        }
+
         if(destination == null)
         {
             return null;
@@ -78,9 +110,9 @@ public class ImportReorderer
         return results;
     }
 
-    public void doSwap(PsiElement source, Editor editor)
+    public void doSwap(PsiElement source, Editor editor, Direction direction)
     {
-        PsiElement[] defines = getSourceAndDestination(source);
+        PsiElement[] defines = getSourceAndDestination(source, direction);
 
         // get the parameter element
         JSArgumentList list = (JSArgumentList) defines[0].getParent().getParent();

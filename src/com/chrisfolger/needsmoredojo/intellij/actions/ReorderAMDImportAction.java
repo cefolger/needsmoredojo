@@ -32,7 +32,7 @@ public class ReorderAMDImportAction extends JavaScriptAction
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        reorderer.doSwap(element, editor);
+                        reorderer.doSwap(element, editor, ImportReorderer.Direction.UP);
                     }
                 });
             }

@@ -40,7 +40,7 @@ public class TestImportReorderer
      */
     public void testFindingSourceFromComma()
     {
-        PsiElement[] results = reorderer.getSourceAndDestination(second[1]);
+        PsiElement[] results = reorderer.getSourceAndDestination(second[1], ImportReorderer.Direction.UP);
 
         assertEquals(second[0], results[0]);
         assertEquals(first[0], results[1]);
@@ -54,7 +54,7 @@ public class TestImportReorderer
      */
     public void testFindingSourceFromLineEnding()
     {
-        PsiElement[] results = reorderer.getSourceAndDestination(second[2]);
+        PsiElement[] results = reorderer.getSourceAndDestination(second[2], ImportReorderer.Direction.UP);
 
         assertEquals(second[0], results[0]);
         assertEquals(first[0], results[1]);
@@ -68,7 +68,7 @@ public class TestImportReorderer
      */
     public void testFindingSourceFromInsideLiteral()
     {
-        PsiElement[] results = reorderer.getSourceAndDestination(second[0]);
+        PsiElement[] results = reorderer.getSourceAndDestination(second[0], ImportReorderer.Direction.UP);
 
         assertEquals(second[0], results[0]);
         assertEquals(first[0], results[1]);
