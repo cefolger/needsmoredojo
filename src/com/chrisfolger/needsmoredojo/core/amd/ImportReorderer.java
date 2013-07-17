@@ -36,6 +36,11 @@ public class ImportReorderer
                 return (JSLiteralExpression) node;
             }
 
+            if(node == null)
+            {
+                return null;
+            }
+
             if(direction == Direction.UP)
             {
                 node = node.getPrevSibling();
@@ -78,7 +83,7 @@ public class ImportReorderer
         }
         else
         {
-            source = getNearestLiteralExpression(element, direction);
+            source = getNearestLiteralExpression(element, Direction.UP);
         }
 
         // find destination
@@ -92,9 +97,9 @@ public class ImportReorderer
             destination = getNearestLiteralExpression(source.getNextSibling(), direction);
         }
 
-        if(destination == null)
+        if(destination == null || source == null)
         {
-            return null;
+            return new PsiElement[0];
         }
 
         return new PsiElement[] { source, destination };
@@ -113,6 +118,11 @@ public class ImportReorderer
     public void doSwap(PsiElement source, Editor editor, Direction direction)
     {
         PsiElement[] defines = getSourceAndDestination(source, direction);
+
+        if(defines == null || defines.length == 0)
+        {
+            return;
+        }
 
         // get the parameter element
         JSArgumentList list = (JSArgumentList) defines[0].getParent().getParent();
