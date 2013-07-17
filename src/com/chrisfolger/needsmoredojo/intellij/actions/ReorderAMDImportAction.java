@@ -23,9 +23,8 @@ public class ReorderAMDImportAction extends JavaScriptAction
             return;
         }
 
-        PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
+        final PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
         final ImportReorderer reorderer = new ImportReorderer();
-        final PsiElement[] sourceAndDestination = reorderer.getSourceAndDestination(element);
 
         CommandProcessor.getInstance().executeCommand(file.getProject(), new Runnable() {
             @Override
@@ -33,7 +32,7 @@ public class ReorderAMDImportAction extends JavaScriptAction
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        reorderer.reorder(sourceAndDestination[0], sourceAndDestination[1]);
+                        reorderer.doSwap(element);
                     }
                 });
             }
