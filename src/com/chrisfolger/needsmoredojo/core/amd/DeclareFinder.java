@@ -19,9 +19,15 @@ public class DeclareFinder
         // get the return declare statement
         // get all of the literal expressions
 
-        file.acceptChildren(getDefineVisitor());
+        file.acceptChildren(getVisitorToConvertToUtilPattern());
     }
 
+    /**
+     * returns a visitor that will find a declare statement in a dojo module
+     *
+     * @param onReturnFound this is the callback that will run when the declare statement is found
+     * @return the visitor
+     */
     public JSRecursiveElementVisitor getVisitorToRetrieveDeclare(final CompletionCallback onReturnFound)
     {
         return new JSRecursiveElementVisitor() {
@@ -64,6 +70,13 @@ public class DeclareFinder
         };
     }
 
+    /**
+     * this returns a visitor that will search for a define statement, and on finding it will then
+     * search for the declare statement in a dojo module
+     *
+     * @param onDeclareFound this is the callback that will be executed when the declare statement is found
+     * @return the visitor
+     */
     public JSRecursiveElementVisitor getDefineVisitorToRetrieveDeclareObject(final CompletionCallback onDeclareFound)
     {
         return new JSRecursiveElementVisitor() {
@@ -85,7 +98,13 @@ public class DeclareFinder
         };
     }
 
-    public JSRecursiveElementVisitor getDefineVisitor()
+    /**
+     * This method returns a visitor that will take a dojo module and convert it to use a util pattern
+     * instead of a class pattern
+     *
+     * @return the visitor
+     */
+    public JSRecursiveElementVisitor getVisitorToConvertToUtilPattern()
     {
         return new JSRecursiveElementVisitor() {
             @Override
@@ -106,6 +125,13 @@ public class DeclareFinder
         };
     }
 
+    /**
+     * Returns a visitor that will search a dojo module for its define statement, and execute a callback
+     * when it finds it
+     *
+     * @param onDefineFound the callback
+     * @return the visitor
+     */
     public JSRecursiveElementVisitor getDefineVisitor(final CompletionCallback onDefineFound)
     {
         return new JSRecursiveElementVisitor() {

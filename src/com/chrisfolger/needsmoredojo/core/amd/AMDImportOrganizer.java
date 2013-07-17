@@ -128,6 +128,17 @@ public class AMDImportOrganizer
         }
     }
 
+    /**
+     * this method replaces an unsorted array of PsiElements with a sorted version. This is meant to sort
+     * AMD imports in a define(...) call
+     *
+     * When replacing, it also normalizes quotes
+     *
+     * @param unsorted the array of unsorted elements to sort
+     * @param sorted the sorted array of elements
+     * @param deleteTrailingComma if true, trailing commas after all reorganizing is done will be deleted
+     * @param result this is used to determine which quote (' or "") to use for normalizing
+     */
     public void reorder(PsiElement[] unsorted, SortedPsiElementAdapter[] sorted, boolean deleteTrailingComma, SortingResult result)
     {
         PsiElement parent = unsorted[0].getParent();
@@ -227,6 +238,13 @@ public class AMDImportOrganizer
         return items;
     }
 
+    /**
+     * this is the entry point when you want to sort a list of AMD imports alphabetically.
+     *
+     * @param defines a list of imports coming from the define array literal
+     * @param parameters a list of parameters that come from the define function
+     * @return the sorting result that describes which quote style to use
+     */
     public SortingResult sortDefinesAndParameters(List<PsiElement> defines, List<PsiElement> parameters)
     {
         // first create a list of SortItems
