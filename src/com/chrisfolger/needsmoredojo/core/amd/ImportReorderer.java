@@ -86,6 +86,12 @@ public class ImportReorderer
             source = getNearestLiteralExpression(element, Direction.UP);
         }
 
+        if(source == null)
+        {
+            // cursor wasn't in the right spot
+            return new PsiElement[0];
+        }
+
         // find destination
         JSLiteralExpression destination = null;
         if(direction == Direction.UP)
@@ -131,6 +137,12 @@ public class ImportReorderer
         int sourceIndex = getIndexInParent(defines[0]);
         int destinationIndex = getIndexInParent(defines[1]);
         JSParameter[] parameterList = items.getFunction().getParameters();
+
+        if(sourceIndex >= parameterList.length || destinationIndex >= parameterList.length)
+        {
+            // we're moving into a plugin's position
+            return;
+        }
 
         PsiElement[] parameters = new PsiElement[] { parameterList[sourceIndex], parameterList[destinationIndex] };
 
