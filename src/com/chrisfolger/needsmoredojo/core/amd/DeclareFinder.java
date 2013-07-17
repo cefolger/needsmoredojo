@@ -24,7 +24,6 @@ public class DeclareFinder
 
     public JSRecursiveElementVisitor getVisitorToRetrieveDeclare(final CompletionCallback onReturnFound)
     {
-        // TODO account for the case where the define passes a class name as the first argument
         return new JSRecursiveElementVisitor() {
             @Override
             public void visitJSLocalVariable(JSLocalVariable variable)
