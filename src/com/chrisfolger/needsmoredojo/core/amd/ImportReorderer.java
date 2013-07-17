@@ -5,6 +5,7 @@ import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.ScrollType;
 import com.intellij.psi.PsiElement;
 
 public class ImportReorderer
@@ -95,5 +96,6 @@ public class ImportReorderer
         reorder(parameters[0], parameters[1]);
 
         editor.getCaretModel().moveToOffset(elementsWithPositions[0].getTextOffset());
+        editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
     }
 }
