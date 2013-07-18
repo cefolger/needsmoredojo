@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ *  runs when the user wants to remove all unused imports
+ */
 public class UnusedImportsAction extends JavaScriptAction {
     protected boolean deleteMode = false;
 
@@ -32,7 +35,7 @@ public class UnusedImportsAction extends JavaScriptAction {
         resolver.gatherDefineAndParameters(psiFile, defines, parameters);
 
         final UnusedImportsRemover detector = new UnusedImportsRemover();
-        psiFile.accept(detector.getVisitorToRemoveUsedParameters(parameters, defines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions()));
+        psiFile.accept(detector.getVisitorToRemoveUsedModulesFromLists(parameters, defines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions()));
 
         if(this.deleteMode)
         {

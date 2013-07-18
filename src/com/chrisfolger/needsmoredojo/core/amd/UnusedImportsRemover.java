@@ -155,7 +155,18 @@ public class UnusedImportsRemover
     }
 
     // TODO detect registry.byNode and registry.byId
-    public JSRecursiveElementVisitor getVisitorToRemoveUsedParameters(final List<PsiElement> parameters, final List<PsiElement> defines, LinkedHashMap<String, String> exceptions)
+
+    /**
+     * returns a visitor that will remove amd import literals and function parameters from their corresponding
+     * lists if they are used in the code
+     *
+     * @param parameters the list of function parameters in a define statement
+     * @param defines the list of literals in a define statement
+     * @param exceptions a map of module : parameter representing exceptions. These modules will not be flagged as unused
+     *  under any circumstance. Used for legacy dojo modules
+     * @return the visitor
+     */
+    public JSRecursiveElementVisitor getVisitorToRemoveUsedModulesFromLists(final List<PsiElement> parameters, final List<PsiElement> defines, LinkedHashMap<String, String> exceptions)
     {
         final Collection<String> parameterExceptions = exceptions.values();
 
@@ -207,7 +218,17 @@ public class UnusedImportsRemover
                         continue;
                     }
 
-                    if(node.getText().startsWith("new " + parameters.get(i).getText()))
+                    boolean used = false;
+                    if(node.getMethodExpression() != null && node.getMethodExpression().getText().equals(parameters.get(i).getText()))
+                    {
+                        used = true;
+                    }
+                    else if( node.getMethodExpression() == null && node.getText().startsWith("new " + parameters.get(i).getText()))
+                    {
+                        used = true;
+                    }
+
+                    if(used)
                     {
                         parameters.remove(i);
                         if(i < defines.size())
