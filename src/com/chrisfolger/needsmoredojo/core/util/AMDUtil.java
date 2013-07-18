@@ -209,4 +209,30 @@ public class AMDUtil
             return module;
         }
     }
+
+    /**
+     * given a module, returns the resource id if it's an AMD plugin
+     *
+     * @param module
+     * @param includeExclamationPoint
+     * @return
+     */
+    public static String getAMDPluginResourceIfPossible(String module, boolean includeExclamationPoint)
+    {
+        if(module.indexOf('!') > 0)
+        {
+            if(includeExclamationPoint)
+            {
+                return module.substring(module.indexOf('!'));
+            }
+            else
+            {
+                return module.substring(module.indexOf('!') + 1);
+            }
+        }
+        else
+        {
+            return "";
+        }
+    }
 }

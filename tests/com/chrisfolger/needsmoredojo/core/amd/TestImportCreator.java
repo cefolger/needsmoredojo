@@ -225,4 +225,18 @@ public class TestImportCreator
 
         assertEquals("../website/package/StandbyWrapper", choices[0]);
     }
+
+    @Test
+    public void pluginIsTakenIntoAccountCorrectly()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("text.js", "dojo")
+        };
+
+        libraries = new ArrayList<SourceLibrary>();
+        libraries.add(new SourceLibrary("dojo", "dojo", true));
+        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "text!testing", null );
+
+        assertEquals("dojo/text!testing", choices[0]);
+    }
 }

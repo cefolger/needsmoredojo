@@ -136,18 +136,19 @@ public class ImportCreator
                 }
 
                 absolutePathOption = result;
+                String pluginPostFix = AMDUtil.getAMDPluginResourceIfPossible(module, true);
 
                 if(prioritizeRelativePaths && relativePathOption != null)
                 {
-                    choices.add(relativePathOption);
-                    choices.add(absolutePathOption);
+                    choices.add(relativePathOption + pluginPostFix);
+                    choices.add(absolutePathOption + pluginPostFix);
                 }
                 else
                 {
-                    choices.add(absolutePathOption);
+                    choices.add(absolutePathOption + pluginPostFix);
                     if(relativePathOption != null)
                     {
-                        choices.add(relativePathOption);
+                        choices.add(relativePathOption + pluginPostFix);
                     }
                 }
             }
