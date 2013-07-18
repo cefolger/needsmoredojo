@@ -185,4 +185,23 @@ public class TestMismatchedImportsDetector
     {
         assertTrue(detector.defineMatchesParameter("dojo/i18n!./foo/foonls", "resources", exceptions));
     }
+
+    @Test
+    /**
+     * based on reported issue: Support for generic AMD loader plugins
+     * https://github.com/cefolger/needsmoredojo/issues/87
+     */
+    public void testArbitraryAMDPluginIsNotFlaggedAsMismatchedForCommonCases()
+    {
+        assertTrue(detector.defineMatchesParameter("test/package/foo!../test", "test", exceptions));
+        assertTrue(detector.defineMatchesParameter("foo!bar", "bar", exceptions));
+        // if someone names the parameter the same name as the plugin, let it slide
+        // this may be taken out in the future though if it proves to be too lax
+        assertTrue(detector.defineMatchesParameter("foo!bar", "foo", exceptions));
+        assertTrue(detector.defineMatchesParameter("foo!a/b/c/d", "d", exceptions));
+        assertTrue(detector.defineMatchesParameter("foo!../../a", "a", exceptions));
+
+        assertFalse(detector.defineMatchesParameter("foo!bar", "bare", exceptions));
+        assertFalse(detector.defineMatchesParameter("foo!bar", "ba", exceptions));
+    }
 }

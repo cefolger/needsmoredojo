@@ -64,6 +64,15 @@ public class MismatchedImportsDetector
         return results;
     }
 
+    /**
+     * determines if an AMD literal in a define statement matches its corresponding parameter
+     *
+     * @param define
+     * @param parameter
+     * @param exceptions a map of <module, parameter> exceptions to test for when normal naming conventions are
+     * insufficient
+     * @return whether or not the define and parameter are consistently named
+     */
     public boolean defineMatchesParameter(String define, String parameter, Map<String, String> exceptions)
     {
         // simple case can be taken care of by just matching the stuff after / with the parameter
@@ -156,6 +165,26 @@ public class MismatchedImportsDetector
             }
 
             return fileName.contains(parameterComparison);
+        }
+        // a custom amd plugin
+        else if (defineComparison.contains("!"))
+        {
+            // grab everything after the !
+            String resourceId = defineComparison.substring(defineComparison.lastIndexOf('!') + 1);
+            // get everything before the !
+            String pluginId = defineComparison.substring(0, defineComparison.lastIndexOf('!'));
+
+            if(resourceId.indexOf('/') != -1)
+            {
+                resourceId = resourceId.substring(resourceId.lastIndexOf('/') + 1);
+            }
+
+            if(resourceId.indexOf('.') != -1)
+            {
+                resourceId = resourceId.substring(0, resourceId.indexOf('.'));
+            }
+
+            return resourceId.equals(parameterComparison) || parameterComparison.equals(pluginId);
         }
 
         return false;
