@@ -187,4 +187,9 @@ public class AMDUtil
 
         return result;
     }
+
+    public static String getAMDPluginName(String module)
+    {
+        return "";
+    }
 }

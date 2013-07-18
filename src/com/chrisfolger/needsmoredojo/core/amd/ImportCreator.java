@@ -9,6 +9,7 @@ import com.intellij.lang.javascript.psi.*;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -153,16 +154,13 @@ public class ImportCreator
         return choices.toArray(new String[0]);
     }
 
-    public String[] getPossibleDojoImports(PsiFile psiFile, String module, boolean prioritizeRelativeImports)
+    protected List<SourceLibrary> getSourceLibraries(Project project)
     {
-        PsiFile[] files = null;
-        PsiFile[] filesWithUnderscore = null;
-
         List<SourceLibrary> libraries = new ArrayList<SourceLibrary>();
 
         try
         {
-            VirtualFile dojoSourcesParentDirectory = AMDUtil.getDojoSourcesDirectory(psiFile.getProject(), true);
+            VirtualFile dojoSourcesParentDirectory = AMDUtil.getDojoSourcesDirectory(project, true);
             if(dojoSourcesParentDirectory != null)
             {
                 for(VirtualFile directory : dojoSourcesParentDirectory.getChildren())
@@ -172,7 +170,7 @@ public class ImportCreator
                 }
             }
 
-            VirtualFile[] otherSourceDirectories = AMDUtil.getProjectSourceDirectories(psiFile.getProject(), true);
+            VirtualFile[] otherSourceDirectories = AMDUtil.getProjectSourceDirectories(project, true);
             for(VirtualFile directory : otherSourceDirectories)
             {
                 for(VirtualFile sourceDirectory : directory.getChildren())
@@ -186,7 +184,31 @@ public class ImportCreator
                     libraries.add(library);
                 }
             }
+        }
+        catch(NullPointerException exc)
+        {
+            return libraries;
+        }
 
+        return libraries;
+    }
+
+    /**
+     * gets a list of possible modules to import based on source files and a user entered module
+     *
+     * @param libraries the list of libraries to search for modules in
+     * @param psiFile   the current file the user is adding an import to
+     * @param module    the module the user wanted to add
+     * @param prioritizeRelativeImports if true, will return relative path modules first instead of absolutely referenced files
+     * @return a string array of possible modules to import (fully qualified)
+     */
+    public String[] getPossibleDojoImports(List<SourceLibrary> libraries, PsiFile psiFile, String module, boolean prioritizeRelativeImports)
+    {
+        PsiFile[] files = null;
+        PsiFile[] filesWithUnderscore = null;
+
+        try
+        {
             files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
             // this will let us search for _TemplatedMixin and friends
             filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
@@ -203,6 +225,19 @@ public class ImportCreator
         PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
         return getChoicesFromFiles(filesArray, libraries.toArray(new SourceLibrary[0]), module, psiFile, prioritizeRelativeImports);
+    }
+
+    /**
+     * gets a list of possible modules to import based on source files and a user entered module
+     *
+     * @param psiFile   the current file the user is adding an import to
+     * @param module    the module the user wanted to add
+     * @param prioritizeRelativeImports if true, will return relative path modules first instead of absolutely referenced files
+     * @return a string array of possible modules to import (fully qualified)
+     */
+    public String[] getPossibleDojoImports(PsiFile psiFile, String module, boolean prioritizeRelativeImports)
+    {
+        return getPossibleDojoImports(getSourceLibraries(psiFile.getProject()), psiFile, module, prioritizeRelativeImports);
     }
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
