@@ -29,6 +29,7 @@
                 <li>No longer need one module already imported when trying to add one (Issue #70)</li>
                 <li>Added ability to move imports up and down with Ctrl+Alt+Page Up/Down</li>
                 <li>Mismatched imports detector takes custom AMD plugins into account (Issue #87)</li>
+                <li>Fixed plugins not being inserted correctly when using add import (Issue #20)</li>
             </ul>
 
             <b>0.4</b>
