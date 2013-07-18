@@ -188,8 +188,25 @@ public class AMDUtil
         return result;
     }
 
-    public static String getAMDPluginName(String module)
+    /**
+     * if a module uses the plugin syntax, returns only the actual plugin name
+     *
+     * @param module the possible plugin module
+     * @return the module name
+     */
+    public static String getAMDPluginNameIfPossible(String module)
     {
-        return "";
+        if(module.indexOf('!') > 0 && module.indexOf('/') != 0)
+        {
+            return module.substring(module.lastIndexOf('/') + 1, module.lastIndexOf('!'));
+        }
+        else if(module.indexOf('!') > 0)
+        {
+            return module.substring(0, module.lastIndexOf('!'));
+        }
+        else
+        {
+            return module;
+        }
     }
 }

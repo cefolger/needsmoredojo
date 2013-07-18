@@ -10,7 +10,6 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -57,6 +56,17 @@ public class ImportCreator
         return getChoicesFromFiles(filesArray, libraries, module, originalModule, false);
     }
 
+    /**
+     * given a list of dojo modules to search through and a list of libraries,
+     * returns a list of possible dojo modules
+     *
+     * @param filesArray the array of dojo modules to search through
+     * @param libraries a list of source libraries that contain dojo modules
+     * @param module the original module name that the user entered
+     * @param originalModule the file that the user started entering this module in
+     * @param prioritizeRelativePaths if true, return relative path syntax first before absolute path syntax
+     * @return a string array of dojo modules that the user may have been searching for
+     */
     public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths)
     {
         List<String> choices = new ArrayList<String>();
@@ -204,14 +214,16 @@ public class ImportCreator
      */
     public String[] getPossibleDojoImports(List<SourceLibrary> libraries, PsiFile psiFile, String module, boolean prioritizeRelativeImports)
     {
+        String actualModuleName = AMDUtil.getAMDPluginNameIfPossible(module);
+
         PsiFile[] files = null;
         PsiFile[] filesWithUnderscore = null;
 
         try
         {
-            files = FilenameIndex.getFilesByName(psiFile.getProject(), module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
+            files = FilenameIndex.getFilesByName(psiFile.getProject(), actualModuleName + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
             // this will let us search for _TemplatedMixin and friends
-            filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + module + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
+            filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + actualModuleName + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
         }
         catch(NullPointerException exc)
         {
