@@ -28,6 +28,7 @@
                 <li>Fixed trailing comma when organizing imports with duplicates (Issue #78)</li>
                 <li>No longer need one module already imported when trying to add one (Issue #70)</li>
                 <li>Added ability to move imports up and down with Ctrl+Alt+Page Up/Down</li>
+                <li>Mismatched imports detector takes custom AMD plugins into account (Issue #87)</li>
             </ul>
 
             <b>0.4</b>
