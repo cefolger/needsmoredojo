@@ -16,6 +16,9 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
+/**
+ * the action responsible for launching the add import dialog
+ */
 public class AddNewImportAction extends JavaScriptAction
 {
     @Override
@@ -74,7 +77,11 @@ public class AddNewImportAction extends JavaScriptAction
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        new ImportCreator().addImport(psiFile, importedModule);
+                        boolean result = new ImportCreator().addImport(psiFile, importedModule);
+                        if(!result)
+                        {
+                            new Notification("needsmoredojo", "Add new Import", "A define statement was not found", NotificationType.WARNING).notify(psiFile.getProject());
+                        }
                     }
                 });
             }

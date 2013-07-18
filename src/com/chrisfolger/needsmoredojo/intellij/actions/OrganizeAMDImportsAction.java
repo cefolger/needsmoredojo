@@ -1,13 +1,11 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
+import com.chrisfolger.needsmoredojo.core.amd.AMDImportOrganizer;
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
-import com.chrisfolger.needsmoredojo.core.amd.AMDImportOrganizer;
-import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
@@ -17,6 +15,9 @@ import com.intellij.psi.PsiFile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this is an action that takes a bunch of AMD imports and organizes them alphabetically
+ */
 public class OrganizeAMDImportsAction extends JavaScriptAction
 {
     @Override
@@ -39,6 +40,13 @@ public class OrganizeAMDImportsAction extends JavaScriptAction
                     @Override
                     public void run() {
                         final AMDImportOrganizer.SortingResult result = organizer.sortDefinesAndParameters(defines, parameters);
+
+                        if(defines.size() == 0 || parameters.size() == 0)
+                        {
+                            Notifications.Bus.notify(new Notification("needsmoredojo", "Organize AMD Imports", "There were no AMD imports", NotificationType.WARNING));
+                            return;
+                        }
+
                         organizer.reorder(defines.toArray(new PsiElement[]{}), result.getDefines(), true, result);
                         organizer.reorder(parameters.toArray(new PsiElement[]{}), result.getParameters(), false, result);
                         Notifications.Bus.notify(new Notification("needsmoredojo", "Organize AMD Imports", "Completed", NotificationType.INFORMATION));

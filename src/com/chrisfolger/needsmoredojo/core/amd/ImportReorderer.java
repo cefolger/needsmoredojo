@@ -69,9 +69,22 @@ public class ImportReorderer
         return -1;
     }
 
+    /**
+     * given an AMD literal that the cursor is over and a direction, finds the literal to swap it with
+     *
+     * @param element the source element
+     * @param direction whether to swap with the element below the source or above it
+     * @return an array containing two elements ... the source literal and the destination.
+     *  OR an array of size 0 if none were found or were invalid.
+     */
     public PsiElement[] getSourceAndDestination(PsiElement element, Direction direction)
     {
         JSLiteralExpression source = null;
+
+        if(element == null)
+        {
+            return new PsiElement[0];
+        }
 
         if(element instanceof JSLiteralExpression)
         {

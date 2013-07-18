@@ -257,20 +257,31 @@ public class ImportCreator
         }
     }
 
-    public void addImport(PsiFile file, final String module)
+    /**
+     * entry point for adding an AMD import to an existing define statement
+     *
+     * @param file the file that the import will be added to
+     * @param module the name of the module the user wants to add
+     * @return true if the module was added, false otherwise
+     */
+    public boolean addImport(PsiFile file, final String module)
     {
+        final boolean[] visited = {false};
+
         JSRecursiveElementVisitor visitor = new DeclareFinder().getDefineVisitor(new DeclareFinder.CompletionCallback() {
             @Override
             public void run(Object[] result) {
                 JSCallExpression callExpression = (JSCallExpression) result[0];
                 JSFunction function = (JSFunction) result[1];
 
+                visited[0] = true;
                 DefineUtil.DefineStatementItems items = new DefineUtil().getDefineStatementItemsFromArguments(callExpression.getArguments());
                 createImport(module, items.getArguments(), function.getParameterList());
             }
         });
 
         file.acceptChildren(visitor);
+        return visited[0];
     }
 
     /**
