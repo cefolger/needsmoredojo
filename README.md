@@ -3,7 +3,7 @@ Needs More Dojo
 
 #### About
 
-This is an IntelliJ/WebStorm plugin to make working with the [dojo toolkit](http://dojotoolkit.org//) easier. 
+This is an IntelliJ/WebStorm plugin to make working with the [dojo toolkit](http://dojotoolkit.org//) easier.
 
 #### Installation
 
@@ -64,18 +64,28 @@ and normalizes quotes.
 
 ##### Add AMD Import
 
-Access this option with Ctrl+Shift+O, 2. A dialog will popup where you can type the name of the dojo module. Type the
-name of the module you would like to import and press enter. A dialog will then appear listing possibilities.
-Select one and press enter, the module will be inserted for you.
+Access this option with Ctrl+Shift+O, 2.
+- A dialog will popup where you can type the name of the dojo module.
 
-> Note: If you don't set the location of your project sources, this feature will search for them in the directory
-containing all of the dojo sources
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport1.png)
+- Type the name of the module you would like to import and press enter.
+- A dialog will then appear listing possibilities.
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport2.png)
+- Select one and press enter, the module will be inserted for you.
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport4.png)
+
+> **Note: If you don't set the location of your project sources, this feature will search for them in the directory
+containing all of the dojo sources**
 
 By default, this feature prioritizes absolute path syntax for module paths. You can change this in the settings dialog
 by checking "Prefer relative paths"
 
 You can also import an AMD plugin by using <module>!<resource id>. For example, to import an i18n resource, type
-i18!<path to resource file>
+i18!<path to resource file>:
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport3.png)
 
 Finally, you can access this option when your cursor is near a module name, either in a new expression or reference. Press
 Ctrl+Shift+O, 2 in these cases and the dialog will be pre-populated. In the following examples, the _ represents the cursor,
@@ -104,14 +114,16 @@ scan the code for references to your AMD imports and cross out any that are unus
 Some AMD modules are not directly referenced. To prevent these from being flagged as unused, use the settings dialog
 to add a new exception. After this, the import will never be flagged as unused.
 
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/unusedimportexception.png)
+
 ##### Navigate to Attach Point
 
 Inside a module that uses _TemplatedMixin, use this option with the caret over an attach point reference.
 The attach point will be looked up in the widget's template file (specified by the templateString property) and highlighted.
 Press Esc to remove the highlighting
 
-> Note: If you don't set the location of your project sources, this feature will search for them in the directory
-containing all of the dojo sources
+> **Note: If you don't set the location of your project sources, this feature will search for them in the directory
+containing all of the dojo sources**
 
 ##### Convert between class style and util style module
 
@@ -142,6 +154,8 @@ define([..], function(.., {
 
 This inspection runs in the background and will check if naming is consistent between an AMD module path and its
 corresponding parameter name.
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/mismatchedimports1.png)
 
 You can disable it by going in the inspections menu under **JavaScript -> Needs More Dojo** and unchecking it.
 
