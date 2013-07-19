@@ -83,7 +83,7 @@ By default, this feature prioritizes absolute path syntax for module paths. You 
 by checking "Prefer relative paths"
 
 You can also import an AMD plugin by using <module>!<resource id>. For example, to import an i18n resource, type
-i18!<path to resource file>:
+i18!path/to/resource/file:
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport3.png)
 
