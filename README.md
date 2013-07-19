@@ -10,15 +10,15 @@ This is an IntelliJ/WebStorm plugin to make working with the [dojo toolkit](http
 Download from the JetBrains plugin repository, or alternatively: clone the repo and select 'install from disk' in the plugin menu. Use dist/needsmoredojo[version].jar
 
 #### Usage
-- [Configuration](#initial-configuration)
-- Organize AMD Imports
-- Add AMD Import
-- Remove Unused Imports
-- Navigate ... Attach Point
-- Convert between class-style and util-style module
-- Mismatched imports inspection
-- Navigate ... Declaration for i18n resource keys
-- Move import declarations up and down
+1. [Configuration](#initial-configuration)
+2. [Organize AMD Imports](#organize-amd-imports)
+3. [Add AMD Import](#add-amd-import)
+4. [Move AMD Import](#move-amd-import)
+5. [Remove Unused Imports](#remove-unused-imports)
+6. [Navigate to Attach Point](#navigate-...-attach-point)
+7. [Convert between class style and util style module](#convert-between-class-style-and-util-style-module)
+8. [Mismatched imports inspection](#mismatched-imports-inspection)
+9. [Navigate to Declaration for i18n resource keys](#navigate-to-declaration-for-i18n-resource-keys)
 
 
 ##### Initial Configuration
@@ -90,6 +90,12 @@ and both cases will result in "Button" being the initial value:
     });
 </pre>
 
+##### Move AMD Import
+
+Use this feature by placing the cursor near a module's path in your define statement. Use Ctrl+Alt+Page Up/Down to
+move the import and its corresponding parameter. This will not affect plugins at the end that do not have a corresponding
+parameter (such as domReady!)
+
 ##### Remove Unused Imports
 
 This feature can be activated with the shortcut Ctrl+Shift+O, 3. It also runs in the background as an inspection. It will
@@ -98,7 +104,7 @@ scan the code for references to your AMD imports and cross out any that are unus
 Some AMD modules are not directly referenced. To prevent these from being flagged as unused, use the settings dialog
 to add a new exception. After this, the import will never be flagged as unused.
 
-##### Navigate ... Attach Point
+##### Navigate to Attach Point
 
 Inside a module that uses _TemplatedMixin, use this option with the caret over an attach point reference.
 The attach point will be looked up in the widget's template file (specified by the templateString property) and highlighted.
@@ -107,7 +113,7 @@ Press Esc to remove the highlighting
 > Note: If you don't set the location of your project sources, this feature will search for them in the directory
 containing all of the dojo sources
 
-##### Convert between class-style and util-style module
+##### Convert between class style and util style module
 
 These options appear under the refactor menu. Use them to transform a module between a util style (only one instance)
 and class style (many instances, directly instantiated) module.
@@ -139,7 +145,7 @@ corresponding parameter name.
 
 You can disable it by going in the inspections menu under **JavaScript -> Needs More Dojo** and unchecking it.
 
-##### Navigate ... Declaration for i18n resource keys
+##### Navigate to Declaration for i18n resource keys
 
 For keys imported via the dojo/i18n! plugin, Navigate ... Declaration is supported. In the example below, the resources
 module has been imported via dojo/i18n! and can be jumped to:
