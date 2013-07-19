@@ -10,6 +10,16 @@ This is an IntelliJ/WebStorm plugin to make working with the [dojo toolkit](http
 Download from the JetBrains plugin repository, or alternatively: clone the repo and select 'install from disk' in the plugin menu. Use dist/needsmoredojo[version].jar
 
 #### Usage
+- [Configuration](#initial-configuration)
+- Organize AMD Imports
+- Add AMD Import
+- Remove Unused Imports
+- Navigate ... Attach Point
+- Convert between class-style and util-style module
+- Mismatched imports inspection
+- Navigate ... Declaration for i18n resource keys
+- Move import declarations up and down
+
 
 ##### Initial Configuration
 
@@ -42,27 +52,35 @@ Then set your dojo sources folder to "deps"
 
 And you reference your packages absolutely as "package/subfolder/module" Then set your source directory to "Source/JavaScript"
 
-*Relative paths vs absolute paths*: When using the "Add new import" feature to import project modules, you will get both
-absolute and relative path syntax. If you want the relative path option to appear as the first item, check the "Prefer relative paths"
-checkbox.
-
-Finally, you can use the auto-detection features to get suggestions on your source locations. For the dojo sources, it will scan
+You can use the auto-detection features to get suggestions on your source locations. For the dojo sources, it will scan
 for "dojo.js." For your project, it will scan for JavaScript files that have dojo modules and give you a list of possible choices.
 
 Hit "apply" to make sure your settings are saved.
 
-##### Functionality
+##### Organize AMD Imports
 
-The plugin adds the following options under the Code menu:
-- **Organize AMD Imports**: Sorts imports alphabetically, removes duplicates, and normalizes quotes
-- **Add new AMD Import**: pops up a dialog. Type in the name of a dojo module. A second dialog will popup giving a list of suggestions.
-The module will then be inserted in the define argument list and corresponding function parameter. For example:
-    - Press Ctrl+Shift+O, 2
-    - Enter 'BorderContainer', press enter
-    - 'dijit/layout/BorderContainer' is the first choice presented. Press enter
-    - The import will be inserted in both the define's argument list and the function's parameter list
-    - You can also press Ctrl+Shift+O, 2 when the cursor is over a module. For example, the following scenarios will result in "Button"
-being filled in the add module text field (the cursor is represented by an underscore):
+This option appears under the Code menu. It sorts imports alphabetically on the module path. It also removes any duplicates
+and normalizes quotes.
+
+##### Add AMD Import
+
+Access this option with Ctrl+Shift+O, 2. A dialog will popup where you can type the name of the dojo module. Type the
+name of the module you would like to import and press enter. A dialog will then appear listing possibilities.
+Select one and press enter, the module will be inserted for you.
+
+> Note: If you don't set the location of your project sources, this feature will search for them in the directory
+containing all of the dojo sources
+
+By default, this feature prioritizes absolute path syntax for module paths. You can change this in the settings dialog
+by checking "Prefer relative paths"
+
+You can also import an AMD plugin by using <module>!<resource id>. For example, to import an i18n resource, type
+i18!<path to resource file>
+
+Finally, you can access this option when your cursor is near a module name, either in a new expression or reference. Press
+Ctrl+Shift+O, 2 in these cases and the dialog will be pre-populated. In the following examples, the _ represents the cursor,
+and both cases will result in "Button" being the initial value:
+
 <pre>
     new Button_({});
 </pre>
@@ -72,49 +90,63 @@ being filled in the add module text field (the cursor is represented by an under
     });
 </pre>
 
-- **Remove unused imports**: Removes imports that have been crossed out
+##### Remove Unused Imports
 
-These three items require configuring your dojo source and project source locations. If you do not do this, it will still work as long as your
-sources have the same parent as the dojo sources.
-- **Go to attach point (appears under Navigate)**. Inside a module that uses _TemplatedMixin, use this option with the caret over an attach point reference.
-The attach point will be looked up in the widget's template file (specified by the templateString property) and highlighted. Press Esc to remove the highlighting
-- **Navigate -> Declaration** is supported for keys imported via the dojo/i18n! plugin. In the example below, the resources module has been imported via dojo/i18n!
-and can be jumped to.
+This feature can be activated with the shortcut Ctrl+Shift+O, 3. It also runs in the background as an inspection. It will
+scan the code for references to your AMD imports and cross out any that are unused.
+
+Some AMD modules are not directly referenced. To prevent these from being flagged as unused, use the settings dialog
+to add a new exception. After this, the import will never be flagged as unused.
+
+##### Navigate ... Attach Point
+
+Inside a module that uses _TemplatedMixin, use this option with the caret over an attach point reference.
+The attach point will be looked up in the widget's template file (specified by the templateString property) and highlighted.
+Press Esc to remove the highlighting
+
+> Note: If you don't set the location of your project sources, this feature will search for them in the directory
+containing all of the dojo sources
+
+##### Convert between class-style and util-style module
+
+These options appear under the refactor menu. Use them to transform a module between a util style (only one instance)
+and class style (many instances, directly instantiated) module.
+
+A class module looks like the following:
+
+<pre>
+define([..], function(..., {
+    return declare(....);
+});
+</pre>
+
+A util module looks like this:
+
+<pre>
+define([..], function(.., {
+  var util = declare(...);
+
+  util.method1 = ...
+
+  return util;
+});
+</pre>
+
+##### Mismatched imports inspection
+
+This inspection runs in the background and will check if naming is consistent between an AMD module path and its
+corresponding parameter name.
+
+You can disable it by going in the inspections menu under **JavaScript -> Needs More Dojo** and unchecking it.
+
+##### Navigate ... Declaration for i18n resource keys
+
+For keys imported via the dojo/i18n! plugin, Navigate ... Declaration is supported. In the example below, the resources
+module has been imported via dojo/i18n! and can be jumped to:
 
 <pre>
     resources['website.maintoolbar.gocontact']
 </pre>
-
-The following items are added to the Refactor menu:
-- **Convert class module to util module**: Converts a normal dojo class created using declare to a pattern that will
-allow only one instance to be created.
-- **Convert util module to class module**: The reverse of the first conversion.
-
-A class module looks like the following: 
-
-<pre>
-define([..], function(..., {
-    return declare(....); 
-}); 
-</pre>
-
-A util module looks like this: 
-
-<pre>
-define([..], function(.., {
-  var util = declare(...); 
-  
-  util.method1 = ...
-  
-  return util; 
-}); 
-</pre>
-
-Two inspections are enabled: 
-- **Check for unused imports**: Marks unused imports with strikethrough
-- **Check for mismatched imports**: Check if naming between an import and its corresponding function parameter are consistent
-
-These inspections also appear in the 'Inspections' menu, under **JavaScript -> Needs More Dojo**
 
 #### License
 
