@@ -269,6 +269,7 @@ public class TestImportCreator
         SourceLibrary website = new SourceLibrary("website", "website/static/js/website", true);
         libraries.add(website);
 
-        creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "MainToolbar", original);
+        String[] results = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "MainToolbar", original);
+        assertEquals("website/widgets/MainToolbar", results[0]);
     }
 }

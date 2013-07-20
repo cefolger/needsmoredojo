@@ -120,7 +120,8 @@ public class ImportCreator
                 if(originalModule != null)
                 {
                     originalModulePath = originalModule.getContainingDirectory().getVirtualFile().getCanonicalPath();
-                    originalModulePath = firstLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(firstLibrary.getPath()) + firstLibrary.getPath().length());
+                    SourceLibrary originalModuleLibrary = getFirstLibraryThatIncludesFile(originalModulePath, libraries);
+                    originalModulePath = originalModuleLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(originalModuleLibrary.getPath()) + originalModuleLibrary.getPath().length());
 
                     String relativePath = FileUtil.convertToRelativePath(originalModulePath, result);
 

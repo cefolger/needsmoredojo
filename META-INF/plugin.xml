@@ -31,6 +31,7 @@
                 <li>Mismatched imports detector takes custom AMD plugins into account (Issue #87)</li>
                 <li>Fixed plugins not being inserted correctly when using add import (Issue #20)</li>
                 <li>Fixed a case that would prevent a module from being flagged as unused (Issue #88)</li>
+                <li>Fix bug when importing modules from another package (Issue #90)</li>
             </ul>
 
             <b>0.4</b>
