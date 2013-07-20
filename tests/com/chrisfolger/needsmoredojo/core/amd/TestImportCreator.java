@@ -24,11 +24,12 @@ public class TestImportCreator
         creator = new ImportCreator();
         libraries = new ArrayList<SourceLibrary>();
 
+        // libraries are guaranteed to be sorted by length
         libraries.add(new SourceLibrary("dijit", "js/dijit", false));
         libraries.add(new SourceLibrary("dojox", "js/dojox", false));
+        libraries.add(new SourceLibrary("dgrid", "js/dgrid", false));
         libraries.add(new SourceLibrary("dojo", "js/dojo", false));
         libraries.add(new SourceLibrary("util", "js/util", false));
-        libraries.add(new SourceLibrary("dgrid", "js/dgrid", false));
     }
 
     @Test
@@ -238,5 +239,21 @@ public class TestImportCreator
         String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "text!testing", null );
 
         assertEquals("dojo/text!testing", choices[0]);
+    }
+
+    @Test
+    public void dojoxIsChosenAsFirstLibraryForModuleInDojox()
+    {
+        SourceLibrary result = creator.getFirstLibraryThatIncludesFile("/website/static/js/dojox/drawing/plugins/drawing/Grid.js", libraries.toArray(new SourceLibrary[0]));
+
+        assertEquals("dojox", result.getName());
+    }
+
+    @Test
+    public void correctLibraryIsChosenForFile()
+    {
+        SourceLibrary result = creator.getFirstLibraryThatIncludesFile("/website/static/js/dijit/module.js", libraries.toArray(new SourceLibrary[0]));
+
+        assertEquals("dijit", result.getName());
     }
 }

@@ -51,6 +51,30 @@ public class ImportCreator
         return 0;
     }
 
+    protected @Nullable SourceLibrary getFirstLibraryThatIncludesFile(@NotNull String fileCanonicalPath, @NotNull SourceLibrary[] libraries)
+    {
+        int firstIndex = Integer.MAX_VALUE;
+        SourceLibrary firstLibrary = null;
+
+        for(SourceLibrary library : libraries)
+        {
+            String fileWithoutLibraryPath = fileCanonicalPath;
+            if(fileWithoutLibraryPath.indexOf(library.getPath()) != -1)
+            {
+                fileWithoutLibraryPath = library.getName() + fileWithoutLibraryPath.substring(fileWithoutLibraryPath.indexOf(library.getPath()) + library.getPath().length());
+            }
+
+            int index = fileWithoutLibraryPath.indexOf(library.getName());
+            if(index > -1 && index < firstIndex)
+            {
+                firstIndex = index;
+                firstLibrary = library;
+            }
+        }
+
+        return firstLibrary;
+    }
+
     public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule)
     {
         return getChoicesFromFiles(filesArray, libraries, module, originalModule, false);
@@ -78,25 +102,7 @@ public class ImportCreator
             PsiDirectory directory = file.getContainingDirectory();
             String result = directory.getVirtualFile().getCanonicalPath();
 
-            // parse dojo libraries only
-            int firstIndex = Integer.MAX_VALUE;
-            SourceLibrary firstLibrary = null;
-
-            for(SourceLibrary library : libraries)
-            {
-                String fileWithoutLibraryPath = result;
-                if(fileWithoutLibraryPath.indexOf(library.getPath()) != -1)
-                {
-                    fileWithoutLibraryPath = library.getName() + fileWithoutLibraryPath.substring(fileWithoutLibraryPath.indexOf(library.getPath()) + library.getPath().length());
-                }
-
-                int index = fileWithoutLibraryPath.indexOf(library.getName());
-                if(index > -1 && index < firstIndex)
-                {
-                    firstIndex = index;
-                    firstLibrary = library;
-                }
-            }
+            SourceLibrary firstLibrary = getFirstLibraryThatIncludesFile(result, libraries);
 
             if(firstLibrary != null)
             {
@@ -200,6 +206,13 @@ public class ImportCreator
         {
             return libraries;
         }
+
+        Collections.sort(libraries, new Comparator<SourceLibrary>() {
+            @Override
+            public int compare(SourceLibrary o1, SourceLibrary o2) {
+                return o2.getName().length() - o1.getName().length();
+            }
+        });
 
         return libraries;
     }
