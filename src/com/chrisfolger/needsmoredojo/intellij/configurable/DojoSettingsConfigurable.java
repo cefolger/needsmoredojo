@@ -45,6 +45,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JTextField addRUIExceptionParameterText;
     private JButton addRUIModule;
     private JButton removeRUIModule;
+    private JCheckBox dojoSourcesIsTheSame;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
