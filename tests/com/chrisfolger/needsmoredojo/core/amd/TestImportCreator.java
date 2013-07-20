@@ -256,4 +256,19 @@ public class TestImportCreator
 
         assertEquals("dijit", result.getName());
     }
+
+    @Test
+    public void testImportOfExternalModuleFromDojoLibrary()
+    {
+        PsiFile original = new MockPsiFile("behavior.js", "website/static/js/dojo");
+
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("MainToolbar.js", "website/static/js/website/widgets")
+        };
+
+        SourceLibrary website = new SourceLibrary("website", "website/static/js/website", true);
+        libraries.add(website);
+
+        creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "MainToolbar", original);
+    }
 }
