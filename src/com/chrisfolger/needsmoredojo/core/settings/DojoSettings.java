@@ -23,6 +23,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private String dojoSourcesDirectory;
     private String projectSourcesDirectory;
     private boolean preferRelativeImports;
+    private boolean dojoSourcesShareProjectSourcesRoot;
 
     public DojoSettings()
     {
@@ -35,6 +36,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         amdImportNamingExceptions.put("dojo/sniff", "has");
         amdImportNamingExceptions.put("doh/main", "doh");
         preferRelativeImports = false;
+        dojoSourcesShareProjectSourcesRoot = false;
     }
 
     public @NotNull LinkedHashMap<String, String> getExceptionsMap()
@@ -92,6 +94,14 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public void setRuiImportExceptions(LinkedHashMap<String, String> ruiImportExceptions) {
         this.ruiImportExceptions = ruiImportExceptions;
+    }
+
+    public boolean isDojoSourcesShareProjectSourcesRoot() {
+        return dojoSourcesShareProjectSourcesRoot;
+    }
+
+    public void setDojoSourcesShareProjectSourcesRoot(boolean dojoSourcesShareProjectSourcesRoot) {
+        this.dojoSourcesShareProjectSourcesRoot = dojoSourcesShareProjectSourcesRoot;
     }
 
     @Nullable

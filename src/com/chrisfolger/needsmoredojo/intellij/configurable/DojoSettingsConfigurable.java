@@ -45,6 +45,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JTextField addRUIExceptionParameterText;
     private JButton addRUIModule;
     private JButton removeRUIModule;
+    private JCheckBox dojoSourcesIsTheSame;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -131,7 +132,8 @@ public class DojoSettingsConfigurable implements Configurable {
     {
         modified = !dojoSourcesText.getText().equals(settingsService.getDojoSourcesDirectory()) ||
                 !projectSourcesText.getText().equals(settingsService.getProjectSourcesDirectory()) ||
-                preferRelativePathsWhenCheckBox.isSelected() != settingsService.isPreferRelativeImports();
+                preferRelativePathsWhenCheckBox.isSelected() != settingsService.isPreferRelativeImports() ||
+                dojoSourcesIsTheSame.isSelected() != settingsService.isDojoSourcesShareProjectSourcesRoot();
 
     }
 
@@ -199,6 +201,7 @@ public class DojoSettingsConfigurable implements Configurable {
         });
 
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
+        dojoSourcesIsTheSame.setSelected(settingsService.isDojoSourcesShareProjectSourcesRoot());
 
         dojoSourcesText.getTextField().addKeyListener(new TextChangedListener());
         projectSourcesText.getTextField().addKeyListener(new TextChangedListener());
@@ -206,6 +209,22 @@ public class DojoSettingsConfigurable implements Configurable {
         preferRelativePathsWhenCheckBox.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
+                updateModifiedState();
+            }
+        });
+
+        dojoSourcesIsTheSame.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if(dojoSourcesIsTheSame.isSelected())
+                {
+                    dojoSourcesText.getTextField().setEnabled(false);
+                }
+                else
+                {
+                    dojoSourcesText.getTextField().setEnabled(true);
+                }
+
                 updateModifiedState();
             }
         });
@@ -260,6 +279,8 @@ public class DojoSettingsConfigurable implements Configurable {
         }
 
         settingsService.setPreferRelativeImports(preferRelativePathsWhenCheckBox.isSelected());
+        settingsService.setDojoSourcesShareProjectSourcesRoot(dojoSourcesIsTheSame.isSelected());
+
         modified = false;
     }
 
