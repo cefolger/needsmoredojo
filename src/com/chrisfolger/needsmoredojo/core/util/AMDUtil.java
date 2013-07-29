@@ -79,8 +79,14 @@ public class AMDUtil
     {
         DojoSettings settingsService = ServiceManager.getService(project, DojoSettings.class);
         String dojoLibrary = settingsService.getDojoSourcesDirectory();
+        String projectSources = settingsService.getProjectSourcesDirectory();
 
-        if(dojoLibrary != null && !dojoLibrary.equals("") && pullFromSettings)
+        if(projectSources != null && pullFromSettings && settingsService.isDojoSourcesShareProjectSourcesRoot())
+        {
+            VirtualFile file = LocalFileSystem.getInstance().findFileByPath(projectSources);
+            return file;
+        }
+        else if(dojoLibrary != null && !dojoLibrary.equals("") && pullFromSettings)
         {
             VirtualFile file = LocalFileSystem.getInstance().findFileByPath(dojoLibrary);
             return file;
