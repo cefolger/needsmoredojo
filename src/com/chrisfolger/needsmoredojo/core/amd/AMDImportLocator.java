@@ -1,7 +1,8 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.intellij.lang.javascript.psi.JSElement;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 
 /**
  * Meant to find the nearest AMD import (define literal + parameter) based on the user's caret position
@@ -31,7 +32,12 @@ public class AMDImportLocator
         }
     }
 
-    public LocatedAMDImport findNearestImport(JSElement elementAtCaretPosition)
+    protected JSElement getDefineLiteral(JSElement elementAtCaretPosition, DefineStatement defineStatement)
+    {
+        return null;
+    }
+
+    public LocatedAMDImport findNearestImport(JSElement elementAtCaretPosition, PsiFile file)
     {
         return null;
     }

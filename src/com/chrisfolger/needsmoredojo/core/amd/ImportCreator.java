@@ -1,10 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
-import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
-import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
-import com.chrisfolger.needsmoredojo.core.util.FileUtil;
-import com.chrisfolger.needsmoredojo.core.util.JSUtil;
+import com.chrisfolger.needsmoredojo.core.util.*;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -337,7 +334,7 @@ public class ImportCreator
                 JSFunction function = (JSFunction) result[1];
 
                 visited[0] = true;
-                DefineUtil.DefineStatementItems items = new DefineUtil().getDefineStatementItemsFromArguments(callExpression.getArguments());
+                DefineStatement items = new DefineUtil().getDefineStatementItemsFromArguments(callExpression.getArguments());
                 createImport(module, items.getArguments(), function.getParameterList());
             }
         });

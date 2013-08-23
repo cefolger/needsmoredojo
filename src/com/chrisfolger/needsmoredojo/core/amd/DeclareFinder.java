@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.refactoring.ClassToUtilConverter;
 import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
+import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiFile;
@@ -129,6 +130,7 @@ public class DeclareFinder
      * Returns a visitor that will search a dojo module for its define statement, and execute a callback
      * when it finds it
      *
+     * @deprecated use getDefineStatementItems instead.
      * @param onDefineFound the callback
      * @return the visitor
      */
@@ -145,11 +147,33 @@ public class DeclareFinder
                 }
 
                 // get the function
-                DefineUtil.DefineStatementItems items = new DefineUtil().getDefineStatementItemsFromArguments(element.getArguments());
+                DefineStatement items = new DefineUtil().getDefineStatementItemsFromArguments(element.getArguments());
                 onDefineFound.run(new Object[] { element, items.getFunction().getFunction()});
 
                 return;
             }
         };
+    }
+
+    /**
+     * Wrapper around the deprecated method getDefineVisitor. Using 'callbacks' was possibly the worst decision ever,
+     * but a lot of the code uses this class. So this method wraps up the nasty callback syntax.
+     *
+     * @param file the PsiFile to retrieve the define statement from
+     * @return the define statement and its items
+     */
+    public DefineStatement getDefineStatementItems(PsiFile file)
+    {
+        final DefineStatement[] items = new DefineStatement[1];
+
+        file.acceptChildren(getDefineVisitor(new CompletionCallback() {
+            @Override
+            public void run(Object[] result) {
+                JSCallExpression callExpression = (JSCallExpression) result[0];
+                items[0] = new DefineUtil().getDefineStatementItemsFromArguments(callExpression.getArguments());
+            }
+        }));
+
+        return items[0];
     }
 }

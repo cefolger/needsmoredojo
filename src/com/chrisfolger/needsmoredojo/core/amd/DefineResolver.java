@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
-import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
+import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
@@ -36,7 +36,7 @@ public class DefineResolver
                         return;
                     }
 
-                    DefineUtil.DefineStatementItems items = new DefineUtil().getDefineStatementItemsFromArguments(arguments);
+                    DefineStatement items = new DefineUtil().getDefineStatementItemsFromArguments(arguments);
                     if(items == null)
                     {
                         super.visitJSCallExpression(element);
