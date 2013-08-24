@@ -98,4 +98,40 @@ public class TestAMDImportLocator
         assertNotNull(parameter);
         assertEquals("a", parameter.getText());
     }
+
+    @Test
+    /**
+     * covers the case:  (underscore = cursor)
+     *
+     * define(['a/b/a', 'a/b/b', 'a/b/c'], function(_a, b, c){});
+     *
+     */
+    public void testDefineLiteralIsRetrievedWhenCursorIsOverParameter()
+    {
+        MockJSElement caretElement = new MockJSElement("a");
+        caretElement.setParent(new MockJSParameter("a"));
+
+        JSElement defineLiteral = locator.getDefineLiteral(caretElement, defineStatement);
+
+        assertNotNull(defineLiteral);
+        assertEquals("a/b/a", defineLiteral.getText());
+    }
+
+    @Test
+    /**
+     * covers the case:  (underscore = cursor)
+     *
+     * define(['a/b/a_', 'a/b/b', 'a/b/c'], function(a, b, c){});
+     *
+     */
+    public void testParameterIsRetrievedWhenCursorIsOverDefineLiteral()
+    {
+        MockJSElement caretElement = BasicPsiElements.comma();
+        caretElement.setPrevSibling(new MockJSLiteralExpression("a/b/a"));
+
+        JSElement parameter = locator.getParameter(caretElement, defineStatement);
+
+        assertNotNull(parameter);
+        assertEquals("a", parameter.getText());
+    }
 }

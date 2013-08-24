@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
 /**
@@ -34,7 +35,7 @@ public class AMDImportLocator
         }
     }
 
-    protected JSElement getParameter(JSElement elementAtCaretPosition, DefineStatement defineStatement)
+    protected JSElement getParameter(PsiElement elementAtCaretPosition, DefineStatement defineStatement)
     {
         if(elementAtCaretPosition == null)
         {
@@ -51,10 +52,14 @@ public class AMDImportLocator
             return (JSElement) elementAtCaretPosition.getParent();
         }
 
-        return null;
+        // assume the caret element is a define literal
+        int defineIndex = getIndexOfDefine(defineStatement, getDefineLiteral(elementAtCaretPosition, defineStatement));
+        JSElement parameter = defineStatement.getFunction().getParameters()[defineIndex];
+
+        return parameter;
     }
 
-    protected JSElement getDefineLiteral(JSElement elementAtCaretPosition, DefineStatement defineStatement)
+    protected JSElement getDefineLiteral(PsiElement elementAtCaretPosition, DefineStatement defineStatement)
     {
         if(elementAtCaretPosition == null)
         {
@@ -73,12 +78,52 @@ public class AMDImportLocator
         }
 
         // if none of the above cases work, we assume this is a parameter and find its corresponding literal
+        int parameterIndex = getIndexOfParameter(defineStatement, getParameter(elementAtCaretPosition, defineStatement));
+        JSElement defineLiteral = defineStatement.getArguments().getExpressions()[parameterIndex];
 
-        return null;
+        return defineLiteral;
     }
 
-    public LocatedAMDImport findNearestImport(JSElement elementAtCaretPosition, PsiFile file)
+    private int getIndexOfDefine(DefineStatement defineStatement, JSElement literal)
     {
+        for(int i=0; i<defineStatement.getArguments().getExpressions().length;i++)
+        {
+            if(defineStatement.getArguments().getExpressions()[i].getText().equals(literal.getText()))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private int getIndexOfParameter(DefineStatement defineStatement, JSElement parameter)
+    {
+        for(int i=0;i<defineStatement.getFunction().getParameters().length;i++)
+        {
+            if(defineStatement.getFunction().getParameters()[i].getText().equals(parameter.getText()))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Entry point for this class. Locates the AMD import define literal and parameter that the user has selected
+     *
+     * @param elementAtCaretPosition
+     * @param file
+     * @return
+     */
+    public LocatedAMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
+    {
+        DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(file);
+
+        JSElement defineLiteral = getDefineLiteral(elementAtCaretPosition, defineStatement);
+        JSElement parameter = getParameter(elementAtCaretPosition, defineStatement);
+
         return null;
     }
 }
