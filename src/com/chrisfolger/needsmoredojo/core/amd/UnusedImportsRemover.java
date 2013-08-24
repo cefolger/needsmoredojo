@@ -8,6 +8,7 @@ import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -246,8 +247,9 @@ public class UnusedImportsRemover
         return visitor;
     }
 
-    public void removeSingleImport()
+    public void removeSingleImport(@NotNull AMDImport amdImport)
     {
-
+        amdImport.getLiteral().delete();
+        amdImport.getParameter().delete();
     }
 }

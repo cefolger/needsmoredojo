@@ -14,13 +14,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public class AMDImportLocator
 {
+    // have to have this because getParameter can call getDefine recursively and vice versa, so we don't a stack overflow
+    // if one of them is null
     private int iterations = 0;
 
     protected @Nullable JSElement getParameter(PsiElement elementAtCaretPosition, DefineStatement defineStatement)
     {
         iterations += 1;
 
-        if(elementAtCaretPosition == null || iterations > 2)
+        if(elementAtCaretPosition == null || iterations > 10)
         {
             return null;
         }
@@ -52,7 +54,7 @@ public class AMDImportLocator
     {
         iterations += 1;
 
-        if(elementAtCaretPosition == null || iterations > 2)
+        if(elementAtCaretPosition == null || iterations > 10)
         {
             return null;
         }
@@ -110,14 +112,19 @@ public class AMDImportLocator
      *
      * @param elementAtCaretPosition
      * @param file
-     * @return
+     * @return null if either the define literal or the parameter is null
      */
-    public AMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
+    public @Nullable AMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
     {
         DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(file);
 
         JSElement defineLiteral = getDefineLiteral(elementAtCaretPosition, defineStatement);
         JSElement parameter = getParameter(elementAtCaretPosition, defineStatement);
+
+        if(defineLiteral == null || parameter == null)
+        {
+            return null;
+        }
 
         return new AMDImport(defineLiteral, parameter);
     }
