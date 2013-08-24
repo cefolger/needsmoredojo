@@ -17,7 +17,20 @@ public class RenameRefactoringListener implements RefactoringElementListener {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    /**
+     * get all other js files IN PROJECT SOURCES
+     if the file is an AMD module
+     get the list of defines
+     for each define
+     determine if the define has a match
+     if it does:
+     rename it appropriately
+     use a rename action to rename the reference
+     */
+
     @Override
-    public void elementRenamed(@NotNull PsiElement psiElement) {
+    public void elementRenamed(@NotNull PsiElement psiElement)
+    {
+
     }
 }
