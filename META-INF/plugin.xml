@@ -16,6 +16,7 @@
                 <li>Jump to attach points inside modules that mixin _TemplatedWidget with Ctrl+Shift+O, A</li>
                 <li>convert util style modules to class style modules and vice-versa</li>
                 <li>Reorder imports with Ctrl+Alt+Page Up/Down keys
+                <li>Delete single imports with Ctrl+Shift+O, 4</li>
             </ul>
         Still very much under development. Please contact me with any feedback!
       ]]></description>
@@ -23,7 +24,8 @@
   <change-notes><![CDATA[
             <b>0.5</b>
             <ul>
-                <li>Can now use the project source directory as the dojo source location if they are int he same place </li>
+                <li>Can now use the project source directory as the dojo source location if they are in the same place </li>
+                <li>Can now delete single imports</li>
             </ul>
 
             <b>0.4.1</b>
