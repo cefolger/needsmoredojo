@@ -249,9 +249,9 @@ public class AMDUtil
      * For example, domClass becomes dom-class, domAttr becomes dom-attr, etc.
      *
      * @param module
-     * @return the hyphenated module, if possible. OR the original module if it couldn't be converted
+     * @return the hyphenated module, if possible. OR null if it wasn't converted
      */
-    public static @NotNull String getPossibleHyphenatedModule(@NotNull String module)
+    public static @Nullable String getPossibleHyphenatedModule(@NotNull String module)
     {
         try
         {
@@ -277,9 +277,9 @@ public class AMDUtil
         catch(Exception e)
         {
             // Yes, this is a catch all, but for a reason. If anything bad happens in here,
-            // we just want to return the original module. We don't want to have to worry about this method
+            // we just want to return null. We don't want to have to worry about this method
             // failing where this is being consumed.
-            return module;
+            return null;
         }
     }
 }

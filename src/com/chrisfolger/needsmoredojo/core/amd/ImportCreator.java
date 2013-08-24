@@ -230,12 +230,19 @@ public class ImportCreator
 
         PsiFile[] files = null;
         PsiFile[] filesWithUnderscore = null;
+        PsiFile[] filesWithHyphenatedVersion = new PsiFile[0];
 
         try
         {
             files = FilenameIndex.getFilesByName(psiFile.getProject(), actualModuleName + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
             // this will let us search for _TemplatedMixin and friends
             filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + actualModuleName + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
+            // search for dom-attr and friends when you have typed domAttr
+            String hyphenatedModule = AMDUtil.getPossibleHyphenatedModule(module);
+            if(hyphenatedModule != null)
+            {
+                filesWithHyphenatedVersion = FilenameIndex.getFilesByName(psiFile.getProject(), hyphenatedModule + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
+            }
         }
         catch(NullPointerException exc)
         {
@@ -245,6 +252,7 @@ public class ImportCreator
         Set<PsiFile> allFiles = new HashSet<PsiFile>();
         for(PsiFile file : files) allFiles.add(file);
         for(PsiFile file : filesWithUnderscore) allFiles.add(file);
+        for(PsiFile file : filesWithHyphenatedVersion) allFiles.add(file);
 
         PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
