@@ -134,4 +134,15 @@ public class TestAMDImportLocator
         assertNotNull(parameter);
         assertEquals("a", parameter.getText());
     }
+
+    @Test
+    /**
+     * make sure we don't blow up when an invalid element is used
+     */
+    public void noStackOverflowCausedByInvalidElementsSelected()
+    {
+        MockJSElement caretElement = BasicPsiElements.space();
+
+        locator.getParameter(caretElement, defineStatement);
+    }
 }
