@@ -52,15 +52,7 @@ public class UnusedImportsRemover
 
         for(PsiElement element : parameters)
         {
-            elementsToDelete.add(element);
-
-            PsiElement nextSibling = element.getNextSibling();
-
-            // only remove commas at the end
-            if(nextSibling != null && nextSibling.getText().equals(","))
-            {
-                elementsToDelete.add(element.getNextSibling());
-            }
+            removeParameter(element, elementsToDelete);
         }
 
         int current = 0;
@@ -81,19 +73,7 @@ public class UnusedImportsRemover
             }
             current++;
 
-            // special case for when the element we're removing is last on the list
-            PsiElement sibling = element.getNextSibling();
-            if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
-            {
-                elementsToDelete.add(DefineUtil.getNearestComma(sibling));
-            }
-
-            // only remove the next sibling if it's a comma
-            PsiElement nextSibling = element.getNextSibling();
-            if(nextSibling != null && !nextSibling.getText().equals("]"))
-            {
-                elementsToDelete.add(element.getNextSibling());
-            }
+            removeDefineLiteral(element, elementsToDelete);
         }
 
         for(PsiElement element : elementsToDelete)
@@ -249,6 +229,35 @@ public class UnusedImportsRemover
         return visitor;
     }
 
+    private void removeDefineLiteral(PsiElement element, Set<PsiElement> deleteList)
+    {
+        deleteList.add(element);
+
+        // special case for when the element we're removing is last on the list
+        PsiElement sibling = element.getNextSibling();
+        if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
+        {
+            deleteList.add(DefineUtil.getNearestComma(sibling));
+        }
+
+        // only remove the next sibling if it's a comma
+        PsiElement nextSibling = element.getNextSibling();
+        if(nextSibling != null && !nextSibling.getText().equals("]"))
+        {
+            deleteList.add(element.getNextSibling());
+        }
+    }
+
+    private void removeParameter(PsiElement element, Set<PsiElement> deleteList)
+    {
+        deleteList.add(element);
+
+        if(element.getNextSibling() != null && element.getNextSibling().getText().equals(","))
+        {
+            deleteList.add(element.getNextSibling().getNextSibling());
+        }
+    }
+
     public void removeSingleImport(@NotNull AMDImport amdImport)
     {
         JSArrayLiteralExpression literal = (JSArrayLiteralExpression) amdImport.getLiteral().getParent();
@@ -256,28 +265,8 @@ public class UnusedImportsRemover
 
         Set<PsiElement> elementsToDelete = new LinkedHashSet<PsiElement>();
 
-        elementsToDelete.add(amdImport.getLiteral());
-        elementsToDelete.add(amdImport.getParameter());
-
-        // only remove commas at the end
-        if(amdImport.getParameter().getNextSibling() != null && amdImport.getParameter().getNextSibling().getText().equals(","))
-        {
-            elementsToDelete.add(amdImport.getParameter().getNextSibling().getNextSibling());
-        }
-
-        // special case for when the element we're removing is last on the list
-        PsiElement sibling = amdImport.getLiteral().getNextSibling();
-        if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
-        {
-            elementsToDelete.add(DefineUtil.getNearestComma(sibling));
-        }
-
-        // only remove the next sibling if it's a comma
-        PsiElement nextSibling = amdImport.getLiteral().getNextSibling();
-        if(nextSibling != null && !nextSibling.getText().equals("]"))
-        {
-            elementsToDelete.add(amdImport.getLiteral().getNextSibling());
-        }
+        removeParameter(amdImport.getParameter(), elementsToDelete);
+        removeDefineLiteral(amdImport.getLiteral(), elementsToDelete);
 
         for(PsiElement element : elementsToDelete)
         {
@@ -290,8 +279,6 @@ public class UnusedImportsRemover
                 // something happened, but it's probably not important when deleting.
             }
         }
-
-        // TODO refactor slightly
 
         removeTrailingCommas(elementsToDelete, literal, function);
     }
