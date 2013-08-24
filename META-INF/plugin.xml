@@ -27,6 +27,7 @@
                 <li>Can now use the project source directory as the dojo source location if they are in the same place </li>
                 <li>Can now delete single imports</li>
                 <li>When adding an import, you can use domAttr, domStyle etc. instead of the hyphenated versions </li>
+                <li>Minor bug fixes (Issue #95)</li>
             </ul>
 
             <b>0.4.1</b>
