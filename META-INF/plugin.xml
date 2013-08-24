@@ -187,6 +187,8 @@
         <psi.referenceContributor
                 implementation="com.chrisfolger.needsmoredojo.intellij.reference.NlsLookupReferenceContributor"/>
 
+        <refactoring.elementListenerProvider implementation="com.chrisfolger.needsmoredojo.intellij.refactoring.RenameRefactoringProvider"/>
+
         <projectService serviceInterface="com.chrisfolger.needsmoredojo.core.settings.DojoSettings" serviceImplementation="com.chrisfolger.needsmoredojo.core.settings.DojoSettings">
         </projectService>
     </extensions>
