@@ -61,4 +61,12 @@ public class TestAMDUtil
         exceptions.put("dojo/sniff", "has");
         assertEquals("has", AMDUtil.defineToParameter("dojo/sniff", exceptions));
     }
+
+    @Test
+    public void testHyphenatedModuleConversions()
+    {
+        assertEquals("dom-class", AMDUtil.getPossibleHyphenatedModule("domClass"));
+        assertEquals("dom-attr", AMDUtil.getPossibleHyphenatedModule("domAttr"));
+        assertEquals("some-module", AMDUtil.getPossibleHyphenatedModule("someModule"));
+    }
 }

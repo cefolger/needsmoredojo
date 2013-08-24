@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -239,6 +240,46 @@ public class AMDUtil
         else
         {
             return "";
+        }
+    }
+
+    /**
+     * converts a module to its correct hyphenated form if possible.
+     *
+     * For example, domClass becomes dom-class, domAttr becomes dom-attr, etc.
+     *
+     * @param module
+     * @return the hyphenated module, if possible. OR the original module if it couldn't be converted
+     */
+    public static @NotNull String getPossibleHyphenatedModule(@NotNull String module)
+    {
+        try
+        {
+            // the obvious ones we're going for
+            if(module.startsWith("dom"))
+            {
+                return "dom-" + module.substring(3).toLowerCase();
+            }
+
+            // otherwise convert it if you use a camel-case convention
+            // http://stackoverflow.com/a/7599674/324992
+            String[] terms = module.split("(?<=[a-z])(?=[A-Z])");
+            StringBuilder result = new StringBuilder(terms[0]);
+            result.append("-");
+
+            for(int i=1;i<terms.length;i++)
+            {
+                result.append(terms[i].toLowerCase());
+            }
+
+            return result.toString();
+        }
+        catch(Exception e)
+        {
+            // Yes, this is a catch all, but for a reason. If anything bad happens in here,
+            // we just want to return the original module. We don't want to have to worry about this method
+            // failing where this is being consumed.
+            return module;
         }
     }
 }
