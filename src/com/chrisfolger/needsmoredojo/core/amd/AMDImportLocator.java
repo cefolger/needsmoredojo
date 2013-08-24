@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.intellij.lang.javascript.psi.JSElement;
+import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.psi.PsiFile;
 
 /**
@@ -32,8 +33,29 @@ public class AMDImportLocator
         }
     }
 
+    protected JSElement getParameter(JSElement elementAtCaretPosition, DefineStatement defineStatement)
+    {
+        return null;
+    }
+
     protected JSElement getDefineLiteral(JSElement elementAtCaretPosition, DefineStatement defineStatement)
     {
+        if(elementAtCaretPosition == null)
+        {
+            return null;
+        }
+
+        if(elementAtCaretPosition.getParent() instanceof JSLiteralExpression)
+        {
+            return (JSElement) elementAtCaretPosition.getParent();
+        }
+
+        // special case
+        if(elementAtCaretPosition.getText().equals(",") && elementAtCaretPosition.getPrevSibling() instanceof JSLiteralExpression)
+        {
+            return (JSElement) elementAtCaretPosition.getPrevSibling();
+        }
+
         return null;
     }
 

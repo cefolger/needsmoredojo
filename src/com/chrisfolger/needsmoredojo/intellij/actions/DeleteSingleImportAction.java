@@ -19,11 +19,6 @@ public class DeleteSingleImportAction extends JavaScriptAction
 
         PsiElement element = psiFile.findElementAt(editor.getCaretModel().getOffset());
 
-        if(!(element instanceof JSElement))
-        {
-            return;
-        }
-
-        AMDImportLocator.LocatedAMDImport amdImport = new AMDImportLocator().findNearestImport((JSElement) element);
+        AMDImportLocator.LocatedAMDImport amdImport = new AMDImportLocator().findNearestImport((JSElement) element, psiFile);
     }
 }
