@@ -6,6 +6,7 @@ import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Meant to find the nearest AMD import (define literal + parameter) based on the user's caret position
@@ -13,6 +14,8 @@ import com.intellij.psi.PsiFile;
  */
 public class AMDImportLocator
 {
+    private int iterations = 0;
+
     /**
      * represents the result of searching for the nearest AMD import
      */
@@ -35,9 +38,11 @@ public class AMDImportLocator
         }
     }
 
-    protected JSElement getParameter(PsiElement elementAtCaretPosition, DefineStatement defineStatement)
+    protected @Nullable JSElement getParameter(PsiElement elementAtCaretPosition, DefineStatement defineStatement)
     {
-        if(elementAtCaretPosition == null)
+        iterations += 1;
+
+        if(elementAtCaretPosition == null || iterations > 2)
         {
             return null;
         }
@@ -53,15 +58,23 @@ public class AMDImportLocator
         }
 
         // assume the caret element is a define literal
-        int defineIndex = getIndexOfDefine(defineStatement, getDefineLiteral(elementAtCaretPosition, defineStatement));
+        JSElement define = getDefineLiteral(elementAtCaretPosition, defineStatement);
+        if(define == null)
+        {
+            return null;
+        }
+
+        int defineIndex = getIndexOfDefine(defineStatement, define);
         JSElement parameter = defineStatement.getFunction().getParameters()[defineIndex];
 
         return parameter;
     }
 
-    protected JSElement getDefineLiteral(PsiElement elementAtCaretPosition, DefineStatement defineStatement)
+    protected @Nullable JSElement getDefineLiteral(PsiElement elementAtCaretPosition, DefineStatement defineStatement)
     {
-        if(elementAtCaretPosition == null)
+        iterations += 1;
+
+        if(elementAtCaretPosition == null || iterations > 2)
         {
             return null;
         }
@@ -78,10 +91,14 @@ public class AMDImportLocator
         }
 
         // if none of the above cases work, we assume this is a parameter and find its corresponding literal
-        int parameterIndex = getIndexOfParameter(defineStatement, getParameter(elementAtCaretPosition, defineStatement));
-        JSElement defineLiteral = defineStatement.getArguments().getExpressions()[parameterIndex];
+        JSElement parameter = getParameter(elementAtCaretPosition, defineStatement);
+        if(parameter == null)
+        {
+            return null;
+        }
 
-        return defineLiteral;
+        int parameterIndex = getIndexOfParameter(defineStatement, parameter);
+        return defineStatement.getArguments().getExpressions()[parameterIndex];
     }
 
     private int getIndexOfDefine(DefineStatement defineStatement, JSElement literal)
@@ -124,6 +141,6 @@ public class AMDImportLocator
         JSElement defineLiteral = getDefineLiteral(elementAtCaretPosition, defineStatement);
         JSElement parameter = getParameter(elementAtCaretPosition, defineStatement);
 
-        return null;
+        return new LocatedAMDImport(defineLiteral, parameter);
     }
 }
