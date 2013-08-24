@@ -1,6 +1,9 @@
 package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
+import com.chrisfolger.needsmoredojo.core.refactoring.ModuleReferenceLocator;
+import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.refactoring.listeners.RefactoringElementListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +34,6 @@ public class RenameRefactoringListener implements RefactoringElementListener {
     @Override
     public void elementRenamed(@NotNull PsiElement psiElement)
     {
-
+        new ModuleReferenceLocator().findFilesThatReferenceModule("foo", (PsiFile) psiElement, AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
     }
 }
