@@ -40,7 +40,7 @@ public class DojoSettingsDetectionComponent implements ProjectComponent {
     private boolean needsSetup()
     {
         DojoSettings settingsService = ServiceManager.getService(project, DojoSettings.class);
-        if(settingsService.getDojoSourcesDirectory() == null || settingsService.getDojoSourcesDirectory().equals(""))
+        if( (settingsService.getDojoSourcesDirectory() == null || settingsService.getDojoSourcesDirectory().equals("")) && !settingsService.isDojoSourcesShareProjectSourcesRoot())
         {
             return true;
         }
