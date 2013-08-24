@@ -25,11 +25,24 @@ public class MockJSFunctionExpression extends JSFunctionExpressionImpl
         super(mock(ASTNode.class));
 
         function = new MockJSFunction(parameters);
+
+        this.parameters = new JSParameter[parameters.length];
+        for(int i=0;i<parameters.length;i++)
+        {
+            this.parameters[i] = new MockJSParameter(parameters[i]);
+        }
     }
 
     @Override
     public JSFunction getFunction()
     {
         return function;
+    }
+
+    @NotNull
+    @Override
+    public JSParameter[] getParameters()
+    {
+        return parameters;
     }
 }
