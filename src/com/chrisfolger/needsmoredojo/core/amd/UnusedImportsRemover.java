@@ -245,4 +245,9 @@ public class UnusedImportsRemover
 
         return visitor;
     }
+
+    public void removeSingleImport()
+    {
+
+    }
 }

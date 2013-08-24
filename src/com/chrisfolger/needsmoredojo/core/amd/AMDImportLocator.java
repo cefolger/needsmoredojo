@@ -16,28 +16,6 @@ public class AMDImportLocator
 {
     private int iterations = 0;
 
-    /**
-     * represents the result of searching for the nearest AMD import
-     */
-    public class LocatedAMDImport
-    {
-        private JSElement literal;
-        private JSElement parameter;
-
-        public LocatedAMDImport(JSElement literal, JSElement parameter) {
-            this.literal = literal;
-            this.parameter = parameter;
-        }
-
-        public JSElement getLiteral() {
-            return literal;
-        }
-
-        public JSElement getParameter() {
-            return parameter;
-        }
-    }
-
     protected @Nullable JSElement getParameter(PsiElement elementAtCaretPosition, DefineStatement defineStatement)
     {
         iterations += 1;
@@ -134,13 +112,13 @@ public class AMDImportLocator
      * @param file
      * @return
      */
-    public LocatedAMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
+    public AMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
     {
         DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(file);
 
         JSElement defineLiteral = getDefineLiteral(elementAtCaretPosition, defineStatement);
         JSElement parameter = getParameter(elementAtCaretPosition, defineStatement);
 
-        return new LocatedAMDImport(defineLiteral, parameter);
+        return new AMDImport(defineLiteral, parameter);
     }
 }
