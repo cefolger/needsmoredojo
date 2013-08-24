@@ -32,6 +32,12 @@ public class AMDImportLocator
             return (JSElement) elementAtCaretPosition.getPrevSibling();
         }
 
+        // I know I know ... but this accounts for the case where the cursor is right after the comma so it's a special case
+        if(elementAtCaretPosition.getPrevSibling() != null && elementAtCaretPosition.getPrevSibling().getPrevSibling() instanceof JSParameter)
+        {
+            return (JSElement) elementAtCaretPosition.getPrevSibling().getPrevSibling();
+        }
+
         if(elementAtCaretPosition.getParent() instanceof JSParameter)
         {
             return (JSElement) elementAtCaretPosition.getParent();
@@ -45,6 +51,12 @@ public class AMDImportLocator
         }
 
         int defineIndex = getIndexOfDefine(defineStatement, define);
+        if(defineIndex >= defineStatement.getFunction().getParameters().length)
+        {
+            return null;
+        }
+
+
         JSElement parameter = defineStatement.getFunction().getParameters()[defineIndex];
 
         return parameter;
@@ -69,6 +81,12 @@ public class AMDImportLocator
             return (JSElement) elementAtCaretPosition.getPrevSibling();
         }
 
+        // I know I know ... but this accounts for the case where the cursor is right after the comma so it's a special case
+        if(elementAtCaretPosition.getPrevSibling() != null && elementAtCaretPosition.getPrevSibling().getPrevSibling() instanceof JSLiteralExpression)
+        {
+            return (JSElement) elementAtCaretPosition.getPrevSibling().getPrevSibling();
+        }
+
         // if none of the above cases work, we assume this is a parameter and find its corresponding literal
         JSElement parameter = getParameter(elementAtCaretPosition, defineStatement);
         if(parameter == null)
@@ -77,6 +95,11 @@ public class AMDImportLocator
         }
 
         int parameterIndex = getIndexOfParameter(defineStatement, parameter);
+        if(parameterIndex >= defineStatement.getArguments().getExpressions().length)
+        {
+            return null;
+        }
+
         return defineStatement.getArguments().getExpressions()[parameterIndex];
     }
 

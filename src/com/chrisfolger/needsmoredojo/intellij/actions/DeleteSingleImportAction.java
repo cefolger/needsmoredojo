@@ -15,8 +15,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
-import java.util.Set;
-
 public class DeleteSingleImportAction extends JavaScriptAction
 {
     @Override
@@ -29,23 +27,25 @@ public class DeleteSingleImportAction extends JavaScriptAction
 
         final AMDImport amdImport = new AMDImportLocator().findNearestImport(element, psiFile);
 
+        if(amdImport == null)
+        {
+            Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Import", "No valid literal/parameter pair found to delete", NotificationType.WARNING));
+            return;
+        }
+
         CommandProcessor.getInstance().executeCommand(psiFile.getProject(), new Runnable() {
             @Override
             public void run() {
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 @Override
                 public void run() {
-                // TODO null check
-                new UnusedImportsRemover().removeSingleImport(amdImport);
-
-                 //   Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Unused Imports", result.getDeletedElementNames(), NotificationType.INFORMATION));
+                    new UnusedImportsRemover().removeSingleImport(amdImport);
+                    Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Import", "Import Removed", NotificationType.INFORMATION));
                 }
             });
             }
         },
         "Remove Import",
         "Remove Import");
-
-
     }
 }

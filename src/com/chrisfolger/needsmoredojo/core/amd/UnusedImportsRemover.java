@@ -292,7 +292,6 @@ public class UnusedImportsRemover
         }
 
         // TODO refactor slightly
-        // TODO still need a test case for illegal argument being thrown
 
         removeTrailingCommas(elementsToDelete, literal, function);
     }
