@@ -27,7 +27,7 @@ public class AMDImportLocator
             return null;
         }
 
-        if(elementAtCaretPosition.getText().equals(",") && elementAtCaretPosition.getPrevSibling() instanceof JSParameter)
+        if(elementAtCaretPosition.getPrevSibling() instanceof JSParameter)
         {
             return (JSElement) elementAtCaretPosition.getPrevSibling();
         }
@@ -64,8 +64,7 @@ public class AMDImportLocator
             return (JSElement) elementAtCaretPosition.getParent();
         }
 
-        // special case
-        if(elementAtCaretPosition.getText().equals(",") && elementAtCaretPosition.getPrevSibling() instanceof JSLiteralExpression)
+        if(elementAtCaretPosition.getPrevSibling() instanceof JSLiteralExpression)
         {
             return (JSElement) elementAtCaretPosition.getPrevSibling();
         }

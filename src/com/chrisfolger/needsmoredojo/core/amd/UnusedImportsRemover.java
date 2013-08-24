@@ -1,10 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
-import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
-import com.intellij.lang.javascript.psi.JSNewExpression;
-import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
-import com.intellij.lang.javascript.psi.JSReferenceExpression;
+import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
@@ -118,12 +115,21 @@ public class UnusedImportsRemover
             }
         }
 
+        removeTrailingCommas(elementsToDelete, literal, function);
+
+
+        RemovalResult result = new RemovalResult(elementsToDelete, results.toString());
+        return result;
+    }
+
+    private void removeTrailingCommas(Set<PsiElement> deleteList, JSArrayLiteralExpression literal, PsiElement function)
+    {
         try
         {
             PsiElement trailingComma = DefineUtil.getNearestComma(literal.getLastChild());
             if(trailingComma != null)
             {
-                elementsToDelete.add(trailingComma);
+                deleteList.add(trailingComma);
                 trailingComma.delete();
             }
         }
@@ -141,7 +147,7 @@ public class UnusedImportsRemover
             PsiElement trailingComma = DefineUtil.getNearestComma(function.getLastChild());
             if(trailingComma != null)
             {
-                elementsToDelete.add(trailingComma);
+                deleteList.add(trailingComma);
                 trailingComma.delete();
             }
         }
@@ -149,10 +155,6 @@ public class UnusedImportsRemover
         {
             System.out.println(e);
         }
-
-
-        RemovalResult result = new RemovalResult(elementsToDelete, results.toString());
-        return result;
     }
 
     // TODO detect registry.byNode and registry.byId
@@ -249,7 +251,49 @@ public class UnusedImportsRemover
 
     public void removeSingleImport(@NotNull AMDImport amdImport)
     {
-        amdImport.getLiteral().delete();
-        amdImport.getParameter().delete();
+        JSArrayLiteralExpression literal = (JSArrayLiteralExpression) amdImport.getLiteral().getParent();
+        PsiElement function = amdImport.getParameter().getParent();
+
+        Set<PsiElement> elementsToDelete = new LinkedHashSet<PsiElement>();
+
+        elementsToDelete.add(amdImport.getLiteral());
+        elementsToDelete.add(amdImport.getParameter());
+
+        // only remove commas at the end
+        if(amdImport.getParameter().getNextSibling() != null && amdImport.getParameter().getNextSibling().getText().equals(","))
+        {
+            elementsToDelete.add(amdImport.getParameter().getNextSibling().getNextSibling());
+        }
+
+        // special case for when the element we're removing is last on the list
+        PsiElement sibling = amdImport.getLiteral().getNextSibling();
+        if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
+        {
+            elementsToDelete.add(DefineUtil.getNearestComma(sibling));
+        }
+
+        // only remove the next sibling if it's a comma
+        PsiElement nextSibling = amdImport.getLiteral().getNextSibling();
+        if(nextSibling != null && !nextSibling.getText().equals("]"))
+        {
+            elementsToDelete.add(amdImport.getLiteral().getNextSibling());
+        }
+
+        for(PsiElement element : elementsToDelete)
+        {
+            try
+            {
+                element.delete();
+            }
+            catch(Exception e)
+            {
+                // something happened, but it's probably not important when deleting.
+            }
+        }
+
+        // TODO refactor slightly
+        // TODO still need a test case for illegal argument being thrown
+
+        removeTrailingCommas(elementsToDelete, literal, function);
     }
 }

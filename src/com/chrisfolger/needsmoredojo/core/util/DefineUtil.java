@@ -49,20 +49,4 @@ public class DefineUtil
 
         return null;
     }
-
-    public static PsiElement getNearestTrailingComma(PsiElement start)
-    {
-        PsiElement sibling = start.getNextSibling();
-        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
-        {
-            if(sibling.getText().equals(","))
-            {
-                return sibling;
-            }
-
-            sibling = sibling.getNextSibling();
-        }
-
-        return null;
-    }
 }
