@@ -1,6 +1,8 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
+import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
+import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -12,6 +14,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -19,13 +22,16 @@ import java.util.List;
  */
 public class ModuleReferenceLocator
 {
-    protected void getMatch(DefineStatement statement, String moduleName, PsiFile targetFile)
+    protected void getMatch(PsiFile[] files, SourceLibrary[] libraries, DefineStatement statement, String moduleName, PsiFile targetFile)
     {
         // smoke test
         if(!statement.getArguments().getText().contains(moduleName))
         {
             return;
         }
+
+        // get a list of possible modules
+        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, targetFile, false, true);
 
         int i=0;
     }
@@ -39,24 +45,19 @@ public class ModuleReferenceLocator
         }
 
         Project project = moduleFile.getProject();
-        PsiManager psiManager = PsiManager.getInstance(project);
         DeclareFinder finder = new DeclareFinder();
-        // TODO can we use a directory scope instead???
-        Collection<VirtualFile> results = FilenameIndex.getAllFilesByExt(project, "js", GlobalSearchScope.projectScope(project));
 
-        for(VirtualFile file : results)
+        PsiFile[] files = new ImportCreator().getPossibleDojoImportFiles(project, moduleName, true);
+
+        for(PsiFile file : files)
         {
-            boolean isInProjectDirectory = VfsUtil.isAncestor(projectSourceDirectories[0], file, true);
-            if(!isInProjectDirectory) continue;
-
-            PsiFile psiFile = psiManager.findFile(file);
-            if(!psiFile.getText().contains("define("))
+            if(!file.getText().contains("define("))
             {
                 continue;
             }
 
-            DefineStatement defineStatement = finder.getDefineStatementItems(psiFile);
-            getMatch(defineStatement, moduleName, psiFile);
+            DefineStatement defineStatement = finder.getDefineStatementItems(file);
+            getMatch(files, new ImportCreator().getSourceLibraries(project).toArray(new SourceLibrary[0]), defineStatement, moduleName, file);
         }
 
         return null;

@@ -77,19 +77,9 @@ public class ImportCreator
         return getChoicesFromFiles(filesArray, libraries, module, originalModule, false);
     }
 
-    /**
-     * given a list of dojo modules to search through and a list of libraries,
-     * returns a list of possible dojo modules
-     *
-     * @param filesArray the array of dojo modules to search through
-     * @param libraries a list of source libraries that contain dojo modules
-     * @param module the original module name that the user entered
-     * @param originalModule the file that the user started entering this module in
-     * @param prioritizeRelativePaths if true, return relative path syntax first before absolute path syntax
-     * @return a string array of dojo modules that the user may have been searching for
-     */
-    public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths)
+    public @NotNull LinkedHashMap<String, PsiFile> getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths, boolean getMap)
     {
+        LinkedHashMap<String, PsiFile> moduleFileMap = new LinkedHashMap<String, PsiFile>();
         List<String> choices = new ArrayList<String>();
 
         for(int i=0;i<filesArray.length;i++)
@@ -145,14 +135,19 @@ public class ImportCreator
                 if(prioritizeRelativePaths && relativePathOption != null)
                 {
                     choices.add(relativePathOption + pluginPostFix);
+                    moduleFileMap.put(relativePathOption + pluginPostFix, file);
                     choices.add(absolutePathOption + pluginPostFix);
+                    moduleFileMap.put(absolutePathOption + pluginPostFix, file);
                 }
                 else
                 {
                     choices.add(absolutePathOption + pluginPostFix);
+                    moduleFileMap.put(absolutePathOption + pluginPostFix, file);
+
                     if(relativePathOption != null)
                     {
                         choices.add(relativePathOption + pluginPostFix);
+                        moduleFileMap.put(relativePathOption + pluginPostFix, file);
                     }
                 }
             }
@@ -166,10 +161,32 @@ public class ImportCreator
         });
 
         choices.add(module);
-        return choices.toArray(new String[0]);
+        return moduleFileMap;
     }
 
-    protected List<SourceLibrary> getSourceLibraries(Project project)
+
+    /**
+     * given a list of dojo modules to search through and a list of libraries,
+     * returns a list of possible dojo modules
+     *
+     * @param filesArray the array of dojo modules to search through
+     * @param libraries a list of source libraries that contain dojo modules
+     * @param module the original module name that the user entered
+     * @param originalModule the file that the user started entering this module in
+     * @param prioritizeRelativePaths if true, return relative path syntax first before absolute path syntax
+     * @return a string array of dojo modules that the user may have been searching for
+     */
+    public @NotNull String[] getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths)
+    {
+        return getChoicesFromFiles(filesArray, libraries, module, originalModule, prioritizeRelativePaths, true).keySet().toArray(new String[0]);
+    }
+
+    /**
+     * Gets a list of dojo packages in the project
+     * @param project
+     * @return
+     */
+    public List<SourceLibrary> getSourceLibraries(Project project)
     {
         List<SourceLibrary> libraries = new ArrayList<SourceLibrary>();
 
@@ -215,6 +232,41 @@ public class ImportCreator
         return libraries;
     }
 
+    public PsiFile[] getPossibleDojoImportFiles(Project project, String module, boolean prioritizeRelativeImports)
+    {
+        String actualModuleName = AMDUtil.getAMDPluginNameIfPossible(module);
+
+        PsiFile[] files = null;
+        PsiFile[] filesWithUnderscore = null;
+        PsiFile[] filesWithHyphenatedVersion = new PsiFile[0];
+
+        try
+        {
+            files = FilenameIndex.getFilesByName(project, actualModuleName + ".js", GlobalSearchScope.projectScope(project));
+            // this will let us search for _TemplatedMixin and friends
+            filesWithUnderscore = FilenameIndex.getFilesByName(project, "_" + actualModuleName + ".js", GlobalSearchScope.projectScope(project));
+            // search for dom-attr and friends when you have typed domAttr
+            String hyphenatedModule = AMDUtil.getPossibleHyphenatedModule(module);
+            if(hyphenatedModule != null)
+            {
+                filesWithHyphenatedVersion = FilenameIndex.getFilesByName(project, hyphenatedModule + ".js", GlobalSearchScope.projectScope(project));
+            }
+        }
+        catch(NullPointerException exc)
+        {
+            return null;
+        }
+
+        Set<PsiFile> allFiles = new HashSet<PsiFile>();
+        for(PsiFile file : files) allFiles.add(file);
+        for(PsiFile file : filesWithUnderscore) allFiles.add(file);
+        for(PsiFile file : filesWithHyphenatedVersion) allFiles.add(file);
+
+        PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
+
+        return filesArray;
+    }
+
     /**
      * gets a list of possible modules to import based on source files and a user entered module
      *
@@ -226,37 +278,13 @@ public class ImportCreator
      */
     public String[] getPossibleDojoImports(List<SourceLibrary> libraries, PsiFile psiFile, String module, boolean prioritizeRelativeImports)
     {
-        String actualModuleName = AMDUtil.getAMDPluginNameIfPossible(module);
-
-        PsiFile[] files = null;
-        PsiFile[] filesWithUnderscore = null;
-        PsiFile[] filesWithHyphenatedVersion = new PsiFile[0];
-
-        try
-        {
-            files = FilenameIndex.getFilesByName(psiFile.getProject(), actualModuleName + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
-            // this will let us search for _TemplatedMixin and friends
-            filesWithUnderscore = FilenameIndex.getFilesByName(psiFile.getProject(), "_" + actualModuleName + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
-            // search for dom-attr and friends when you have typed domAttr
-            String hyphenatedModule = AMDUtil.getPossibleHyphenatedModule(module);
-            if(hyphenatedModule != null)
-            {
-                filesWithHyphenatedVersion = FilenameIndex.getFilesByName(psiFile.getProject(), hyphenatedModule + ".js", GlobalSearchScope.projectScope(psiFile.getProject()));
-            }
-        }
-        catch(NullPointerException exc)
+        PsiFile[] files = getPossibleDojoImportFiles(psiFile.getProject(), module, prioritizeRelativeImports);
+        if(files == null)
         {
             return new String[] { module };
         }
 
-        Set<PsiFile> allFiles = new HashSet<PsiFile>();
-        for(PsiFile file : files) allFiles.add(file);
-        for(PsiFile file : filesWithUnderscore) allFiles.add(file);
-        for(PsiFile file : filesWithHyphenatedVersion) allFiles.add(file);
-
-        PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
-
-        return getChoicesFromFiles(filesArray, libraries.toArray(new SourceLibrary[0]), module, psiFile, prioritizeRelativeImports);
+        return getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), module, psiFile, prioritizeRelativeImports);
     }
 
     /**
