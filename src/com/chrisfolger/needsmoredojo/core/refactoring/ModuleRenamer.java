@@ -21,9 +21,24 @@ import java.util.List;
 /**
  * this is made to find modules that reference another dojo module
  */
-public class ModuleReferenceLocator
+public class ModuleRenamer
 {
-    protected void getMatch(String newModuleName, PsiFile[] files, SourceLibrary[] libraries, DefineStatement statement, String moduleName, PsiFile targetFile)
+    private PsiFile[] possibleFiles;
+    private SourceLibrary[] libraries;
+    private PsiFile moduleFile;
+    private Project project;
+    private String moduleName;
+
+    public ModuleRenamer(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries)
+    {
+        this.moduleName = moduleName;
+        this.moduleFile = moduleFile;
+        this.project = moduleFile.getProject();
+        this.libraries = libraries;
+        this.possibleFiles = possibleImportFiles;
+    }
+
+    protected void getMatch(String newModuleName, DefineStatement statement, PsiFile targetFile)
     {
         // smoke test
         if(!statement.getArguments().getText().contains(moduleName))
@@ -32,7 +47,7 @@ public class ModuleReferenceLocator
         }
 
         // get a list of possible modules and their syntax
-        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, targetFile, false, true);
+        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(possibleFiles, libraries, moduleName, targetFile, false, true);
 
         // go through the defines and determine if there is a match
         int matchIndex = -1;
@@ -58,7 +73,7 @@ public class ModuleReferenceLocator
         int i=0;
     }
 
-    public PsiFile[] findFilesThatReferenceModule(PsiFile[] possibleImports, String moduleName, PsiFile moduleFile, VirtualFile[] projectSourceDirectories)
+    public PsiFile[] findFilesThatReferenceModule(VirtualFile[] projectSourceDirectories)
     {
         List<VirtualFile> directories = new ArrayList<VirtualFile>();
         for(VirtualFile file : projectSourceDirectories)
@@ -66,7 +81,6 @@ public class ModuleReferenceLocator
             directories.add(file);
         }
 
-        Project project = moduleFile.getProject();
         DeclareFinder finder = new DeclareFinder();
         PsiManager psiManager = PsiManager.getInstance(project);
 
@@ -85,9 +99,7 @@ public class ModuleReferenceLocator
             }
 
             DefineStatement defineStatement = finder.getDefineStatementItems(psiFile);
-            getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), possibleImports, new ImportCreator().getSourceLibraries(project).toArray(new SourceLibrary[0]), defineStatement, moduleName, psiFile);
-
-            // TODO cleanup
+            getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), defineStatement, psiFile);
         }
         return null;
     }

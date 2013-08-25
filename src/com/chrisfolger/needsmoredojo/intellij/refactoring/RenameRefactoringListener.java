@@ -1,7 +1,8 @@
 package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
-import com.chrisfolger.needsmoredojo.core.refactoring.ModuleReferenceLocator;
+import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.refactoring.ModuleRenamer;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -40,6 +41,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
     {
         String moduleName = originalFile.substring(0, originalFile.indexOf('.'));
 
-        new ModuleReferenceLocator().findFilesThatReferenceModule(possibleFiles, moduleName, (PsiFile) psiElement, AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
+        new ModuleRenamer(possibleFiles, moduleName, (PsiFile) psiElement, new ImportCreator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]))
+                .findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
     }
 }
