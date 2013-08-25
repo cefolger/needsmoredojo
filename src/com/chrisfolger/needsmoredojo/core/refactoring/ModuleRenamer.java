@@ -37,10 +37,16 @@ public class ModuleRenamer
     {
         private int index;
         private String path;
+        private char quote;
 
-        private MatchResult(int index, String path) {
+        private MatchResult(int index, String path, char quote) {
             this.index = index;
             this.path = path;
+            this.quote = quote;
+        }
+
+        private char getQuote() {
+            return quote;
         }
 
         private int getIndex() {
@@ -75,10 +81,16 @@ public class ModuleRenamer
         // go through the defines and determine if there is a match
         int matchIndex = -1;
         String matchedString = "";
+        char quote = '\'';
 
         for(int i=0;i<statement.getArguments().getExpressions().length;i++)
         {
             JSExpression argument = statement.getArguments().getExpressions()[i];
+
+            if(argument.getText().contains("\""))
+            {
+                quote = '"';
+            }
 
             String argumentText = argument.getText().replaceAll("'", "").replace("\"", "");
             if(argumentText.contains(moduleName))
@@ -96,7 +108,7 @@ public class ModuleRenamer
             }
         }
 
-        return new MatchResult(matchIndex, matchedString);
+        return new MatchResult(matchIndex, matchedString, quote);
     }
 
     // TODO cleanup and doc
@@ -107,9 +119,7 @@ public class ModuleRenamer
             @Override
             public void run() {
                 PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
-                // TODO normalize quotes
-                defineLiteral.replace(JSUtil.createExpression(defineLiteral.getParent(), "\"" + match.getPath() + "\""));
-                //statement.getFunction().getParameters()[match.getIndex()].delete();
+                defineLiteral.replace(JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getQuote()));
 
                 // TODO pull exceptions map for define to parameter conversion
                 RefactoringFactory.getInstance(targetFile.getProject())
