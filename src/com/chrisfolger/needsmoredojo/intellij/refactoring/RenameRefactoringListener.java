@@ -8,9 +8,9 @@ import com.intellij.refactoring.listeners.RefactoringElementListener;
 import org.jetbrains.annotations.NotNull;
 
 public class RenameRefactoringListener implements RefactoringElementListener {
-    private PsiElement originalFile = null;
+    private String originalFile = null;
 
-    public RenameRefactoringListener(PsiElement originalFile)
+    public RenameRefactoringListener(String originalFile)
     {
         this.originalFile = originalFile;
     }
@@ -34,6 +34,8 @@ public class RenameRefactoringListener implements RefactoringElementListener {
     @Override
     public void elementRenamed(@NotNull PsiElement psiElement)
     {
-        new ModuleReferenceLocator().findFilesThatReferenceModule("foo", (PsiFile) psiElement, AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
+        String moduleName = originalFile.substring(0, originalFile.indexOf('.'));
+
+        new ModuleReferenceLocator().findFilesThatReferenceModule(moduleName, (PsiFile) psiElement, AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
     }
 }

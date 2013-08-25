@@ -23,6 +23,6 @@ public class RenameRefactoringProvider implements RefactoringElementListenerProv
             return null;
         }
 
-        return new RenameRefactoringListener(psiElement);
+        return new RenameRefactoringListener(file.getName());
     }
 }

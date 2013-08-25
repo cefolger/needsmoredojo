@@ -19,6 +19,17 @@ import java.util.List;
  */
 public class ModuleReferenceLocator
 {
+    protected void getMatch(DefineStatement statement, String moduleName, PsiFile targetFile)
+    {
+        // smoke test
+        if(!statement.getArguments().getText().contains(moduleName))
+        {
+            return;
+        }
+
+        int i=0;
+    }
+
     public PsiFile[] findFilesThatReferenceModule(String moduleName, PsiFile moduleFile, VirtualFile[] projectSourceDirectories)
     {
         List<VirtualFile> directories = new ArrayList<VirtualFile>();
@@ -35,7 +46,7 @@ public class ModuleReferenceLocator
 
         for(VirtualFile file : results)
         {
-            boolean isInProjectDirectory = VfsUtil.isAncestor(projectSourceDirectories[0], results.toArray(new VirtualFile[0])[0], true);
+            boolean isInProjectDirectory = VfsUtil.isAncestor(projectSourceDirectories[0], file, true);
             if(!isInProjectDirectory) continue;
 
             PsiFile psiFile = psiManager.findFile(file);
@@ -45,6 +56,7 @@ public class ModuleReferenceLocator
             }
 
             DefineStatement defineStatement = finder.getDefineStatementItems(psiFile);
+            getMatch(defineStatement, moduleName, psiFile);
         }
 
         return null;
