@@ -5,6 +5,7 @@ import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.intellij.lang.javascript.psi.JSExpression;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -97,10 +98,15 @@ public class ModuleRenamer
         return new MatchResult(matchIndex, matchedString);
     }
 
-    public void updateModuleReference(PsiFile targetFile, MatchResult match, DefineStatement statement)
+    public void updateModuleReference(PsiFile targetFile, final MatchResult match, final DefineStatement statement)
     {
-        statement.getArguments().getExpressions()[match.getIndex()].delete();
-        statement.getFunction().getParameters()[match.getIndex()].delete();
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                statement.getArguments().getExpressions()[match.getIndex()].delete();
+                statement.getFunction().getParameters()[match.getIndex()].delete();
+            }
+        });
     }
 
     public @Nullable PsiFile[] findFilesThatReferenceModule(@NotNull VirtualFile[] projectSourceDirectories)
