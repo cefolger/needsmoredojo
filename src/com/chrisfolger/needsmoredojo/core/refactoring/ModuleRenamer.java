@@ -114,9 +114,7 @@ public class ModuleRenamer
         return new MatchResult(matchIndex, matchedString, quote);
     }
 
-    // TODO cleanup and doc
-    // TODO look into undo operations
-    public void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement)
+    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement)
     {
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
@@ -132,6 +130,12 @@ public class ModuleRenamer
         });
     }
 
+    /**
+     * entry point for renaming a dojo module
+     *
+     * @param projectSourceDirectories
+     * @return
+     */
     public @Nullable PsiFile[] findFilesThatReferenceModule(@NotNull VirtualFile[] projectSourceDirectories)
     {
         List<VirtualFile> directories = new ArrayList<VirtualFile>();
@@ -146,25 +150,29 @@ public class ModuleRenamer
         // TODO can we use a directory scope instead???
         Collection<VirtualFile> results = FilenameIndex.getAllFilesByExt(project, "js", GlobalSearchScope.projectScope(project));
 
-        for(VirtualFile file : results)
+        for(VirtualFile directory : directories)
         {
-            boolean isInProjectDirectory = VfsUtil.isAncestor(projectSourceDirectories[0], file, true);
-            if(!isInProjectDirectory) continue;
-
-            PsiFile psiFile = psiManager.findFile(file);
-            if(!psiFile.getText().contains("define("))
+            for(VirtualFile file : results)
             {
-                continue;
-            }
+                boolean isInProjectDirectory = VfsUtil.isAncestor(directory, file, true);
+                if(!isInProjectDirectory) continue;
 
-            DefineStatement defineStatement = finder.getDefineStatementItems(psiFile);
-            MatchResult match = getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), defineStatement, psiFile);
+                PsiFile psiFile = psiManager.findFile(file);
+                if(!psiFile.getText().contains("define("))
+                {
+                    continue;
+                }
 
-            if(match != null)
-            {
-                updateModuleReference(psiFile, match, defineStatement);
+                DefineStatement defineStatement = finder.getDefineStatementItems(psiFile);
+                MatchResult match = getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), defineStatement, psiFile);
+
+                if(match != null)
+                {
+                    updateModuleReference(psiFile, match, defineStatement);
+                }
             }
         }
+
         return null;
     }
 }

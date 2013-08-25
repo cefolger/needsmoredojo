@@ -12,6 +12,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.refactoring.listeners.RefactoringElementListener;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ *  provides a rename operation for dojo modules that will rename the define literal and parameters,
+ *  while using the correct path syntax.
+ */
 public class RenameRefactoringListener implements RefactoringElementListener {
     private String originalFile = null;
     private PsiFile[] possibleFiles = new PsiFile[0];
@@ -25,19 +29,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
 
     @Override
     public void elementMoved(@NotNull PsiElement psiElement) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
-
-    /**
-     * get all other js files IN PROJECT SOURCES
-     if the file is an AMD module
-     get the list of defines
-     for each define
-     determine if the define has a match
-     if it does:
-     rename it appropriately
-     use a rename action to rename the reference
-     */
 
     @Override
     public void elementRenamed(@NotNull final PsiElement psiElement)

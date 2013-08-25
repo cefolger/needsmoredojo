@@ -23,6 +23,11 @@ public class RenameRefactoringProvider implements RefactoringElementListenerProv
             return null;
         }
 
+        if(!file.getText().contains("define"))
+        {
+            return null; // not a dojo module
+        }
+
         return new RenameRefactoringListener(file, file.getName());
     }
 }

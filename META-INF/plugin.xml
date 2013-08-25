@@ -24,6 +24,7 @@
   <change-notes><![CDATA[
             <b>0.5</b>
             <ul>
+                <li>Rename refactoring is supported for dojo module files </li>
                 <li>Can now use the project source directory as the dojo source location if they are in the same place </li>
                 <li>Can now delete single imports</li>
                 <li>You are now able to use a jar or zip file for your dojo sources (Issue #91)</li>
