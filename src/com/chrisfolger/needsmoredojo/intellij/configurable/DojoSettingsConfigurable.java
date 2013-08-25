@@ -220,11 +220,11 @@ public class DojoSettingsConfigurable implements Configurable {
             public void stateChanged(ChangeEvent e) {
                 if(dojoSourcesIsTheSame.isSelected())
                 {
-                    dojoSourcesText.getTextField().setEnabled(false);
+                    dojoSourcesText.setEnabled(false);
                 }
                 else
                 {
-                    dojoSourcesText.getTextField().setEnabled(true);
+                    dojoSourcesText.setEnabled(true);
                 }
 
                 updateModifiedState();
@@ -305,6 +305,8 @@ public class DojoSettingsConfigurable implements Configurable {
     {
         dojoSourceString = settingsService.getDojoSourcesDirectory();
         dojoSourcesText.setText(dojoSourceString);
+        dojoSourcesText.setEnabled(!settingsService.isDojoSourcesShareProjectSourcesRoot());
+        dojoSourcesIsTheSame.setSelected(settingsService.isDojoSourcesShareProjectSourcesRoot());
 
         projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
