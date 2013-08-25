@@ -12,6 +12,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +31,25 @@ public class ModuleRenamer
     private Project project;
     private String moduleName;
 
+    private class MatchResult
+    {
+        private int index;
+        private String path;
+
+        private MatchResult(int index, String path) {
+            this.index = index;
+            this.path = path;
+        }
+
+        private int getIndex() {
+            return index;
+        }
+
+        private String getPath() {
+            return path;
+        }
+    }
+
     public ModuleRenamer(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries)
     {
         this.moduleName = moduleName;
@@ -38,12 +59,12 @@ public class ModuleRenamer
         this.possibleFiles = possibleImportFiles;
     }
 
-    protected void getMatch(String newModuleName, DefineStatement statement, PsiFile targetFile)
+    protected @Nullable MatchResult getMatch(@NotNull String newModuleName, @NotNull DefineStatement statement, @NotNull PsiFile targetFile)
     {
         // smoke test
         if(!statement.getArguments().getText().contains(moduleName))
         {
-            return;
+            return null;
         }
 
         // get a list of possible modules and their syntax
@@ -51,6 +72,8 @@ public class ModuleRenamer
 
         // go through the defines and determine if there is a match
         int matchIndex = -1;
+        String matchedString = "";
+
         for(int i=0;i<statement.getArguments().getExpressions().length;i++)
         {
             JSExpression argument = statement.getArguments().getExpressions()[i];
@@ -66,14 +89,21 @@ public class ModuleRenamer
             if(results.containsKey(argumentText))
             {
                 matchIndex = i;
+                matchedString = argumentText;
                 break;
             }
         }
 
-        int i=0;
+        return new MatchResult(matchIndex, matchedString);
     }
 
-    public PsiFile[] findFilesThatReferenceModule(VirtualFile[] projectSourceDirectories)
+    public void updateModuleReference(PsiFile targetFile, MatchResult match, DefineStatement statement)
+    {
+        statement.getArguments().getExpressions()[match.getIndex()].delete();
+        statement.getFunction().getParameters()[match.getIndex()].delete();
+    }
+
+    public @Nullable PsiFile[] findFilesThatReferenceModule(@NotNull VirtualFile[] projectSourceDirectories)
     {
         List<VirtualFile> directories = new ArrayList<VirtualFile>();
         for(VirtualFile file : projectSourceDirectories)
@@ -99,7 +129,12 @@ public class ModuleRenamer
             }
 
             DefineStatement defineStatement = finder.getDefineStatementItems(psiFile);
-            getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), defineStatement, psiFile);
+            MatchResult match = getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), defineStatement, psiFile);
+
+            if(match != null)
+            {
+                updateModuleReference(psiFile, match, defineStatement);
+            }
         }
         return null;
     }
