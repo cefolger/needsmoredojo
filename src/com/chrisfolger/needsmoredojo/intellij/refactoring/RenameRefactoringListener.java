@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
+import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.refactoring.ModuleReferenceLocator;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.psi.PsiElement;
@@ -9,10 +10,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class RenameRefactoringListener implements RefactoringElementListener {
     private String originalFile = null;
+    private PsiFile[] possibleFiles = new PsiFile[0];
 
-    public RenameRefactoringListener(String originalFile)
+    public RenameRefactoringListener(PsiFile originalPsiFile, String originalFile)
     {
         this.originalFile = originalFile;
+
+        possibleFiles = new ImportCreator().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
     }
 
     @Override
@@ -36,6 +40,6 @@ public class RenameRefactoringListener implements RefactoringElementListener {
     {
         String moduleName = originalFile.substring(0, originalFile.indexOf('.'));
 
-        new ModuleReferenceLocator().findFilesThatReferenceModule(moduleName, (PsiFile) psiElement, AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
+        new ModuleReferenceLocator().findFilesThatReferenceModule(possibleFiles, moduleName, (PsiFile) psiElement, AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
     }
 }
