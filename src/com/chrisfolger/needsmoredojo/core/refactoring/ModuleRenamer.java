@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.refactoring;
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.JSExpression;
@@ -15,13 +16,11 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.refactoring.RefactoringFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * this is made to find modules that reference another dojo module
@@ -100,7 +99,9 @@ public class ModuleRenamer
         return new MatchResult(matchIndex, matchedString);
     }
 
-    public void updateModuleReference(PsiFile targetFile, final MatchResult match, final DefineStatement statement)
+    // TODO cleanup and doc
+    // TODO look into undo operations
+    public void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement)
     {
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
@@ -109,6 +110,11 @@ public class ModuleRenamer
                 // TODO normalize quotes
                 defineLiteral.replace(JSUtil.createExpression(defineLiteral.getParent(), "\"" + match.getPath() + "\""));
                 //statement.getFunction().getParameters()[match.getIndex()].delete();
+
+                // TODO pull exceptions map for define to parameter conversion
+                RefactoringFactory.getInstance(targetFile.getProject())
+                        .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), new HashMap<String, String>()), false, false)
+                        .run();
             }
         });
     }
