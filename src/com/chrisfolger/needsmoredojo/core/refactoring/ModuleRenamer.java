@@ -17,6 +17,7 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.refactoring.RefactoringFactory;
+import com.intellij.refactoring.RenameRefactoring;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,9 +124,10 @@ public class ModuleRenamer
                 PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
                 defineLiteral.replace(JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getQuote()));
 
-                RefactoringFactory.getInstance(targetFile.getProject())
-                        .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap), false, false)
-                        .run();
+                RenameRefactoring refactoring = RefactoringFactory.getInstance(targetFile.getProject())
+                        .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap), false, false);
+
+                refactoring.doRefactoring(refactoring.findUsages());
             }
         });
     }

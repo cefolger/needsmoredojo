@@ -5,6 +5,7 @@ import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.refactoring.ModuleRenamer;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -39,16 +40,23 @@ public class RenameRefactoringListener implements RefactoringElementListener {
      */
 
     @Override
-    public void elementRenamed(@NotNull PsiElement psiElement)
+    public void elementRenamed(@NotNull final PsiElement psiElement)
     {
-        String moduleName = originalFile.substring(0, originalFile.indexOf('.'));
+        final String moduleName = originalFile.substring(0, originalFile.indexOf('.'));
 
-        new ModuleRenamer(possibleFiles,
-                moduleName,
-                (PsiFile) psiElement,
-                new ImportCreator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]),
-                ServiceManager.getService(psiElement.getProject(),
-                        DojoSettings.class).getExceptionsMap())
-            .findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
+        CommandProcessor.getInstance().executeCommand(psiElement.getProject(), new Runnable() {
+            @Override
+            public void run() {
+                new ModuleRenamer(possibleFiles,
+                        moduleName,
+                        (PsiFile) psiElement,
+                        new ImportCreator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]),
+                        ServiceManager.getService(psiElement.getProject(),
+                                DojoSettings.class).getExceptionsMap())
+                        .findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
+            }
+        },
+        "Rename Dojo Module",
+        "Rename Dojo Module");
     }
 }
