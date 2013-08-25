@@ -4,11 +4,13 @@ import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
@@ -103,8 +105,10 @@ public class ModuleRenamer
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
             public void run() {
-                statement.getArguments().getExpressions()[match.getIndex()].delete();
-                statement.getFunction().getParameters()[match.getIndex()].delete();
+                PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
+                // TODO normalize quotes
+                defineLiteral.replace(JSUtil.createExpression(defineLiteral.getParent(), "\"" + match.getPath() + "\""));
+                //statement.getFunction().getParameters()[match.getIndex()].delete();
             }
         });
     }
