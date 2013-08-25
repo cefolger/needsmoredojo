@@ -139,10 +139,12 @@ public class DojoSettingsConfigurable implements Configurable {
 
     public JComponent createComponent() {
         myComponent = (JComponent) myPanel;
-        FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        FileChooserDescriptor projectDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        // have to use a custom one to allow jar file contents to be selected
+        FileChooserDescriptor dojoDescriptor = new FileChooserDescriptor(true, true, true, false, true, false);
 
-        projectSourcesText.addBrowseFolderListener(null, new ProjectSourcesChosen("Project Sources", "Select the root of your project's sources to support certain features of Needs More Dojo", descriptor));
-        dojoSourcesText.addBrowseFolderListener(null, new DojoSourcesChosen("Dojo Sources", "Select the root of the dojo library sources to support certain features of Needs More Dojo", descriptor));
+        projectSourcesText.addBrowseFolderListener(null, new ProjectSourcesChosen("Project Sources", "Select the root of your project's sources to support certain features of Needs More Dojo", projectDescriptor));
+        dojoSourcesText.addBrowseFolderListener(null, new DojoSourcesChosen("Dojo Sources", "Select the root of the dojo library sources to support certain features of Needs More Dojo", dojoDescriptor));
 
         autoDetectDojoSources.addActionListener(new AutoDetectDojoSources());
 
@@ -218,11 +220,11 @@ public class DojoSettingsConfigurable implements Configurable {
             public void stateChanged(ChangeEvent e) {
                 if(dojoSourcesIsTheSame.isSelected())
                 {
-                    dojoSourcesText.getTextField().setEnabled(false);
+                    dojoSourcesText.setEnabled(false);
                 }
                 else
                 {
-                    dojoSourcesText.getTextField().setEnabled(true);
+                    dojoSourcesText.setEnabled(true);
                 }
 
                 updateModifiedState();
@@ -303,6 +305,8 @@ public class DojoSettingsConfigurable implements Configurable {
     {
         dojoSourceString = settingsService.getDojoSourcesDirectory();
         dojoSourcesText.setText(dojoSourceString);
+        dojoSourcesText.setEnabled(!settingsService.isDojoSourcesShareProjectSourcesRoot());
+        dojoSourcesIsTheSame.setSelected(settingsService.isDojoSourcesShareProjectSourcesRoot());
 
         projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
