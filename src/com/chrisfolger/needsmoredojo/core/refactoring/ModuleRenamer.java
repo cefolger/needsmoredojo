@@ -32,6 +32,7 @@ public class ModuleRenamer
     private PsiFile moduleFile;
     private Project project;
     private String moduleName;
+    private Map<String, String> moduleNamingExceptionMap;
 
     private class MatchResult
     {
@@ -58,13 +59,14 @@ public class ModuleRenamer
         }
     }
 
-    public ModuleRenamer(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries)
+    public ModuleRenamer(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, Map<String, String> exceptionsMap)
     {
         this.moduleName = moduleName;
         this.moduleFile = moduleFile;
         this.project = moduleFile.getProject();
         this.libraries = libraries;
         this.possibleFiles = possibleImportFiles;
+        this.moduleNamingExceptionMap = exceptionsMap;
     }
 
     protected @Nullable MatchResult getMatch(@NotNull String newModuleName, @NotNull DefineStatement statement, @NotNull PsiFile targetFile)
@@ -121,9 +123,8 @@ public class ModuleRenamer
                 PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
                 defineLiteral.replace(JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getQuote()));
 
-                // TODO pull exceptions map for define to parameter conversion
                 RefactoringFactory.getInstance(targetFile.getProject())
-                        .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), new HashMap<String, String>()), false, false)
+                        .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap), false, false)
                         .run();
             }
         });
