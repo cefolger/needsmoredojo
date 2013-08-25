@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -89,7 +90,18 @@ public class AMDUtil
         }
         else if(dojoLibrary != null && !dojoLibrary.equals("") && pullFromSettings)
         {
-            VirtualFile file = LocalFileSystem.getInstance().findFileByPath(dojoLibrary);
+            VirtualFile file = null;
+
+            // this means the dojo sources are in an archive
+            if(dojoLibrary.contains("!"))
+            {
+                file = JarFileSystem.getInstance().findFileByPath(dojoLibrary);
+            }
+            else
+            {
+                file = LocalFileSystem.getInstance().findFileByPath(dojoLibrary);
+            }
+
             return file;
         }
         else
