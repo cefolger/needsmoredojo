@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestAMDUtil
 {
@@ -68,5 +69,12 @@ public class TestAMDUtil
         assertEquals("dom-class", AMDUtil.getPossibleHyphenatedModule("domClass"));
         assertEquals("dom-attr", AMDUtil.getPossibleHyphenatedModule("domAttr"));
         assertEquals("some-module", AMDUtil.getPossibleHyphenatedModule("someModule"));
+    }
+
+    @Test
+    public void testGetModuleName()
+    {
+        assertEquals("d", AMDUtil.getModuleName("a/b/c/d"));
+        assertEquals("d", AMDUtil.getModuleName("a/b/d!foo"));
     }
 }

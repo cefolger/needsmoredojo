@@ -19,6 +19,7 @@ public class MoveRefactoringListener implements RefactoringElementListener
     private String originalFile = null;
     private PsiFile[] possibleFiles = new PsiFile[0];
     private List<ModuleRenamer.MatchResult> matches = new ArrayList<ModuleRenamer.MatchResult>();
+    private List<ModuleRenamer.MatchResult> moduleReferences = new ArrayList<ModuleRenamer.MatchResult>();
     private ModuleRenamer renamer = null;
 
     public MoveRefactoringListener(PsiFile originalPsiFile, String originalFile)
@@ -34,7 +35,7 @@ public class MoveRefactoringListener implements RefactoringElementListener
                         DojoSettings.class).getExceptionsMap());
 
 
-        renamer.findFilesThatModuleReferences(originalPsiFile);
+        moduleReferences = renamer.findFilesThatModuleReferences(originalPsiFile);
 
         // here is where we need to go through, find all of the modules that reference this module, and produce a list of MatchResults
         matches = renamer.findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(originalPsiFile.getProject(), true), false);
@@ -54,6 +55,11 @@ public class MoveRefactoringListener implements RefactoringElementListener
         for(ModuleRenamer.MatchResult result : matches)
         {
             renamer.reimportModule(result, file);
+        }
+
+        for(ModuleRenamer.MatchResult result : moduleReferences)
+        {
+            renamer.reimportModule(result.getIndex(), file, result.getQuote(), result.getPath(), result.getModule());
         }
     }
 

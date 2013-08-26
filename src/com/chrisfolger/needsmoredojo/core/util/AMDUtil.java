@@ -255,6 +255,19 @@ public class AMDUtil
         }
     }
 
+    public static String getModuleName(String modulePath)
+    {
+        if(modulePath.contains("!"))
+        {
+            String moduleWithoutPlugin = modulePath.substring(0, modulePath.indexOf('!'));
+            return moduleWithoutPlugin.substring(moduleWithoutPlugin.lastIndexOf('/') + 1);
+        }
+        else
+        {
+            return modulePath.substring(modulePath.lastIndexOf('/') + 1);
+        }
+    }
+
     /**
      * converts a module to its correct hyphenated form if possible.
      *

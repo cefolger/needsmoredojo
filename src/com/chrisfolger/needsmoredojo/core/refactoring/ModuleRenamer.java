@@ -166,19 +166,12 @@ public class ModuleRenamer
         updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getQuote()));
     }
 
-    /**
-     * during a move, modules that import the moved module need to have their references updated
-     * This method takes care of that
-     *
-     * @param matchResult This is the match object that has the index of the define literal to update
-     * @param newModule this is the new module to reimport
-     */
-    public void reimportModule(MatchResult matchResult, PsiFile newModule)
+    public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule)
     {
-        DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(matchResult.getModule());
+        DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(currentModule);
 
         String newModuleName = newModule.getName().substring(0, newModule.getName().indexOf('.'));
-        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, matchResult.getModule(), false, true);
+        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, currentModule, false, true);
 
         // check if the original used a relative syntax or absolute syntax, and prefer that?
         String[] possibleImports = results.keySet().toArray(new String[0]);
@@ -188,37 +181,54 @@ public class ModuleRenamer
         // if more than one syntax is possible, use the one that matches whatever the old import matched.
         if(possibleImports.length > 1)
         {
-            if(matchResult.getPath().contains("./") && !possibleImports[0].contains("./"))
+            if(path.contains("./") && !possibleImports[0].contains("./"))
             {
                 // use relative path option
                 chosenImport = possibleImports[1];
             }
-            else if (!(matchResult.getPath().contains("./")) && possibleImports[0].contains("./"))
+            else if (!(path.contains("./")) && possibleImports[0].contains("./"))
             {
                 // use absolute path option
                 chosenImport = possibleImports[1];
             }
         }
 
-        PsiElement defineLiteral = defineStatement.getArguments().getExpressions()[matchResult.getIndex()];
-        PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), matchResult.getQuote() + chosenImport + matchResult.getQuote());
+        PsiElement defineLiteral = defineStatement.getArguments().getExpressions()[index];
+        PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), quote + chosenImport + quote);
 
-        updateModuleReference(matchResult.getModule(), matchResult, defineStatement, newImport);
+        MatchResult match = new MatchResult(currentModule, index, path, quote);
+        updateModuleReference(currentModule, match, defineStatement, newImport);
+
     }
 
-    public void findFilesThatModuleReferences(PsiFile module)
+    /**
+     * during a move, modules that import the moved module need to have their references updated
+     * This method takes care of that
+     *
+     * @param matchResult This is the match object that has the index of the define literal to update
+     * @param newModule this is the new module to reimport
+     */
+    public void reimportModule(MatchResult matchResult, PsiFile newModule)
     {
-        // get list of imports
-        // for each import
-            // get the list of possible imports
-            // iterate through each one until a match is found
-            // produce a match result
+        reimportModule(matchResult.getIndex(), matchResult.getModule(), matchResult.getQuote(), matchResult.getPath(), newModule);
+    }
 
+    public List<MatchResult> findFilesThatModuleReferences(PsiFile module)
+    {
         DeclareFinder finder = new DeclareFinder();
         DefineStatement statement = finder.getDefineStatementItems(module);
+        List<MatchResult> matches = new ArrayList<MatchResult>();
 
-        for(JSExpression expression : statement.getArguments().getExpressions())
+        for(int i=0;i<statement.getArguments().getExpressions().length;i++)
         {
+            JSExpression expression = statement.getArguments().getExpressions()[i];
+
+            char quote = '"';
+            if(expression.getText().contains("'"))
+            {
+                quote = '\'';
+            }
+
             // figure out which module it is
             String importModule = expression.getText().replaceAll("'", "").replaceAll("\"", "");
             if(SourcesAutoDetector.isDojoModule(importModule))
@@ -227,10 +237,21 @@ public class ModuleRenamer
             }
 
             // get the module name
+            String moduleName = AMDUtil.getModuleName(importModule);
 
             // get the list of possible strings/PsiFiles that would match it
-            int i=0;
+            PsiFile[] files = new ImportCreator().getPossibleDojoImportFiles(module.getProject(), moduleName, true);
+
+            // get the files that are being imported
+            LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
+            if(results.containsKey(importModule))
+            {
+                MatchResult match = new MatchResult(results.get(importModule), i, importModule, quote);
+                matches.add(match);
+            }
         }
+
+        return matches;
     }
 
     /**
