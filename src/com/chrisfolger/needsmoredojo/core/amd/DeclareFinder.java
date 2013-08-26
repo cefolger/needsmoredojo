@@ -6,6 +6,7 @@ import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nullable;
 
 public class DeclareFinder
 {
@@ -148,9 +149,13 @@ public class DeclareFinder
 
                 // get the function
                 DefineStatement items = new DefineUtil().getDefineStatementItemsFromArguments(element.getArguments());
-                onDefineFound.run(new Object[] { element, items.getFunction().getFunction()});
+                if(items == null)
+                {
+                    onDefineFound.run(null);
+                    return;
+                }
 
-                return;
+                onDefineFound.run(new Object[] { element, items.getFunction().getFunction()});
             }
         };
     }
@@ -162,17 +167,28 @@ public class DeclareFinder
      * @param file the PsiFile to retrieve the define statement from
      * @return the define statement and its items
      */
-    public DefineStatement getDefineStatementItems(PsiFile file)
+    public @Nullable DefineStatement getDefineStatementItems(PsiFile file)
     {
         final DefineStatement[] items = new DefineStatement[1];
 
         file.acceptChildren(getDefineVisitor(new CompletionCallback() {
             @Override
             public void run(Object[] result) {
+                if(result == null || result[0] == null)
+                {
+                    items[0] = null;
+                    return;
+                }
+
                 JSCallExpression callExpression = (JSCallExpression) result[0];
                 items[0] = new DefineUtil().getDefineStatementItemsFromArguments(callExpression.getArguments());
             }
         }));
+
+        if(items[0] == null)
+        {
+            return null;
+        }
 
         return items[0];
     }

@@ -183,15 +183,20 @@ public class ModuleRenamer
         String[] possibleImports = results.keySet().toArray(new String[0]);
 
         String chosenImport = possibleImports[0];
-        if(matchResult.getPath().contains("./") && !possibleImports[0].contains("./"))
+
+        // if more than one syntax is possible, use the one that matches whatever the old import matched.
+        if(possibleImports.length > 1)
         {
-            // use relative path option
-            chosenImport = possibleImports[1];
-        }
-        else if (!(matchResult.getPath().contains("./")) && possibleImports[0].contains("./"))
-        {
-            // use absolute path option
-            chosenImport = possibleImports[1];
+            if(matchResult.getPath().contains("./") && !possibleImports[0].contains("./"))
+            {
+                // use relative path option
+                chosenImport = possibleImports[1];
+            }
+            else if (!(matchResult.getPath().contains("./")) && possibleImports[0].contains("./"))
+            {
+                // use absolute path option
+                chosenImport = possibleImports[1];
+            }
         }
 
         PsiElement defineLiteral = defineStatement.getArguments().getExpressions()[matchResult.getIndex()];
@@ -236,6 +241,13 @@ public class ModuleRenamer
                 }
 
                 DefineStatement defineStatement = finder.getDefineStatementItems(psiFile);
+
+                // possible that the file passed the smoke test but is not a real module
+                if(defineStatement == null)
+                {
+                    continue;
+                }
+
                 MatchResult match = getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), defineStatement, psiFile);
 
                 if(match != null)
