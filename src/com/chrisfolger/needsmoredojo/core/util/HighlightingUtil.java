@@ -14,15 +14,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class HighlightingUtil
 {
-    public static void highlightElement(@NotNull com.intellij.openapi.project.Project project, @NotNull PsiElement[] elements)
+    public static void highlightElement(Editor editor, @NotNull com.intellij.openapi.project.Project project, @NotNull PsiElement[] elements)
     {
-        final FileEditorManager editorManager =
-                FileEditorManager.getInstance(project);
         final HighlightManager highlightManager =
                 HighlightManager.getInstance(project);
         final EditorColorsManager editorColorsManager =
                 EditorColorsManager.getInstance();
-        final Editor editor = editorManager.getSelectedTextEditor();
         final EditorColorsScheme globalScheme =
                 editorColorsManager.getGlobalScheme();
         final TextAttributes textattributes =

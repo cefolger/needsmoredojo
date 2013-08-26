@@ -102,7 +102,7 @@ public class JumpToAttachPointAction extends JavaScriptAction
             }
         }
 
-        HighlightingUtil.highlightElement(templateFile.getProject(), elementsToHighlight.toArray(new PsiElement[0]));
+        HighlightingUtil.highlightElement(editor, templateFile.getProject(), elementsToHighlight.toArray(new PsiElement[0]));
     }
 
     @Override
