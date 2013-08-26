@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.refactoring;
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
@@ -203,6 +204,33 @@ public class ModuleRenamer
         PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), matchResult.getQuote() + chosenImport + matchResult.getQuote());
 
         updateModuleReference(matchResult.getModule(), matchResult, defineStatement, newImport);
+    }
+
+    public void findFilesThatModuleReferences(PsiFile module)
+    {
+        // get list of imports
+        // for each import
+            // get the list of possible imports
+            // iterate through each one until a match is found
+            // produce a match result
+
+        DeclareFinder finder = new DeclareFinder();
+        DefineStatement statement = finder.getDefineStatementItems(module);
+
+        for(JSExpression expression : statement.getArguments().getExpressions())
+        {
+            // figure out which module it is
+            String importModule = expression.getText().replaceAll("'", "").replaceAll("\"", "");
+            if(SourcesAutoDetector.isDojoModule(importModule))
+            {
+                continue;
+            }
+
+            // get the module name
+
+            // get the list of possible strings/PsiFiles that would match it
+            int i=0;
+        }
     }
 
     /**

@@ -19,7 +19,7 @@ import java.util.*;
 
 public class SourcesAutoDetector
 {
-    private boolean isDojoModule(String path)
+    public static boolean isDojoModule(String path)
     {
         return path.startsWith("dojo") || path.startsWith("dijit") || path.startsWith("dgrid") || path.startsWith("dojox");
     }

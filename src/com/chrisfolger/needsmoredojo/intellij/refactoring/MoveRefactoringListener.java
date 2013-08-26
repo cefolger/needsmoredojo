@@ -34,6 +34,8 @@ public class MoveRefactoringListener implements RefactoringElementListener
                         DojoSettings.class).getExceptionsMap());
 
 
+        renamer.findFilesThatModuleReferences(originalPsiFile);
+
         // here is where we need to go through, find all of the modules that reference this module, and produce a list of MatchResults
         matches = renamer.findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(originalPsiFile.getProject(), true), false);
     }
