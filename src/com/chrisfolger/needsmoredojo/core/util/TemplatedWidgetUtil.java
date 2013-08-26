@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,10 +34,21 @@ public class TemplatedWidgetUtil {
         return findTemplateFromDeclare(utilItem[0]);
     }
 
-    public PsiFile findTemplateFromDeclare(DeclareUtil.DeclareStatementItems statement)
+    public PsiFile findTemplateFromDeclare(@Nullable DeclareUtil.DeclareStatementItems statement)
     {
+        if(statement == null)
+        {
+            return null;
+        }
+
         for(JSProperty property : statement.getMethodsToConvert())
         {
+            // just continue if this property is invalid for some reason
+            if(property == null || property.getName() == null || property.getValue() == null)
+            {
+                continue;
+            }
+
             /**
              * have to account for these scenarios
              * templateString: <reference to an imported template>
