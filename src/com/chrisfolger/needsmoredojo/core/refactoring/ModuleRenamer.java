@@ -46,6 +46,7 @@ public class ModuleRenamer
             this.index = index;
             this.path = path;
             this.quote = quote;
+            this.module = module;
         }
 
         public PsiFile getModule() {
@@ -75,6 +76,14 @@ public class ModuleRenamer
         this.moduleNamingExceptionMap = exceptionsMap;
     }
 
+    /**
+     * Determines if one module references another module, and returns a result if it does
+     *
+     * @param newModuleName the referenced module's name
+     * @param statement the module's parsed define statement
+     * @param targetFile the module file
+     * @return
+     */
     protected @Nullable MatchResult getMatch(@NotNull String newModuleName, @NotNull DefineStatement statement, @NotNull PsiFile targetFile)
     {
         // smoke test
@@ -119,13 +128,21 @@ public class ModuleRenamer
         return new MatchResult(targetFile, matchIndex, matchedString, quote);
     }
 
-    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement)
+    /**
+     * Updates a module's import reference with a new location
+     *
+     * @param targetFile the module to update
+     * @param match the match that holds the location of the import to update
+     * @param statement the module's parsed define statement
+     * @param replacementExpression an expression that will replace the old import statement
+     */
+    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement, final PsiElement replacementExpression)
     {
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
             public void run() {
                 PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
-                defineLiteral.replace(JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getQuote()));
+                defineLiteral.replace(replacementExpression);
 
                 RenameRefactoring refactoring = RefactoringFactory.getInstance(targetFile.getProject())
                         .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap), false, false);
@@ -135,20 +152,59 @@ public class ModuleRenamer
         });
     }
 
+    /**
+     * Updates a module's import reference with a new location
+     *
+     * @param targetFile the module to update
+     * @param match the match that holds the location of the import to update
+     * @param statement the module's parsed define statement
+     */
+    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement)
+    {
+        PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
+        updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getQuote()));
+    }
+
+    /**
+     * during a move, modules that import the moved module need to have their references updated
+     * This method takes care of that
+     *
+     * @param matchResult This is the match object that has the index of the define literal to update
+     * @param newModule this is the new module to reimport
+     */
     public void reimportModule(MatchResult matchResult, PsiFile newModule)
     {
+        DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(matchResult.getModule());
+
         String newModuleName = newModule.getName().substring(0, newModule.getName().indexOf('.'));
         LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, matchResult.getModule(), false, true);
 
         // check if the original used a relative syntax or absolute syntax, and prefer that?
-        int i=0;
+        String[] possibleImports = results.keySet().toArray(new String[0]);
+
+        String chosenImport = possibleImports[0];
+        if(matchResult.getPath().contains("./") && !possibleImports[0].contains("./"))
+        {
+            // use relative path option
+            chosenImport = possibleImports[1];
+        }
+        else if (!(matchResult.getPath().contains("./")) && possibleImports[0].contains("./"))
+        {
+            // use absolute path option
+            chosenImport = possibleImports[1];
+        }
+
+        PsiElement defineLiteral = defineStatement.getArguments().getExpressions()[matchResult.getIndex()];
+        PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), matchResult.getQuote() + chosenImport + matchResult.getQuote());
+
+        updateModuleReference(matchResult.getModule(), matchResult, defineStatement, newImport);
     }
 
     /**
      * entry point for renaming a dojo module
      *
-     * @param projectSourceDirectories
-     * @return
+     * @param projectSourceDirectories This is the list of directories to search for modules in
+     * @return A list of results that represent modules that reference the renamed module
      */
     public @Nullable List<MatchResult> findFilesThatReferenceModule(@NotNull VirtualFile[] projectSourceDirectories, boolean update)
     {
