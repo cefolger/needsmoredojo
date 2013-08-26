@@ -19,32 +19,40 @@ public class MoveRefactoringListener implements RefactoringElementListener
     private String originalFile = null;
     private PsiFile[] possibleFiles = new PsiFile[0];
     private List<ModuleRenamer.MatchResult> matches = new ArrayList<ModuleRenamer.MatchResult>();
+    private ModuleRenamer renamer = null;
 
     public MoveRefactoringListener(PsiFile originalPsiFile, String originalFile)
     {
         this.originalFile = originalFile;
         possibleFiles = new ImportCreator().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
 
-        // here is where we need to go through, find all of the modules that reference this module, and produce a list of MatchResults
-        matches = new ModuleRenamer(possibleFiles,
+        renamer = new ModuleRenamer(possibleFiles,
                 originalFile.substring(0, originalFile.indexOf('.')),
                 originalPsiFile,
                 new ImportCreator().getSourceLibraries(originalPsiFile.getProject()).toArray(new SourceLibrary[0]),
                 ServiceManager.getService(originalPsiFile.getProject(),
-                        DojoSettings.class).getExceptionsMap())
-                .findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(originalPsiFile.getProject(), true), false);
+                        DojoSettings.class).getExceptionsMap());
+
+
+        // here is where we need to go through, find all of the modules that reference this module, and produce a list of MatchResults
+        matches = renamer.findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(originalPsiFile.getProject(), true), false);
     }
 
     /**
-     * algorithm:
-     * get possible imports
+     * in this method, we've already identified which modules we need to update references in.
+     * So, we are just going to go through each one and re-import the module using its new path and name
      *
      * @param psiElement
      */
     @Override
     public void elementMoved(@NotNull PsiElement psiElement)
     {
-        int i=0;
+        PsiFile file = (PsiFile) psiElement;
+
+        for(ModuleRenamer.MatchResult result : matches)
+        {
+            renamer.reimportModule(result.getModule(), result, file);
+        }
     }
 
     @Override

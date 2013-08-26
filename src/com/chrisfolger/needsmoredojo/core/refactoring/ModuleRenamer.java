@@ -40,22 +40,27 @@ public class ModuleRenamer
         private int index;
         private String path;
         private char quote;
+        private PsiFile module;
 
-        private MatchResult(int index, String path, char quote) {
+        private MatchResult(PsiFile module, int index, String path, char quote) {
             this.index = index;
             this.path = path;
             this.quote = quote;
         }
 
-        private char getQuote() {
+        public PsiFile getModule() {
+            return module;
+        }
+
+        public char getQuote() {
             return quote;
         }
 
-        private int getIndex() {
+        public int getIndex() {
             return index;
         }
 
-        private String getPath() {
+        public String getPath() {
             return path;
         }
     }
@@ -111,7 +116,7 @@ public class ModuleRenamer
             }
         }
 
-        return new MatchResult(matchIndex, matchedString, quote);
+        return new MatchResult(targetFile, matchIndex, matchedString, quote);
     }
 
     protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement)
@@ -128,6 +133,11 @@ public class ModuleRenamer
                 refactoring.doRefactoring(refactoring.findUsages());
             }
         });
+    }
+
+    public void reimportModule(PsiFile file, MatchResult matchResult, PsiFile newModule)
+    {
+
     }
 
     /**
