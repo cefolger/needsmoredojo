@@ -135,9 +135,13 @@ public class ModuleRenamer
         });
     }
 
-    public void reimportModule(PsiFile file, MatchResult matchResult, PsiFile newModule)
+    public void reimportModule(MatchResult matchResult, PsiFile newModule)
     {
+        String newModuleName = newModule.getName().substring(0, newModule.getName().indexOf('.'));
+        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, matchResult.getModule(), false, true);
 
+        // check if the original used a relative syntax or absolute syntax, and prefer that?
+        int i=0;
     }
 
     /**

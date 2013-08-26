@@ -51,7 +51,7 @@ public class MoveRefactoringListener implements RefactoringElementListener
 
         for(ModuleRenamer.MatchResult result : matches)
         {
-            renamer.reimportModule(result.getModule(), result, file);
+            renamer.reimportModule(result, file);
         }
     }
 
