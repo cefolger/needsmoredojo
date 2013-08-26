@@ -35,7 +35,7 @@ public class ModuleRenamer
     private String moduleName;
     private Map<String, String> moduleNamingExceptionMap;
 
-    private class MatchResult
+    public class MatchResult
     {
         private int index;
         private String path;
@@ -136,8 +136,10 @@ public class ModuleRenamer
      * @param projectSourceDirectories
      * @return
      */
-    public @Nullable PsiFile[] findFilesThatReferenceModule(@NotNull VirtualFile[] projectSourceDirectories)
+    public @Nullable List<MatchResult> findFilesThatReferenceModule(@NotNull VirtualFile[] projectSourceDirectories, boolean update)
     {
+        List<MatchResult> matches = new ArrayList<MatchResult>();
+
         List<VirtualFile> directories = new ArrayList<VirtualFile>();
         for(VirtualFile file : projectSourceDirectories)
         {
@@ -168,11 +170,16 @@ public class ModuleRenamer
 
                 if(match != null)
                 {
-                    updateModuleReference(psiFile, match, defineStatement);
+                    matches.add(match);
+
+                    if(update)
+                    {
+                        updateModuleReference(psiFile, match, defineStatement);
+                    }
                 }
             }
         }
 
-        return null;
+        return matches;
     }
 }

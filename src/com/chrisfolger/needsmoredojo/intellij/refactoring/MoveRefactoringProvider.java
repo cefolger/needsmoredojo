@@ -30,6 +30,6 @@ public class MoveRefactoringProvider implements RefactoringElementListenerProvid
             return null; // not a dojo module
         }
 
-        return new MoveRefactoringListener();
+        return new MoveRefactoringListener(file, file.getName());
     }
 }

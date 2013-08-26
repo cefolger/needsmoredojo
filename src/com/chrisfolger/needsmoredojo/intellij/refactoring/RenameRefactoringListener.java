@@ -45,7 +45,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
                         new ImportCreator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]),
                         ServiceManager.getService(psiElement.getProject(),
                                 DojoSettings.class).getExceptionsMap())
-                        .findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true));
+                        .findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true), true);
             }
         },
         "Rename Dojo Module",
