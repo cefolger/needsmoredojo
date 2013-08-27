@@ -35,6 +35,7 @@ public class UnusedImportsRemover
 
             for(PsiElement element : elementsToDelete)
             {
+                if(element == null) continue;
                 result += element.getText();
             }
 
@@ -96,7 +97,6 @@ public class UnusedImportsRemover
         }
 
         removeTrailingCommas(elementsToDelete, literal, function);
-
 
         RemovalResult result = new RemovalResult(elementsToDelete, results.toString());
         return result;
