@@ -175,6 +175,28 @@ public class ModuleRenamer
         updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getQuote()));
     }
 
+    private String chooseImportToReplaceAnImport(String original, String[] choices)
+    {
+        String chosenImport = choices[0];
+
+        // if more than one syntax is possible, use the one that matches whatever the old import matched.
+        if(choices.length > 1)
+        {
+            if(original.contains("./") && !choices[0].contains("./"))
+            {
+                // use relative path option
+                chosenImport = choices[1];
+            }
+            else if (!(original.contains("./")) && choices[0].contains("./"))
+            {
+                // use absolute path option
+                chosenImport = choices[1];
+            }
+        }
+
+        return chosenImport;
+    }
+
     public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule)
     {
         DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(currentModule);
@@ -184,23 +206,7 @@ public class ModuleRenamer
 
         // check if the original used a relative syntax or absolute syntax, and prefer that?
         String[] possibleImports = results.keySet().toArray(new String[0]);
-
-        String chosenImport = possibleImports[0];
-
-        // if more than one syntax is possible, use the one that matches whatever the old import matched.
-        if(possibleImports.length > 1)
-        {
-            if(path.contains("./") && !possibleImports[0].contains("./"))
-            {
-                // use relative path option
-                chosenImport = possibleImports[1];
-            }
-            else if (!(path.contains("./")) && possibleImports[0].contains("./"))
-            {
-                // use absolute path option
-                chosenImport = possibleImports[1];
-            }
-        }
+        String chosenImport = chooseImportToReplaceAnImport(path, possibleImports);
 
         PsiElement defineLiteral = defineStatement.getArguments().getExpressions()[index];
         PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), quote + chosenImport + quote);
@@ -248,7 +254,6 @@ public class ModuleRenamer
             PsiFile[] files = new ImportCreator().getPossibleDojoImportFiles(module.getProject(), moduleName, true);
 
             // get the files that are being imported
-            // TODO choose relative or absolute!
             // TODO performance optimization
             LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
             if(results.containsKey(importModule))
