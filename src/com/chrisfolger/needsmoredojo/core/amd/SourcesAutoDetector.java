@@ -24,7 +24,7 @@ public class SourcesAutoDetector
         return path.startsWith("dojo") || path.startsWith("dijit") || path.startsWith("dgrid") || path.startsWith("dojox");
     }
 
-    private boolean isInDojoSources(String directory)
+    public static boolean isInDojoSources(String directory)
     {
         return directory.contains("/xstyle/") || directory.contains("/nls/") || directory.contains("/dojo/") || directory.contains("/dijit/") || directory.contains("/dojox/") || directory.contains("/dgrid/") || directory.contains("/util/buildscripts/");
     }

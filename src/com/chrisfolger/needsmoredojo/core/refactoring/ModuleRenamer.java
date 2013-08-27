@@ -292,6 +292,14 @@ public class ModuleRenamer
         {
             for(VirtualFile file : results)
             {
+                // TODO ignore dojo files for this release
+                // TODO rename templates successfully???
+                // TODO intelligently decide whether to use relative or absolute paths
+                if(SourcesAutoDetector.isInDojoSources(file.getCanonicalPath()))
+                {
+                    continue;
+                }
+
                 boolean isInProjectDirectory = VfsUtil.isAncestor(directory, file, true);
                 if(!isInProjectDirectory) continue;
 
