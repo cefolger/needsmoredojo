@@ -197,6 +197,15 @@ public class ModuleRenamer
         return chosenImport;
     }
 
+    /**
+     * takes an existing AMD import and updates it. Used when a module changes locations
+     *
+     * @param index the index of the import
+     * @param currentModule the module that is being updated
+     * @param quote the quote symbol to use for imports
+     * @param path the new module's path
+     * @param newModule the new module
+     */
     public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule)
     {
         DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(currentModule);
@@ -228,6 +237,12 @@ public class ModuleRenamer
         reimportModule(matchResult.getIndex(), matchResult.getModule(), matchResult.getQuote(), matchResult.getPath(), newModule);
     }
 
+    /**
+     * given a module, returns a list of modules that it references in the define block
+     *
+     * @param module
+     * @return
+     */
     public List<MatchResult> findFilesThatModuleReferences(PsiFile module)
     {
         DeclareFinder finder = new DeclareFinder();
