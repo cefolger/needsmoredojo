@@ -3,7 +3,8 @@ Needs More Dojo
 
 #### About
 
-This is an IntelliJ/WebStorm plugin to make working with the [dojo toolkit](http://dojotoolkit.org//) easier.
+This is an IntelliJ/WebStorm plugin to make working with the [dojo toolkit](http://dojotoolkit.org//) easier. It is primarily
+for use with dojo versions 1.8.0 and later due to the AMD system.
 
 #### Installation
 
@@ -58,7 +59,7 @@ You can use a zip file or jar as your dojo sources. To do this:
 - Add the zip/jar as a content root. In IntelliJ, that's under File/Project Structure/Modules. In WebStorm, it's
     under File/Settings/Directories
 - Open the Needs More Dojo settings by going to File/Settings/Needs More Dojo
-- Specify the directory within the archive containing the dojo sources. If you are using the WebJars repository for example,
+- Specify the directory within the archive containing the dojo sources. If you are using the [WebJars](http://www.webjars.org/) repository for example,
     that location looks like this:
     ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/zipfilesources.png)
 - You can also use the auto-detect feature.
