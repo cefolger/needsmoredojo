@@ -52,17 +52,17 @@ Then set your dojo sources folder to "deps"
 
 > **Note: You can now use the "Not included or uses the same root as project sources" option. When checked, the plugin will
 assume that the dojo sources are either a) not present or b) in the same location as your project sources. If you don't
-reference the dojo sources, the add import feature will not work for dojo modules. **
+reference the dojo sources, the add import feature will not work for dojo modules.**
 
 You can use a zip file or jar as your dojo sources. To do this:
-    - Add the zip/jar as a content root. In IntelliJ, that's under File/Project Structure/Modules. In WebStorm, it's
+- Add the zip/jar as a content root. In IntelliJ, that's under File/Project Structure/Modules. In WebStorm, it's
     under File/Settings/Directories
-    - Open the Needs More Dojo settings by going to File/Settings/Needs More Dojo
-    - Specify the directory within the archive containing the dojo sources. If you are using the WebJars repository for example,
+- Open the Needs More Dojo settings by going to File/Settings/Needs More Dojo
+- Specify the directory within the archive containing the dojo sources. If you are using the WebJars repository for example,
     that location looks like this:
     ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/zipfilesources.png)
-    - You can also use the auto-detect feature.
-    - Hit "Apply" or "Ok" to save the changes.
+- You can also use the auto-detect feature.
+- Hit "Apply" or "Ok" to save the changes.
 
 **Project Sources**
 - Your project source directory should be set one level above all of your project packages. For example, if your sources look like this:
@@ -122,6 +122,8 @@ and both cases will result in "Button" being the initial value:
     });
 </pre>
 
+> **Note: Needs More Dojo will import "dom-attr" "dom-class" etc. even if your cursor is over domAttr or domClass references**
+
 ##### Move AMD Import
 
 Use this feature by placing the cursor near a module's path in your define statement. Use Ctrl+Alt+Page Up/Down to
@@ -131,9 +133,11 @@ parameter (such as domReady!)
 ##### Remove AMD Import
 
 You can remove a single import from your list by using Ctrl+Shift+O, 4. Place the caret near or inside the define literal
-or the corresponding function parameter, then press Ctrl+Shift+O, 4. Both locations will be removed, if possible.
+or the corresponding function parameter, like this:
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/removeimport.png)
+
+Then press Ctrl+Shift+O, 4. Both locations will be removed, if possible.
 
 ##### Remove Unused Imports
 
