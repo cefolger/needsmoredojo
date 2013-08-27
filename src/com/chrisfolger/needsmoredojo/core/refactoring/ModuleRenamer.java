@@ -126,6 +126,11 @@ public class ModuleRenamer
             }
         }
 
+        if(matchIndex == -1)
+        {
+            return null;
+        }
+
         return new MatchResult(targetFile, matchIndex, matchedString, quote);
     }
 
@@ -145,10 +150,14 @@ public class ModuleRenamer
                 PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
                 defineLiteral.replace(replacementExpression);
 
-                RenameRefactoring refactoring = RefactoringFactory.getInstance(targetFile.getProject())
-                        .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap), false, false);
+                // sometimes the lengths of the imports don't match up due to plugins etc.
+                if(!(match.getIndex() >= statement.getFunction().getParameters().length))
+                {
+                    RenameRefactoring refactoring = RefactoringFactory.getInstance(targetFile.getProject())
+                            .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap), false, false);
 
-                refactoring.doRefactoring(refactoring.findUsages());
+                    refactoring.doRefactoring(refactoring.findUsages());
+                }
             }
         });
     }
@@ -231,10 +240,6 @@ public class ModuleRenamer
 
             // figure out which module it is
             String importModule = expression.getText().replaceAll("'", "").replaceAll("\"", "");
-            if(SourcesAutoDetector.isDojoModule(importModule))
-            {
-                continue;
-            }
 
             // get the module name
             String moduleName = AMDUtil.getModuleName(importModule);
@@ -243,6 +248,8 @@ public class ModuleRenamer
             PsiFile[] files = new ImportCreator().getPossibleDojoImportFiles(module.getProject(), moduleName, true);
 
             // get the files that are being imported
+            // TODO choose relative or absolute!
+            // TODO performance optimization
             LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
             if(results.containsKey(importModule))
             {
