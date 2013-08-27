@@ -7,14 +7,16 @@
   <description><![CDATA[
         Tools for working with the dojo toolkit
             <ul>
-                <li>detect and flag mismatched AMD imports as errors</li>
-                <li>flag unused AMD imports with strikethrough</li>
-                <li>organize AMD imports by sorting alphabetically (aware of plugins and other things tacked on the end)</li>
-                <li>detect inconsistent naming in AMD imports</li>
+                <li>Detect and flag mismatched AMD imports as errors</li>
+                <li>Flag unused AMD imports with strikethrough</li>
+                <li>Organize AMD imports by sorting alphabetically (aware of plugins and other things tacked on the end)</li>
+                <li>Detect inconsistent naming in AMD imports</li>
                 <li>Add new AMD imports option for quick and safe importing using absolute or relative path syntax</li>
+                <li>Safely remove AMD imports</li>
+                <li>Allows Refactor -> Rename and Refactor -> Move File operations to correctly update your AMD imports </li>
                 <li>Ctrl+Click is supported for dojo/i18n resource strings</li>
                 <li>Jump to attach points inside modules that mixin _TemplatedWidget with Ctrl+Shift+O, A</li>
-                <li>convert util style modules to class style modules and vice-versa</li>
+                <li>Convert util style modules to class style modules and vice-versa</li>
                 <li>Reorder imports with Ctrl+Alt+Page Up/Down keys
                 <li>Delete single imports with Ctrl+Shift+O, 4</li>
             </ul>

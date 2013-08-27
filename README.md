@@ -10,16 +10,24 @@ This is an IntelliJ/WebStorm plugin to make working with the [dojo toolkit](http
 Download from the JetBrains plugin repository, or alternatively: clone the repo and select 'install from disk' in the plugin menu. Use dist/needsmoredojo[version].jar
 
 #### Usage
-1. [Configuration](#initial-configuration)
-2. [Organize AMD Imports](#organize-amd-imports)
-3. [Add AMD Import](#add-amd-import)
-4. [Move AMD Import](#move-amd-import)
-5. [Remove Unused Imports](#remove-unused-imports)
-6. [Navigate to Attach Point](#navigate-...-attach-point)
-7. [Convert between class style and util style module](#convert-between-class-style-and-util-style-module)
-8. [Mismatched imports inspection](#mismatched-imports-inspection)
-9. [Navigate to Declaration for i18n resource keys](#navigate-to-declaration-for-i18n-resource-keys)
+1. [Issues and Feature Requests] (#issues-and-feature-requests)
+2. [Configuration](#initial-configuration)
+3. [Organize AMD Imports](#organize-amd-imports)
+4. [Add AMD Import](#add-amd-import)
+5. [Move AMD Import](#move-amd-import)
+6. [Remove AMD Import](#remove-amd-import)
+7. [Remove Unused Imports](#remove-unused-imports)
+8. [Refactor: Rename](#refactor:-rename)
+9. [Refactor: Move File](#refactor:-movefile)
+10. [Navigate to Attach Point](#navigate-to-attach-point)
+11. [Convert between class style and util style module](#convert-between-class-style-and-util-style-module)
+12. [Mismatched imports inspection](#mismatched-imports-inspection)
+13. [Navigate to Declaration for i18n resource keys](#navigate-to-declaration-for-i18n-resource-keys)
 
+##### Issues and Feature Requests
+
+Most of the plugin functionality is based on my own needs. If you experience bugs or would like to see something added,
+don't hesitate to open up an issue right here on github. You can also send me an email with any questions or comments.
 
 ##### Initial Configuration
 
@@ -41,6 +49,20 @@ your project sources are on the same level as the dojo sources.
         - util
 
 Then set your dojo sources folder to "deps"
+
+> **Note: You can now use the "Not included or uses the same root as project sources" option. When checked, the plugin will
+assume that the dojo sources are either a) not present or b) in the same location as your project sources. If you don't
+reference the dojo sources, the add import feature will not work for dojo modules. **
+
+> **Note: You can use a zip file or jar as your dojo sources. To do this:
+    - Add the zip/jar as a content root. In IntelliJ, that's under File/Project Structure/Modules. In WebStorm, it's
+    under File/Settings/Directories
+    - Open the Needs More Dojo settings by going to File/Settings/Needs More Dojo
+    - Specify the directory within the archive containing the dojo sources. If you are using the WebJars repository for example,
+    that location looks like this:
+    <<< screenshot >>>
+    - You can also use the auto-detect feature.
+    - Hit "Apply" or "Ok" to save the changes. **
 
 **Project Sources**
 - Your project source directory should be set one level above all of your project packages. For example, if your sources look like this:
@@ -106,6 +128,13 @@ Use this feature by placing the cursor near a module's path in your define state
 move the import and its corresponding parameter. This will not affect plugins at the end that do not have a corresponding
 parameter (such as domReady!)
 
+##### Remove AMD Import
+
+You can remove a single import from your list by using Ctrl+Shift+O, 4. Place the caret near or inside the define literal
+or the corresponding function parameter, then press Ctrl+Shift+O, 4. Both locations will be removed, if possible.
+
+<<<removeimport.png screenshot here>>>
+
 ##### Remove Unused Imports
 
 This feature can be activated with the shortcut Ctrl+Shift+O, 3. It also runs in the background as an inspection. It will
@@ -115,6 +144,34 @@ Some AMD modules are not directly referenced. To prevent these from being flagge
 to add a new exception. After this, the import will never be flagged as unused.
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/unusedimportexception.png)
+
+##### Refactor: Rename
+
+In versions 0.5 and later, renaming a module is now supported. When you rename a module, Needs More Dojo will scan
+for AMD references to it in other project modules and update them. It supports both relative path and absolute package
+syntax.
+
+To perform a rename:
+- Select Refactor -> Rename by right clicking the module in question
+- Uncheck all of the options. This is important because IntelliJ will try to update your AMD references incorrectly
+<<< refactorrename1 screenshot >>>
+- Click "Refactor" to complete the rename.
+
+> **Note: At this time, refactor previews are not available**
+> **Note: Please make sure you have setup your project sources location so that the AMD update works correctly**
+
+##### Refactor: Move File
+
+In versions 0.5 and later, you can now move your dojo AMD modules.
+
+To perform a move:
+- Drag the file in the project tree to its new location
+- Uncheck all of the options. This is important becuase IntelliJ will try to change the paths to dojo modules among other
+things
+<<<< refactormove1 screenshot >>>
+- Click 'OK'
+
+> **Note: Please make sure you have setup your project sources location so that the AMD update works correctly**
 
 ##### Navigate to Attach Point
 
