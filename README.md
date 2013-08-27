@@ -60,7 +60,7 @@ You can use a zip file or jar as your dojo sources. To do this:
     - Open the Needs More Dojo settings by going to File/Settings/Needs More Dojo
     - Specify the directory within the archive containing the dojo sources. If you are using the WebJars repository for example,
     that location looks like this:
-    <<< screenshot >>>
+    ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/zipfilesources.png)
     - You can also use the auto-detect feature.
     - Hit "Apply" or "Ok" to save the changes.
 
@@ -133,7 +133,7 @@ parameter (such as domReady!)
 You can remove a single import from your list by using Ctrl+Shift+O, 4. Place the caret near or inside the define literal
 or the corresponding function parameter, then press Ctrl+Shift+O, 4. Both locations will be removed, if possible.
 
-<<<removeimport.png screenshot here>>>
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/removeimport.png)
 
 ##### Remove Unused Imports
 
@@ -154,7 +154,7 @@ syntax.
 To perform a rename:
 - Select Refactor -> Rename by right clicking the module in question
 - Uncheck all of the options. This is important because IntelliJ will try to update your AMD references incorrectly
-<<< refactorrename1 screenshot >>>
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/refactorrename1.png)
 - Click "Refactor" to complete the rename.
 
 > **Note: At this time, refactor previews are not available**
@@ -169,7 +169,7 @@ To perform a move:
 - Drag the file in the project tree to its new location
 - Uncheck all of the options. This is important becuase IntelliJ will try to change the paths to dojo modules among other
 things
-<<<< refactormove1 screenshot >>>
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/refactormove1.png)
 - Click 'OK'
 
 > **Note: Please make sure you have setup your project sources location so that the AMD update works correctly**
