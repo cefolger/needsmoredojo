@@ -165,6 +165,8 @@ To perform a rename:
 
 > **Note: Please make sure you have setup your project sources location so that the AMD update works correctly**
 
+> **Note: At this time, refactoring of the dojo library sources is not supported.**
+
 ##### Move File Refactoring
 
 In versions 0.5 and later, you can now move your dojo AMD modules.
@@ -177,6 +179,8 @@ things
 - Click 'OK'
 
 > **Note: Please make sure you have setup your project sources location so that the AMD update works correctly**
+
+> **Note: At this time, refactoring of the dojo library sources is not supported.**
 
 ##### Navigate to Attach Point
 
