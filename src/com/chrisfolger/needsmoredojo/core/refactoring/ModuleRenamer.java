@@ -94,7 +94,7 @@ public class ModuleRenamer
         }
 
         // get a list of possible modules and their syntax
-        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(possibleFiles, libraries, moduleName, targetFile, false, true);
+        SortedMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(possibleFiles, libraries, moduleName, targetFile, false, true);
 
         // go through the defines and determine if there is a match
         int matchIndex = -1;
@@ -211,7 +211,7 @@ public class ModuleRenamer
         DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(currentModule);
 
         String newModuleName = newModule.getName().substring(0, newModule.getName().indexOf('.'));
-        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, currentModule, false, true);
+        SortedMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, currentModule, false, true);
 
         // check if the original used a relative syntax or absolute syntax, and prefer that?
         String[] possibleImports = results.keySet().toArray(new String[0]);
@@ -270,7 +270,7 @@ public class ModuleRenamer
 
             // get the files that are being imported
             // TODO performance optimization
-            LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
+            SortedMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
             if(results.containsKey(importModule))
             {
                 MatchResult match = new MatchResult(results.get(importModule), i, importModule, quote);

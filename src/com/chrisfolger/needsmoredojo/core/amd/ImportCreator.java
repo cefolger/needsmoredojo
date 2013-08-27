@@ -77,9 +77,15 @@ public class ImportCreator
         return getChoicesFromFiles(filesArray, libraries, module, originalModule, false);
     }
 
-    public @NotNull LinkedHashMap<String, PsiFile> getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths, boolean getMap)
+    public @NotNull SortedMap<String, PsiFile> getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths, boolean getMap)
     {
-        LinkedHashMap<String, PsiFile> moduleFileMap = new LinkedHashMap<String, PsiFile>();
+        SortedMap<String, PsiFile> moduleFileMap = new TreeMap<String, PsiFile>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return getScore(o2) - getScore(o1);
+            }
+        });
+
         List<String> choices = new ArrayList<String>();
 
         for(int i=0;i<filesArray.length;i++)
