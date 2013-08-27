@@ -40,7 +40,6 @@ public class DeleteSingleImportAction extends JavaScriptAction
                 @Override
                 public void run() {
                     new UnusedImportsRemover().removeSingleImport(amdImport);
-                    Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Import", "Import Removed", NotificationType.INFORMATION));
                 }
             });
             }

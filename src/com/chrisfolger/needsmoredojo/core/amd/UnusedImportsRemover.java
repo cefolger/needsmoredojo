@@ -252,9 +252,12 @@ public class UnusedImportsRemover
     {
         deleteList.add(element);
 
-        if(element.getNextSibling() != null && element.getNextSibling().getText().equals(","))
+        PsiElement nextSibling = element.getNextSibling();
+
+        // only remove commas at the end
+        if(nextSibling != null && nextSibling.getText().equals(","))
         {
-            deleteList.add(element.getNextSibling().getNextSibling());
+            deleteList.add(element.getNextSibling());
         }
     }
 
