@@ -17,8 +17,8 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 5. [Move AMD Import](#move-amd-import)
 6. [Remove AMD Import](#remove-amd-import)
 7. [Remove Unused Imports](#remove-unused-imports)
-8. [Refactor: Rename](#refactor:-rename)
-9. [Refactor: Move File](#refactor:-movefile)
+8. [Rename Refactoring](#rename-refactoring)
+9. [Move File Refactoring](#move-file-refactoring)
 10. [Navigate to Attach Point](#navigate-to-attach-point)
 11. [Convert between class style and util style module](#convert-between-class-style-and-util-style-module)
 12. [Mismatched imports inspection](#mismatched-imports-inspection)
@@ -54,7 +54,7 @@ Then set your dojo sources folder to "deps"
 assume that the dojo sources are either a) not present or b) in the same location as your project sources. If you don't
 reference the dojo sources, the add import feature will not work for dojo modules. **
 
-> **Note: You can use a zip file or jar as your dojo sources. To do this:
+You can use a zip file or jar as your dojo sources. To do this:
     - Add the zip/jar as a content root. In IntelliJ, that's under File/Project Structure/Modules. In WebStorm, it's
     under File/Settings/Directories
     - Open the Needs More Dojo settings by going to File/Settings/Needs More Dojo
@@ -62,7 +62,7 @@ reference the dojo sources, the add import feature will not work for dojo module
     that location looks like this:
     <<< screenshot >>>
     - You can also use the auto-detect feature.
-    - Hit "Apply" or "Ok" to save the changes. **
+    - Hit "Apply" or "Ok" to save the changes.
 
 **Project Sources**
 - Your project source directory should be set one level above all of your project packages. For example, if your sources look like this:
@@ -145,7 +145,7 @@ to add a new exception. After this, the import will never be flagged as unused.
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/unusedimportexception.png)
 
-##### Refactor: Rename
+##### Rename Refactoring
 
 In versions 0.5 and later, renaming a module is now supported. When you rename a module, Needs More Dojo will scan
 for AMD references to it in other project modules and update them. It supports both relative path and absolute package
@@ -158,9 +158,10 @@ To perform a rename:
 - Click "Refactor" to complete the rename.
 
 > **Note: At this time, refactor previews are not available**
+
 > **Note: Please make sure you have setup your project sources location so that the AMD update works correctly**
 
-##### Refactor: Move File
+##### Move File Refactoring
 
 In versions 0.5 and later, you can now move your dojo AMD modules.
 
