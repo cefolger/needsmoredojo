@@ -82,7 +82,21 @@ public class ImportCreator
         SortedMap<String, PsiFile> moduleFileMap = new TreeMap<String, PsiFile>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return getScore(o2) - getScore(o1);
+                // ok ... so I want to use the comparator for sorting BUT not for equality
+                // TreeMap uses the comparator for both unfortunately if the return value is 0
+                // so ... always return non-zero unless the strings are equal
+                int score = getScore(o2) - getScore(o1);
+
+                if(score == 0 && o1.equals(o2))
+                {
+                    return 0;
+                }
+                else if (score == 0)
+                {
+                    return 1;
+                }
+
+                return score;
             }
         });
 

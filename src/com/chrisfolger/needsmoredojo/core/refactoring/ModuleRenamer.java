@@ -110,7 +110,7 @@ public class ModuleRenamer
                 quote = '"';
             }
 
-            String argumentText = argument.getText().replaceAll("'", "").replace("\"", "");
+            String argumentText = argument.getText().replaceAll("'", "").replaceAll("\"", "");
             if(argumentText.contains(moduleName))
             {
                 StringBuilder b = new StringBuilder(argumentText);
