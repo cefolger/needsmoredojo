@@ -127,14 +127,7 @@ public class ModuleRenamer
 
             // in case it's a plugin
             // TODO unit test please !
-            String modulePath = argumentText;
-            if(modulePath.contains("!"))
-            {
-                modulePath = modulePath.substring(0, modulePath.lastIndexOf('!'));
-            }
-            modulePath = modulePath.substring(0, modulePath.lastIndexOf('/') + 1);
-
-            // TODO also move this logic (above) into its own class
+            String modulePath = AMDUtil.getModulePath(argumentText);
             String finalArgumentText = modulePath + AMDUtil.getModuleName(argumentText);
             String pluginPostFix = AMDUtil.getAMDPluginResourceIfPossible(argumentText, true);
 
@@ -285,7 +278,8 @@ public class ModuleRenamer
 
             // get the module name
             String moduleName = AMDUtil.getModuleName(importModule);
-            // TODO take plugins into account
+            String pluginResourceId = AMDUtil.getAMDPluginResourceIfPossible(importModule, true);
+            String modulePath = AMDUtil.getModulePath(importModule);
 
             // get the list of possible strings/PsiFiles that would match it
             PsiFile[] files = new ImportCreator().getPossibleDojoImportFiles(module.getProject(), moduleName, true);
@@ -293,9 +287,9 @@ public class ModuleRenamer
             // get the files that are being imported
             // TODO performance optimization
             SortedMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
-            if(results.containsKey(importModule))
+            if(results.containsKey(modulePath + moduleName))
             {
-                MatchResult match = new MatchResult(results.get(importModule), i, importModule, quote, "");
+                MatchResult match = new MatchResult(results.get(modulePath + moduleName), i, modulePath + moduleName, quote, pluginResourceId);
                 matches.add(match);
             }
         }

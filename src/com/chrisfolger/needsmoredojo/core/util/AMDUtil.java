@@ -255,6 +255,18 @@ public class AMDUtil
         }
     }
 
+    public static String getModulePath(String fullModulePath)
+    {
+        String modulePath = fullModulePath;
+        if(modulePath.contains("!"))
+        {
+            modulePath = modulePath.substring(0, modulePath.lastIndexOf('!'));
+        }
+        modulePath = modulePath.substring(0, modulePath.lastIndexOf('/') + 1);
+
+        return modulePath;
+    }
+
     public static String getModuleName(String modulePath)
     {
         if(modulePath.contains("!"))
