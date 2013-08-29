@@ -71,55 +71,9 @@
                 <li>Add import popup won't add an import if it's already been defined</li>
             </ul>
 
-            <b>0.3.1 (Maintenance release)</b>
-            <ul>
-                <li>Fix for case when trailing comma still remained in define statement after import removal (Issue #57)</li>
-                <li>Support older dojoAttachPoint syntax (Issue #56)</li>
-                <li>Support attach point jumping to inline template strings (Issue #54)</li>
-                <li>Check index on defines when resolving i18n keys (Issue #58)</li>
-                <li>Fix for various npes in menu items (Issues #59, #60)</li>
-                <li>Fix npe when project doesn't have the same root as the dojo sources</li>
-            </ul>
+            <br><br>
 
-            <b>0.3</b>
-            <ul>
-                <li>Can now resolve i18n keys that are part of a dojo/i18n!... import. Ctrl + Space also works for this</li>
-                <li>For packages on the same level as the dojo sources, add new import will resolve modules inside them </li>
-                <li>Actions are disabled when not in JavaScript files </li>
-                <li>Now take legacy define(moduleId, ...) syntax into account </li>
-                <li>Can now jump to attach points inside modules that mixin _TemplatedWidget</li>
-                <li>Fix dojo/test modules appearing first instead of dojo modules (Issue #38)</li>
-                <li>Fix class->util/util->class conversion not preserving the declared class name (Issue #33)</li>
-                <li>Account for declare statement where there is only one mixin not specified in an array (Issue #48)</li>
-            </ul>
-
-            <b>0.21</b> (Maintenance release)
-            <ul>
-                <li>Now building with jdk 1.6 instead of 1.7</li>
-                <li>Tweaked the priority settings for the add import dialog popup</li>
-                <li>Fix race condition during organize imports (Issue #26)</li>
-                <li>Fix inconsistent flagging of i18n and text imports (Issue #22)</li>
-                <li>Fix issue when entering a module with underscores (Issue #24)</li>
-                <li>Fix util -> class when declare has different arguments (Issue #28)</li>
-                <li>Added naming exception for dojo/_base/fx</li>
-                <li>Fix issue converting quoted properties with class -> util and reverse refactoring (Issue #17)</li>
-                <li>Fix issue with inspection group names (Issue #31)</li>
-            </ul>
-
-            <b>0.2</b>
-            <ul>
-                <li>Auto detect dojo modules when using the add new import dialog</li>
-                <li>Add new AMD import option added </li>
-                <li>Add util -> class module refactoring</li>
-                <li>Add class -> util module refactoring</li>
-                <li>Split options up into different Code and Refactoring menus </li>
-                <li>Various bug fixes (see issue tracker for details </li>
-            </ul>
-
-            <b>0.1</b>
-            <ul>
-                <li>Initial Version</li>
-            </ul>
+            Full change-log is available on the github page.
       ]]>
   </change-notes>
 
