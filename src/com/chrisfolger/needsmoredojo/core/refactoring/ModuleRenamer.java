@@ -42,12 +42,18 @@ public class ModuleRenamer
         private String path;
         private char quote;
         private PsiFile module;
+        private String pluginResourceId;
 
-        private MatchResult(PsiFile module, int index, String path, char quote) {
+        private MatchResult(PsiFile module, int index, String path, char quote, String pluginResourceId) {
             this.index = index;
             this.path = path;
             this.quote = quote;
             this.module = module;
+            this.pluginResourceId = pluginResourceId;
+        }
+
+        public String getPluginResourceId() {
+            return pluginResourceId;
         }
 
         public PsiFile getModule() {
@@ -99,6 +105,7 @@ public class ModuleRenamer
         // go through the defines and determine if there is a match
         int matchIndex = -1;
         String matchedString = "";
+        String matchedPostfix = "";
         char quote = '\'';
 
         for(int i=0;i<statement.getArguments().getExpressions().length;i++)
@@ -118,10 +125,24 @@ public class ModuleRenamer
                 argumentText = b.toString();
             }
 
-            if(results.containsKey(argumentText))
+            // in case it's a plugin
+            // TODO unit test please !
+            String modulePath = argumentText;
+            if(modulePath.contains("!"))
+            {
+                modulePath = modulePath.substring(0, modulePath.lastIndexOf('!'));
+            }
+            modulePath = modulePath.substring(0, modulePath.lastIndexOf('/') + 1);
+
+            // TODO also move this logic (above) into its own class
+            String finalArgumentText = modulePath + AMDUtil.getModuleName(argumentText);
+            String pluginPostFix = AMDUtil.getAMDPluginResourceIfPossible(argumentText, true);
+
+            if(results.containsKey(finalArgumentText))
             {
                 matchIndex = i;
-                matchedString = argumentText;
+                matchedString = finalArgumentText;
+                matchedPostfix = pluginPostFix;
                 break;
             }
         }
@@ -131,7 +152,7 @@ public class ModuleRenamer
             return null;
         }
 
-        return new MatchResult(targetFile, matchIndex, matchedString, quote);
+        return new MatchResult(targetFile, matchIndex, matchedString, quote, matchedPostfix);
     }
 
     /**
@@ -172,7 +193,7 @@ public class ModuleRenamer
     protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement)
     {
         PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
-        updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getQuote()));
+        updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getPluginResourceId() + match.getQuote()));
     }
 
     private String chooseImportToReplaceAnImport(String original, String[] choices)
@@ -206,7 +227,7 @@ public class ModuleRenamer
      * @param path the new module's path
      * @param newModule the new module
      */
-    public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule)
+    public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule, String pluginPostfix)
     {
         DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(currentModule);
 
@@ -218,9 +239,9 @@ public class ModuleRenamer
         String chosenImport = chooseImportToReplaceAnImport(path, possibleImports);
 
         PsiElement defineLiteral = defineStatement.getArguments().getExpressions()[index];
-        PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), quote + chosenImport + quote);
+        PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), quote + chosenImport + pluginPostfix + quote);
 
-        MatchResult match = new MatchResult(currentModule, index, path, quote);
+        MatchResult match = new MatchResult(currentModule, index, path, quote, pluginPostfix);
         updateModuleReference(currentModule, match, defineStatement, newImport);
 
     }
@@ -234,7 +255,7 @@ public class ModuleRenamer
      */
     public void reimportModule(MatchResult matchResult, PsiFile newModule)
     {
-        reimportModule(matchResult.getIndex(), matchResult.getModule(), matchResult.getQuote(), matchResult.getPath(), newModule);
+        reimportModule(matchResult.getIndex(), matchResult.getModule(), matchResult.getQuote(), matchResult.getPath(), newModule, matchResult.getPluginResourceId());
     }
 
     /**
@@ -264,6 +285,7 @@ public class ModuleRenamer
 
             // get the module name
             String moduleName = AMDUtil.getModuleName(importModule);
+            // TODO take plugins into account
 
             // get the list of possible strings/PsiFiles that would match it
             PsiFile[] files = new ImportCreator().getPossibleDojoImportFiles(module.getProject(), moduleName, true);
@@ -273,7 +295,7 @@ public class ModuleRenamer
             SortedMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
             if(results.containsKey(importModule))
             {
-                MatchResult match = new MatchResult(results.get(importModule), i, importModule, quote);
+                MatchResult match = new MatchResult(results.get(importModule), i, importModule, quote, "");
                 matches.add(match);
             }
         }
