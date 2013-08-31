@@ -1,3 +1,4 @@
+
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.amd.MismatchedImportsDetector;
@@ -203,5 +204,13 @@ public class TestMismatchedImportsDetector
 
         assertFalse(detector.defineMatchesParameter("foo!bar", "bare", exceptions));
         assertFalse(detector.defineMatchesParameter("foo!bar", "ba", exceptions));
+    }
+
+    @Test
+    public void testExceptionsWithMixedCase()
+    {
+        exceptions.put("dojo/_base/lang", "dLang");
+
+        assertTrue(detector.defineMatchesParameter("dojo/_base/lang", "dLang", exceptions));
     }
 }

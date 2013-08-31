@@ -82,7 +82,7 @@ public class MismatchedImportsDetector
 
         if(exceptions.containsKey(defineComparison))
         {
-            return parameterComparison.equals(exceptions.get(defineComparison));
+            return parameterComparison.equals(exceptions.get(defineComparison).toLowerCase());
         }
 
         if(defineComparison.contains("/_base/fx"))
