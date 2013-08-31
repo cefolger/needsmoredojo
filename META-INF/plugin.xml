@@ -44,6 +44,7 @@
                 <li>Can now delete single imports</li>
                 <li>You are now able to use a jar or zip file for your dojo sources (Issue #91)</li>
                 <li>When adding an import, you can use domAttr, domStyle etc. instead of the hyphenated versions </li>
+                <li>Fix problem with naming exceptions not being honored (Issue #99) </li>
                 <li>Minor bug fixes (Issues #92, #93, #95)</li>
             </ul>
 
