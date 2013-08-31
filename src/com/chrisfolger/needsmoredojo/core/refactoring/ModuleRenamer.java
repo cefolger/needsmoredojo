@@ -167,8 +167,17 @@ public class ModuleRenamer
                 // sometimes the lengths of the imports don't match up due to plugins etc.
                 if(!(match.getIndex() >= statement.getFunction().getParameters().length))
                 {
+                    // for performance reasons we should only rename a parameter if the name has actually changed
+                    String parameterText = statement.getFunction().getParameters()[match.getIndex()].getText();
+                    String newParameterName = AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap);
+
+                    if(parameterText.equals(newParameterName))
+                    {
+                        return;
+                    }
+
                     RenameRefactoring refactoring = RefactoringFactory.getInstance(targetFile.getProject())
-                            .createRename(statement.getFunction().getParameters()[match.getIndex()], AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap), false, false);
+                            .createRename(statement.getFunction().getParameters()[match.getIndex()], newParameterName, false, false);
 
                     refactoring.doRefactoring(refactoring.findUsages());
                 }
