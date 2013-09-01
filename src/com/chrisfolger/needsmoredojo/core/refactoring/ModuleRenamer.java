@@ -156,13 +156,18 @@ public class ModuleRenamer
      * @param statement the module's parsed define statement
      * @param replacementExpression an expression that will replace the old import statement
      */
-    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement, final PsiElement replacementExpression)
+    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement, final PsiElement replacementExpression, final boolean updateReferences)
     {
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
             public void run() {
                 PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
                 defineLiteral.replace(replacementExpression);
+
+                if(!updateReferences)
+                {
+                    return;
+                }
 
                 // sometimes the lengths of the imports don't match up due to plugins etc.
                 if(!(match.getIndex() >= statement.getFunction().getParameters().length))
@@ -192,10 +197,10 @@ public class ModuleRenamer
      * @param match the match that holds the location of the import to update
      * @param statement the module's parsed define statement
      */
-    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement)
+    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement, boolean updateReferences)
     {
         PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
-        updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getPluginResourceId() + match.getQuote()));
+        updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getPluginResourceId() + match.getQuote()), updateReferences);
     }
 
     private String chooseImportToReplaceAnImport(String original, String[] choices)
@@ -229,7 +234,7 @@ public class ModuleRenamer
      * @param path the new module's path
      * @param newModule the new module
      */
-    public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule, String pluginPostfix)
+    public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule, String pluginPostfix, boolean updateReferences)
     {
         DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(currentModule);
 
@@ -244,7 +249,7 @@ public class ModuleRenamer
         PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), quote + chosenImport + pluginPostfix + quote);
 
         MatchResult match = new MatchResult(currentModule, index, path, quote, pluginPostfix);
-        updateModuleReference(currentModule, match, defineStatement, newImport);
+        updateModuleReference(currentModule, match, defineStatement, newImport, updateReferences);
 
     }
 
@@ -257,7 +262,7 @@ public class ModuleRenamer
      */
     public void reimportModule(MatchResult matchResult, PsiFile newModule)
     {
-        reimportModule(matchResult.getIndex(), matchResult.getModule(), matchResult.getQuote(), matchResult.getPath(), newModule, matchResult.getPluginResourceId());
+        reimportModule(matchResult.getIndex(), matchResult.getModule(), matchResult.getQuote(), matchResult.getPath(), newModule, matchResult.getPluginResourceId(), true);
     }
 
     /**
@@ -365,7 +370,7 @@ public class ModuleRenamer
 
                     if(update)
                     {
-                        updateModuleReference(psiFile, match, defineStatement);
+                        updateModuleReference(psiFile, match, defineStatement, true);
                     }
                 }
             }
