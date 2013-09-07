@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.*;
 import com.intellij.lang.javascript.psi.*;
@@ -132,7 +133,7 @@ public class ImportCreator
                 }
 
                 absolutePathOption = result;
-                String pluginPostFix = AMDUtil.getAMDPluginResourceIfPossible(module, true);
+                String pluginPostFix = NameResolver.getAMDPluginResourceIfPossible(module, true);
 
                 if(prioritizeRelativePaths && relativePathOption != null)
                 {
@@ -250,7 +251,7 @@ public class ImportCreator
 
     public PsiFile[] getPossibleDojoImportFiles(Project project, String module, boolean prioritizeRelativeImports)
     {
-        String actualModuleName = AMDUtil.getAMDPluginNameIfPossible(module);
+        String actualModuleName = NameResolver.getAMDPluginNameIfPossible(module);
 
         PsiFile[] files = null;
         PsiFile[] filesWithUnderscore = null;
@@ -262,7 +263,7 @@ public class ImportCreator
             // this will let us search for _TemplatedMixin and friends
             filesWithUnderscore = FilenameIndex.getFilesByName(project, "_" + actualModuleName + ".js", GlobalSearchScope.projectScope(project));
             // search for dom-attr and friends when you have typed domAttr
-            String hyphenatedModule = AMDUtil.getPossibleHyphenatedModule(module);
+            String hyphenatedModule = NameResolver.getPossibleHyphenatedModule(module);
             if(hyphenatedModule != null)
             {
                 filesWithHyphenatedVersion = FilenameIndex.getFilesByName(project, hyphenatedModule + ".js", GlobalSearchScope.projectScope(project));
@@ -318,7 +319,7 @@ public class ImportCreator
 
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
-        String parameter = AMDUtil.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
+        String parameter = NameResolver.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
 
         for(JSParameter element : parameters.getParameters())
         {

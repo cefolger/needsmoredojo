@@ -1,7 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.reference;
 
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
-import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -65,7 +65,7 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         // find one that matches
         // check to see if it's an i18n file
         // resolve the reference to the file
-        PsiElement correctDefine = AMDUtil.getDefineForVariable(qualifier.getContainingFile(), qualifier.getText());
+        PsiElement correctDefine = AMDPsiUtil.getDefineForVariable(qualifier.getContainingFile(), qualifier.getText());
 
         // didn't get a define, so there is no reference to an i18n item
         if(correctDefine == null)

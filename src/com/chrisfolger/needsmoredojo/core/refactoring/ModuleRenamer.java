@@ -4,7 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
-import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.JSExpression;
@@ -127,9 +127,9 @@ public class ModuleRenamer
 
             // in case it's a plugin
             // TODO unit test please !
-            String modulePath = AMDUtil.getModulePath(argumentText);
-            String finalArgumentText = modulePath + AMDUtil.getModuleName(argumentText);
-            String pluginPostFix = AMDUtil.getAMDPluginResourceIfPossible(argumentText, true);
+            String modulePath = NameResolver.getModulePath(argumentText);
+            String finalArgumentText = modulePath + NameResolver.getModuleName(argumentText);
+            String pluginPostFix = NameResolver.getAMDPluginResourceIfPossible(argumentText, true);
 
             if(results.containsKey(finalArgumentText))
             {
@@ -174,7 +174,7 @@ public class ModuleRenamer
                 {
                     // for performance reasons we should only rename a parameter if the name has actually changed
                     String parameterText = statement.getFunction().getParameters()[match.getIndex()].getText();
-                    String newParameterName = AMDUtil.defineToParameter(match.getPath(), moduleNamingExceptionMap);
+                    String newParameterName = NameResolver.defineToParameter(match.getPath(), moduleNamingExceptionMap);
 
                     if(parameterText.equals(newParameterName))
                     {
@@ -291,9 +291,9 @@ public class ModuleRenamer
             String importModule = expression.getText().replaceAll("'", "").replaceAll("\"", "");
 
             // get the module name
-            String moduleName = AMDUtil.getModuleName(importModule);
-            String pluginResourceId = AMDUtil.getAMDPluginResourceIfPossible(importModule, true);
-            String modulePath = AMDUtil.getModulePath(importModule);
+            String moduleName = NameResolver.getModuleName(importModule);
+            String pluginResourceId = NameResolver.getAMDPluginResourceIfPossible(importModule, true);
+            String modulePath = NameResolver.getModulePath(importModule);
 
             // get the list of possible strings/PsiFiles that would match it
             PsiFile[] files = new ImportCreator().getPossibleDojoImportFiles(module.getProject(), moduleName, true);

@@ -1,10 +1,9 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
-import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.psi.PsiElement;
 
-import javax.jnlp.ServiceManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +119,7 @@ public class MismatchedImportsDetector
         }
 
         // there is a hard-coded comparison against dojo/text since it is used to define templates
-        if(defineComparison.startsWith(AMDUtil.TEXTPLUGIN) || defineComparison.startsWith(AMDUtil.I18NPLUGIN))
+        if(defineComparison.startsWith(NameResolver.TEXTPLUGIN) || defineComparison.startsWith(NameResolver.I18NPLUGIN))
         {
             // grab everything after the !
             String fileName = defineComparison.substring(defineComparison.lastIndexOf('!') + 1);
@@ -135,8 +134,8 @@ public class MismatchedImportsDetector
                 fileName = fileName.substring(0, fileName.indexOf('.'));
             }
 
-            boolean isText = defineComparison.startsWith(AMDUtil.TEXTPLUGIN);
-            boolean isI18n = defineComparison.startsWith(AMDUtil.I18NPLUGIN);
+            boolean isText = defineComparison.startsWith(NameResolver.TEXTPLUGIN);
+            boolean isI18n = defineComparison.startsWith(NameResolver.I18NPLUGIN);
 
             if(isText && parameterComparison.contains(fileName + "template"))
             {

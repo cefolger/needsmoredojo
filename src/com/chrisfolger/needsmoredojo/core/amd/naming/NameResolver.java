@@ -1,51 +1,14 @@
-package com.chrisfolger.needsmoredojo.core.util;
+package com.chrisfolger.needsmoredojo.core.amd.naming;
 
-import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
-import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.JarFileSystem;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
-public class AMDUtil
+public class NameResolver
 {
     public static final String I18NPLUGIN = "dojo/i18n!";
     public static final String TEXTPLUGIN = "dojo/text!";
-
-    public static PsiElement getDefineForVariable(PsiFile file, String textToCompare)
-    {
-        List<PsiElement> defines = new ArrayList<PsiElement>();
-        List<PsiElement> parameters = new ArrayList<PsiElement>();
-        new DefineResolver().gatherDefineAndParameters(file, defines, parameters);
-
-        for(int i=0;i<parameters.size();i++)
-        {
-            if(i > defines.size() - 1)
-            {
-                return null; // amd import is being modified
-            }
-
-            if(parameters.get(i).getText().equals(textToCompare))
-            {
-                return defines.get(i);
-            }
-        }
-
-        return null;
-    }
 
     public static String defineToParameter(String define, Map<String, String> exceptions)
     {
@@ -149,18 +112,6 @@ public class AMDUtil
         }
     }
 
-    public static String getModulePath(String fullModulePath)
-    {
-        String modulePath = fullModulePath;
-        if(modulePath.contains("!"))
-        {
-            modulePath = modulePath.substring(0, modulePath.lastIndexOf('!'));
-        }
-        modulePath = modulePath.substring(0, modulePath.lastIndexOf('/') + 1);
-
-        return modulePath;
-    }
-
     public static String getModuleName(String modulePath)
     {
         if(modulePath.contains("!"))
@@ -212,5 +163,17 @@ public class AMDUtil
             // failing where this is being consumed.
             return null;
         }
+    }
+
+    public static String getModulePath(String fullModulePath)
+    {
+        String modulePath = fullModulePath;
+        if(modulePath.contains("!"))
+        {
+            modulePath = modulePath.substring(0, modulePath.lastIndexOf('!'));
+        }
+        modulePath = modulePath.substring(0, modulePath.lastIndexOf('/') + 1);
+
+        return modulePath;
     }
 }

@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.core.util;
 
 import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -68,7 +69,7 @@ public class TemplatedWidgetUtil {
                 else
                 {
                     // find the parameter and define that matches the template parameter
-                    PsiElement relevantDefine = AMDUtil.getDefineForVariable(file, template);
+                    PsiElement relevantDefine = AMDPsiUtil.getDefineForVariable(file, template);
 
                     String templatePath = relevantDefine.getText().substring(relevantDefine.getText().lastIndexOf('!') + 1);
                     // now open the file and find the reference in it
