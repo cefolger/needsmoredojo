@@ -77,28 +77,9 @@ public class ImportCreator
         return getChoicesFromFiles(filesArray, libraries, module, originalModule, false);
     }
 
-    public @NotNull SortedMap<String, PsiFile> getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths, boolean getMap)
+    public @NotNull LinkedHashMap<String, PsiFile> getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths, boolean getMap)
     {
-        SortedMap<String, PsiFile> moduleFileMap = new TreeMap<String, PsiFile>(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                // ok ... so I want to use the comparator for sorting BUT not for equality
-                // TreeMap uses the comparator for both unfortunately if the return value is 0
-                // so ... always return non-zero unless the strings are equal
-                int score = getScore(o2) - getScore(o1);
-
-                if(score == 0 && o1.equals(o2))
-                {
-                    return 0;
-                }
-                else if (score == 0)
-                {
-                    return 1;
-                }
-
-                return score;
-            }
-        });
+        Map<String, PsiFile> moduleFileMap = new HashMap<String, PsiFile>();
 
         List<String> choices = new ArrayList<String>();
 
@@ -180,8 +161,22 @@ public class ImportCreator
             }
         });
 
+        // sort the map based on score.
+        LinkedHashMap<String, PsiFile> finalMapResults = new LinkedHashMap<String, PsiFile>();
+        for(String choice : choices)
+        {
+            for(Map.Entry<String, PsiFile> entry : moduleFileMap.entrySet())
+            {
+                if(choice.equals(entry.getKey()))
+                {
+                    finalMapResults.put(entry.getKey(), entry.getValue());
+                    break;
+                }
+            }
+        }
+
         choices.add(module);
-        return moduleFileMap;
+        return finalMapResults;
     }
 
 
