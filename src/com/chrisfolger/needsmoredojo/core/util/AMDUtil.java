@@ -204,6 +204,11 @@ public class AMDUtil
 
         result = result.replaceAll("_", "");
 
+        if(result.contains("!"))
+        {
+            result = result.substring(0, result.indexOf('!'));
+        }
+
         return result;
     }
 

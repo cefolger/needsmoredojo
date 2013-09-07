@@ -77,4 +77,10 @@ public class TestAMDUtil
         assertEquals("d", AMDUtil.getModuleName("a/b/c/d"));
         assertEquals("d", AMDUtil.getModuleName("a/b/d!foo"));
     }
+
+    @Test
+    public void testConversionOfCustomPlugins()
+    {
+        assertEquals("foo", AMDUtil.defineToParameter("foo!bar", exceptions));
+    }
 }
