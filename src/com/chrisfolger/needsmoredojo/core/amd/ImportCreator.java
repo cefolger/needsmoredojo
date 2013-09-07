@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.*;
 import com.intellij.lang.javascript.psi.*;
@@ -207,7 +208,7 @@ public class ImportCreator
 
         try
         {
-            VirtualFile dojoSourcesParentDirectory = AMDUtil.getDojoSourcesDirectory(project, true);
+            VirtualFile dojoSourcesParentDirectory = SourcesLocator.getDojoSourcesDirectory(project, true);
             if(dojoSourcesParentDirectory != null)
             {
                 for(VirtualFile directory : dojoSourcesParentDirectory.getChildren())
@@ -217,7 +218,7 @@ public class ImportCreator
                 }
             }
 
-            VirtualFile[] otherSourceDirectories = AMDUtil.getProjectSourceDirectories(project, true);
+            VirtualFile[] otherSourceDirectories = SourcesLocator.getProjectSourceDirectories(project, true);
             for(VirtualFile directory : otherSourceDirectories)
             {
                 for(VirtualFile sourceDirectory : directory.getChildren())

@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.refactoring.ModuleRenamer;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
@@ -45,7 +46,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
                         new ImportCreator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]),
                         ServiceManager.getService(psiElement.getProject(),
                                 DojoSettings.class).getExceptionsMap())
-                        .findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(psiElement.getProject(), true), true);
+                        .findFilesThatReferenceModule(SourcesLocator.getProjectSourceDirectories(psiElement.getProject(), true), true);
             }
         },
         "Rename Dojo Module",

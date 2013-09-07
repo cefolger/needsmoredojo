@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.configurable;
 
 import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.ide.DataManager;
@@ -81,7 +82,7 @@ public class DojoSettingsConfigurable implements Configurable {
         public void actionPerformed(ActionEvent e)
         {
             autoDetectDojoSources.setEnabled(false);
-            VirtualFile directory = AMDUtil.getDojoSourcesDirectory(project, false);
+            VirtualFile directory = SourcesLocator.getDojoSourcesDirectory(project, false);
 
             if(directory == null)
             {

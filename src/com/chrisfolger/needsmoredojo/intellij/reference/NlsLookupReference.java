@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.reference;
 
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -75,7 +76,7 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         String defineText = correctDefine.getText();
         defineText = defineText.substring(defineText.lastIndexOf("!") + 1).replaceAll("'", "");
 
-        VirtualFile i18nFile = AMDUtil.getAMDImportFile(correctDefine.getProject(), defineText + ".js", correctDefine.getContainingFile().getContainingDirectory());
+        VirtualFile i18nFile = SourcesLocator.getAMDImportFile(correctDefine.getProject(), defineText + ".js", correctDefine.getContainingFile().getContainingDirectory());
 
         if(i18nFile == null)
         {

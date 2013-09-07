@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.refactoring.ModuleRenamer;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.AMDUtil;
@@ -38,7 +39,7 @@ public class MoveRefactoringListener implements RefactoringElementListener
         moduleReferences = renamer.findFilesThatModuleReferences(originalPsiFile);
 
         // here is where we need to go through, find all of the modules that reference this module, and produce a list of MatchResults
-        matches = renamer.findFilesThatReferenceModule(AMDUtil.getProjectSourceDirectories(originalPsiFile.getProject(), true), false);
+        matches = renamer.findFilesThatReferenceModule(SourcesLocator.getProjectSourceDirectories(originalPsiFile.getProject(), true), false);
     }
 
     /**
