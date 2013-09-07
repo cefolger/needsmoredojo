@@ -1,5 +1,6 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.define;
 
+import com.chrisfolger.needsmoredojo.core.amd.define.NearestAMDImportLocator;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.testutil.*;
 import com.intellij.lang.javascript.psi.JSElement;
@@ -9,9 +10,9 @@ import org.junit.Test;
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
-public class TestAMDImportLocator
+public class TestNearestAMDImportLocator
 {
-    private AMDImportLocator locator;
+    private NearestAMDImportLocator locator;
 
     private MockJSArrayLiteralExpression literal;
     private MockJSFunctionExpression function;
@@ -20,7 +21,7 @@ public class TestAMDImportLocator
     @Before
     public void setup()
     {
-        locator = new AMDImportLocator();
+        locator = new NearestAMDImportLocator();
 
         literal = new MockJSArrayLiteralExpression(new String[] { "a/b/a", "a/b/b", "a/b/c"});
         function = new MockJSFunctionExpression(new String[] { "a", "b", "c"});

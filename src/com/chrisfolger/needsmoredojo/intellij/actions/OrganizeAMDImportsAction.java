@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
-import com.chrisfolger.needsmoredojo.core.amd.AMDImportOrganizer;
+import com.chrisfolger.needsmoredojo.core.amd.define.AMDImportOrganizer;
 import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.notification.Notification;

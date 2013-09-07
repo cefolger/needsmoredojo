@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;

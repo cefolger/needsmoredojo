@@ -1,5 +1,7 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.define;
 
+import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
+import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
@@ -12,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * Meant to find the nearest AMD import (define literal + parameter) based on the user's caret position
  *
  */
-public class AMDImportLocator
+public class NearestAMDImportLocator
 {
     // have to have this because getParameter can call getDefine recursively and vice versa, so we don't a stack overflow
     // if one of them is null
@@ -136,7 +138,8 @@ public class AMDImportLocator
      * @param file
      * @return null if either the define literal or the parameter is null
      */
-    public @Nullable AMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
+    public @Nullable
+    AMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
     {
         DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(file);
 

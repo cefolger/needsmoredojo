@@ -1,6 +1,6 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.define;
 
-import com.chrisfolger.needsmoredojo.core.amd.AMDImportOrganizer;
+import com.chrisfolger.needsmoredojo.core.amd.define.AMDImportOrganizer;
 import com.intellij.psi.PsiElement;
 import org.junit.Before;
 import org.junit.Test;

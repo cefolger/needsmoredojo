@@ -1,7 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
-import com.chrisfolger.needsmoredojo.core.amd.AMDImportLocator;
+import com.chrisfolger.needsmoredojo.core.amd.define.NearestAMDImportLocator;
 import com.chrisfolger.needsmoredojo.core.amd.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.notification.Notification;
@@ -25,7 +25,7 @@ public class DeleteSingleImportAction extends JavaScriptAction
 
         PsiElement element = psiFile.findElementAt(editor.getCaretModel().getOffset());
 
-        final AMDImport amdImport = new AMDImportLocator().findNearestImport(element, psiFile);
+        final AMDImport amdImport = new NearestAMDImportLocator().findNearestImport(element, psiFile);
 
         if(amdImport == null)
         {
