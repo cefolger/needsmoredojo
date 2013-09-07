@@ -1,11 +1,10 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
-import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.MismatchedImportsDetector;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.codeInspection.*;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.graph.algo.Groups;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nls;

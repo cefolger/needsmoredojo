@@ -1,7 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
-import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
@@ -141,7 +140,7 @@ public class NearestAMDImportLocator
     public @Nullable
     AMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
     {
-        DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(file);
+        DefineStatement defineStatement = new DefineResolver().getDefineStatementItems(file);
 
         JSElement defineLiteral = getDefineLiteral(elementAtCaretPosition, defineStatement);
         JSElement parameter = getParameter(elementAtCaretPosition, defineStatement);

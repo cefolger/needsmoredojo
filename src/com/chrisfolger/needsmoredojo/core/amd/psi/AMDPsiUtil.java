@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.psi;
 
-import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 

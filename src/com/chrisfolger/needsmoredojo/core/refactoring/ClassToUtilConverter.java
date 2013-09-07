@@ -1,16 +1,18 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
+import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
 import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
+public class ClassToUtilConverter implements CompletionCallback
 {
     @Override
     public void run(Object[] result)
@@ -77,5 +79,41 @@ public class ClassToUtilConverter implements DeclareFinder.CompletionCallback
 
         // delete the old return declare(...) block
         originalReturnStatement.delete();
+    }
+
+    /**
+     * This method returns a visitor that will take a dojo module and convert it to use a util pattern
+     * instead of a class pattern
+     *
+     * @return the visitor
+     */
+    public JSRecursiveElementVisitor getVisitorToConvertToUtilPattern()
+    {
+        return new JSRecursiveElementVisitor() {
+            @Override
+            public void visitJSCallExpression(JSCallExpression element)
+            {
+                if(!element.getMethodExpression().getText().equals("define"))
+                {
+                    super.visitJSCallExpression(element);
+                    return;
+                }
+
+                // get the function
+                JSFunction function = (JSFunction) element.getArguments()[1];
+                function.acceptChildren(new DeclareResolver().getVisitorToRetrieveDeclare(new ClassToUtilConverter()));
+
+                return;
+            }
+        };
+    }
+
+    public void convertToUtilPattern(PsiFile file)
+    {
+        // steps:
+        // get the return declare statement
+        // get all of the literal expressions
+
+        file.acceptChildren(getVisitorToConvertToUtilPattern());
     }
 }

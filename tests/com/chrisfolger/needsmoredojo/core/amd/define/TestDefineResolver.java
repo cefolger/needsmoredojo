@@ -1,6 +1,6 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.define;
 
-import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.testutil.MockJSArrayLiteralExpression;
 import com.chrisfolger.needsmoredojo.testutil.MockJSFunctionExpression;
 import com.chrisfolger.needsmoredojo.testutil.MockJSLiteralExpression;

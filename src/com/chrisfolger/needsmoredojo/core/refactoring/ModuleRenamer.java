@@ -1,9 +1,9 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
 import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
@@ -236,7 +236,7 @@ public class ModuleRenamer
      */
     public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule, String pluginPostfix, boolean updateReferences)
     {
-        DefineStatement defineStatement = new DeclareFinder().getDefineStatementItems(currentModule);
+        DefineStatement defineStatement = new DefineResolver().getDefineStatementItems(currentModule);
 
         String newModuleName = newModule.getName().substring(0, newModule.getName().indexOf('.'));
         LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, currentModule, false, true);
@@ -273,8 +273,8 @@ public class ModuleRenamer
      */
     public List<MatchResult> findFilesThatModuleReferences(PsiFile module)
     {
-        DeclareFinder finder = new DeclareFinder();
-        DefineStatement statement = finder.getDefineStatementItems(module);
+        DefineResolver resolver = new DefineResolver();
+        DefineStatement statement = resolver.getDefineStatementItems(module);
         List<MatchResult> matches = new ArrayList<MatchResult>();
 
         for(int i=0;i<statement.getArguments().getExpressions().length;i++)
@@ -327,7 +327,7 @@ public class ModuleRenamer
             directories.add(file);
         }
 
-        DeclareFinder finder = new DeclareFinder();
+        DefineResolver resolver = new DefineResolver();
         PsiManager psiManager = PsiManager.getInstance(project);
 
         // TODO can we use a directory scope instead???
@@ -354,7 +354,7 @@ public class ModuleRenamer
                     continue;
                 }
 
-                DefineStatement defineStatement = finder.getDefineStatementItems(psiFile);
+                DefineStatement defineStatement = resolver.getDefineStatementItems(psiFile);
 
                 // possible that the file passed the smoke test but is not a real module
                 if(defineStatement == null)

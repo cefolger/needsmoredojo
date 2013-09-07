@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
+import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiFile;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UtilFinder
 {
-    public JSElementVisitor getReturnCallbackVisitor(final DeclareFinder.CompletionCallback onReturnFound)
+    public JSElementVisitor getReturnCallbackVisitor(final CompletionCallback onReturnFound)
     {
         return new JSElementVisitor() {
             @Override

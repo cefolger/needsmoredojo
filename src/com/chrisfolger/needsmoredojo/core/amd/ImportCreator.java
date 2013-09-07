@@ -1,9 +1,13 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
-import com.chrisfolger.needsmoredojo.core.util.*;
+import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
+import com.chrisfolger.needsmoredojo.core.util.FileUtil;
+import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -380,7 +384,7 @@ public class ImportCreator
     {
         final boolean[] visited = {false};
 
-        JSRecursiveElementVisitor visitor = new DeclareFinder().getDefineVisitor(new DeclareFinder.CompletionCallback() {
+        JSRecursiveElementVisitor visitor = new DefineResolver().getDefineVisitor(new CompletionCallback() {
             @Override
             public void run(Object[] result) {
                 JSCallExpression callExpression = (JSCallExpression) result[0];

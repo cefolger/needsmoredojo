@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
+import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class UtilToClassConverter implements DeclareFinder.CompletionCallback
+public class UtilToClassConverter implements CompletionCallback
 {
     @Override
     public void run(Object[] result)

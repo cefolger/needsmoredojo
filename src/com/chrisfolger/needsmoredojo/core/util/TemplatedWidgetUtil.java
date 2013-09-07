@@ -1,7 +1,8 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
-import com.chrisfolger.needsmoredojo.core.amd.DeclareFinder;
+import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -26,7 +27,7 @@ public class TemplatedWidgetUtil {
         final DeclareUtil.DeclareStatementItems[] utilItem = new DeclareUtil.DeclareStatementItems[1];
 
         // this will call run() when the declare object is found
-        file.acceptChildren(new DeclareFinder().getDefineVisitorToRetrieveDeclareObject(new DeclareFinder.CompletionCallback() {
+        file.acceptChildren(new DeclareResolver().getDefineVisitorToRetrieveDeclareObject(new CompletionCallback() {
             @Override
             public void run(Object[] result) {
                 utilItem[0] = new DeclareUtil().getDeclareStatementFromParsedStatement(result);

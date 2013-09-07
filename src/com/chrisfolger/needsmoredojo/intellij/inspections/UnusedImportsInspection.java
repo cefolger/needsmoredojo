@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
-import com.chrisfolger.needsmoredojo.core.amd.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.codeInspection.*;
