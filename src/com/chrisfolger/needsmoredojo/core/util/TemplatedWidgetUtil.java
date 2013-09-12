@@ -86,32 +86,6 @@ public class TemplatedWidgetUtil {
         return null;
     }
 
-    public static boolean elementIsAttachPoint(PsiElement element)
-    {
-        /*
-            It's hard to detect when an element is an attach point, because of the use of this inside other functions
-
-            this.attachpoint
-            that.attachpoint
-
-            ideally we would parse the template file in the beginning and cache all of the attach points,
-            maybe that's a todo item...
-         */
-        if(element == null || element.getParent() == null || !(element.getParent() instanceof JSReferenceExpression))
-        {
-            return false;
-        }
-
-        // we can exclude JSCallExpressions at least because you will never reference an attach point like
-        // this.attachpoint(...)
-        if(element.getParent().getParent() instanceof JSCallExpression)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     /** @return index of pattern in s or -1, if not found */
     public static int indexOf(Pattern pattern, String s) {
         Matcher matcher = pattern.matcher(s);

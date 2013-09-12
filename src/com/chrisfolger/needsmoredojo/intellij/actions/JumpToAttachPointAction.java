@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.AMDValidator;
 import com.chrisfolger.needsmoredojo.core.util.HighlightingUtil;
 import com.chrisfolger.needsmoredojo.core.util.TemplatedWidgetUtil;
 import com.intellij.lang.javascript.JavaScriptFileType;
@@ -55,7 +56,7 @@ public class JumpToAttachPointAction extends JavaScriptAction
 
     private void jumpToElementInTemplate(PsiFile templateFile, PsiElement sourceElement)
     {
-        if(!TemplatedWidgetUtil.elementIsAttachPoint(sourceElement))
+        if(!AMDValidator.elementIsAttachPoint(sourceElement))
         {
             Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Element is not an attach point or is in an invalid statement with an attach point: '" + sourceElement.getText() + "'", NotificationType.INFORMATION));
             return;
@@ -133,7 +134,7 @@ public class JumpToAttachPointAction extends JavaScriptAction
         }
 
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
-        if(!TemplatedWidgetUtil.elementIsAttachPoint(element))
+        if(!AMDValidator.elementIsAttachPoint(element))
         {
             e.getPresentation().setEnabled(false);
         }

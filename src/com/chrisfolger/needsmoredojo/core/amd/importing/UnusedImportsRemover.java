@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.importing;
 
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
@@ -56,7 +56,7 @@ public class UnusedImportsRemover
 
         for(PsiElement element : parameters)
         {
-            removeParameter(element, elementsToDelete);
+            AMDPsiUtil.removeParameter(element, elementsToDelete);
         }
 
         int current = 0;
@@ -77,7 +77,7 @@ public class UnusedImportsRemover
             }
             current++;
 
-            removeDefineLiteral(element, elementsToDelete);
+            AMDPsiUtil.removeDefineLiteral(element, elementsToDelete);
         }
 
         for(PsiElement element : elementsToDelete)
@@ -99,45 +99,10 @@ public class UnusedImportsRemover
             }
         }
 
-        removeTrailingCommas(elementsToDelete, literal, function);
+        AMDPsiUtil.removeTrailingCommas(elementsToDelete, literal, function);
 
         RemovalResult result = new RemovalResult(elementsToDelete, results.toString());
         return result;
-    }
-
-    private void removeTrailingCommas(Set<PsiElement> deleteList, JSArrayLiteralExpression literal, PsiElement function)
-    {
-        try
-        {
-            PsiElement trailingComma = AMDPsiUtil.getNearestComma(literal.getLastChild());
-            if(trailingComma != null)
-            {
-                deleteList.add(trailingComma);
-                trailingComma.delete();
-            }
-        }
-        catch(Exception e)
-        {
-            System.out.println(e);
-        }
-
-        /*
-        at first this block was not here and for some reason trailing commas in the function argument list
-        were still deleted. I'm not sure why, but I decided to make it explicit.
-         */
-        try
-        {
-            PsiElement trailingComma = AMDPsiUtil.getNearestComma(function.getLastChild());
-            if(trailingComma != null)
-            {
-                deleteList.add(trailingComma);
-                trailingComma.delete();
-            }
-        }
-        catch(Exception e)
-        {
-            System.out.println(e);
-        }
     }
 
     // TODO detect registry.byNode and registry.byId
@@ -230,62 +195,5 @@ public class UnusedImportsRemover
         };
 
         return visitor;
-    }
-
-    private void removeDefineLiteral(PsiElement element, Set<PsiElement> deleteList)
-    {
-        deleteList.add(element);
-
-        // special case for when the element we're removing is last on the list
-        PsiElement sibling = element.getNextSibling();
-        if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
-        {
-            deleteList.add(AMDPsiUtil.getNearestComma(sibling));
-        }
-
-        // only remove the next sibling if it's a comma
-        PsiElement nextSibling = element.getNextSibling();
-        if(nextSibling != null && !nextSibling.getText().equals("]"))
-        {
-            deleteList.add(element.getNextSibling());
-        }
-    }
-
-    private void removeParameter(PsiElement element, Set<PsiElement> deleteList)
-    {
-        deleteList.add(element);
-
-        PsiElement nextSibling = element.getNextSibling();
-
-        // only remove commas at the end
-        if(nextSibling != null && nextSibling.getText().equals(","))
-        {
-            deleteList.add(element.getNextSibling());
-        }
-    }
-
-    public void removeSingleImport(@NotNull AMDImport amdImport)
-    {
-        JSArrayLiteralExpression literal = (JSArrayLiteralExpression) amdImport.getLiteral().getParent();
-        PsiElement function = amdImport.getParameter().getParent();
-
-        Set<PsiElement> elementsToDelete = new LinkedHashSet<PsiElement>();
-
-        removeParameter(amdImport.getParameter(), elementsToDelete);
-        removeDefineLiteral(amdImport.getLiteral(), elementsToDelete);
-
-        for(PsiElement element : elementsToDelete)
-        {
-            try
-            {
-                element.delete();
-            }
-            catch(Exception e)
-            {
-                // something happened, but it's probably not important when deleting.
-            }
-        }
-
-        removeTrailingCommas(elementsToDelete, literal, function);
     }
 }

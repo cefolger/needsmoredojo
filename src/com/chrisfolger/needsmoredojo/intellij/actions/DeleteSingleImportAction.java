@@ -2,7 +2,7 @@ package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.NearestAMDImportLocator;
-import com.chrisfolger.needsmoredojo.core.amd.UnusedImportsRemover;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -39,7 +39,7 @@ public class DeleteSingleImportAction extends JavaScriptAction
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 @Override
                 public void run() {
-                    new UnusedImportsRemover().removeSingleImport(amdImport);
+                    AMDPsiUtil.removeSingleImport(amdImport);
                 }
             });
             }
