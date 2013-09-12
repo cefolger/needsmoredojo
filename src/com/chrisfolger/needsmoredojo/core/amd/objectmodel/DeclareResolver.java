@@ -43,7 +43,7 @@ public class DeclareResolver
                 }
 
                 JSCallExpression expression = (JSCallExpression) statement.getChildren()[0];
-                if(DeclareUtil.isDeclareFunction(expression.getMethodExpression()))
+                if(AMDValidator.isDeclareFunction(expression.getMethodExpression()))
                 {
                     onReturnFound.run(new Object[] { expression, statement});
                     return;

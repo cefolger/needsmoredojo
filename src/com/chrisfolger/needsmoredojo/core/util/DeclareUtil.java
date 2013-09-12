@@ -6,9 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class DeclareUtil
 {
-    public static final String DOJO_LEGACY_DECLARE = "dojo.declare";
-    public static final String DOJO_DECLARE = "declare";
-
     public class DeclareStatementItems
     {
         private JSExpression[] expressionsToMixin;
@@ -102,10 +99,5 @@ public class DeclareUtil
         JSProperty[] methodsToConvert = literal.getProperties();
 
         return new DeclareStatementItems(className, expressionsToMixin, methodsToConvert, (JSElement) result[1]);
-    }
-
-    public static boolean isDeclareFunction(PsiElement element)
-    {
-        return element.getText().equals(DOJO_DECLARE) || element.getText().equals(DOJO_LEGACY_DECLARE);
     }
 }
