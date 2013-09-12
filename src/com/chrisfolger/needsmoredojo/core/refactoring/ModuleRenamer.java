@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;

@@ -1,5 +1,7 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.importing;
 
+import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
+import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
@@ -53,7 +55,8 @@ public class ImportCreator
         return 0;
     }
 
-    protected @Nullable SourceLibrary getFirstLibraryThatIncludesFile(@NotNull String fileCanonicalPath, @NotNull SourceLibrary[] libraries)
+    protected @Nullable
+    SourceLibrary getFirstLibraryThatIncludesFile(@NotNull String fileCanonicalPath, @NotNull SourceLibrary[] libraries)
     {
         int firstIndex = Integer.MAX_VALUE;
         SourceLibrary firstLibrary = null;

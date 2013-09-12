@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
-import com.chrisfolger.needsmoredojo.core.amd.ImportCreator;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.notification.Notification;
