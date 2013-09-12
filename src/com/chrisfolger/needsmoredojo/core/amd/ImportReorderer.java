@@ -2,6 +2,8 @@ package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
+import com.chrisfolger.needsmoredojo.core.util.PsiUtil;
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
@@ -11,64 +13,6 @@ import com.intellij.psi.PsiElement;
 
 public class ImportReorderer
 {
-    public enum Direction
-    {
-        UP,
-        DOWN
-    }
-
-    private JSLiteralExpression getNearestLiteralExpression(PsiElement element, Direction direction)
-    {
-        PsiElement node = element;
-        if(direction == Direction.UP)
-        {
-            node = element.getPrevSibling();
-        }
-        else
-        {
-            node = element.getNextSibling();
-        }
-
-        int tries = 0;
-        while(tries < 5)
-        {
-            if(node instanceof  JSLiteralExpression)
-            {
-                return (JSLiteralExpression) node;
-            }
-
-            if(node == null)
-            {
-                return null;
-            }
-
-            if(direction == Direction.UP)
-            {
-                node = node.getPrevSibling();
-            }
-            else
-            {
-                node = node.getNextSibling();
-            }
-
-            tries ++;
-        }
-
-        return null;
-    }
-
-    private int getIndexInParent(PsiElement element)
-    {
-        for(int i=0;i< element.getParent().getChildren().length;i++)
-        {
-            if(element.getParent().getChildren()[i] == element)
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
 
     /**
      * given an AMD literal that the cursor is over and a direction, finds the literal to swap it with
@@ -78,7 +22,7 @@ public class ImportReorderer
      * @return an array containing two elements ... the source literal and the destination.
      *  OR an array of size 0 if none were found or were invalid.
      */
-    public PsiElement[] getSourceAndDestination(PsiElement element, Direction direction)
+    public PsiElement[] getSourceAndDestination(PsiElement element, AMDPsiUtil.Direction direction)
     {
         JSLiteralExpression source = null;
 
@@ -97,7 +41,7 @@ public class ImportReorderer
         }
         else
         {
-            source = getNearestLiteralExpression(element, Direction.UP);
+            source = AMDPsiUtil.getNearestLiteralExpression(element, AMDPsiUtil.Direction.UP);
         }
 
         if(source == null)
@@ -108,13 +52,13 @@ public class ImportReorderer
 
         // find destination
         JSLiteralExpression destination = null;
-        if(direction == Direction.UP)
+        if(direction == AMDPsiUtil.Direction.UP)
         {
-            destination = getNearestLiteralExpression(source.getPrevSibling(), direction);
+            destination = AMDPsiUtil.getNearestLiteralExpression(source.getPrevSibling(), direction);
         }
         else
         {
-            destination = getNearestLiteralExpression(source.getNextSibling(), direction);
+            destination = AMDPsiUtil.getNearestLiteralExpression(source.getNextSibling(), direction);
         }
 
         if(destination == null || source == null)
@@ -135,7 +79,7 @@ public class ImportReorderer
         return results;
     }
 
-    public void doSwap(PsiElement source, Editor editor, Direction direction)
+    public void doSwap(PsiElement source, Editor editor, AMDPsiUtil.Direction direction)
     {
         PsiElement[] defines = getSourceAndDestination(source, direction);
 
@@ -148,8 +92,8 @@ public class ImportReorderer
         JSArgumentList list = (JSArgumentList) defines[0].getParent().getParent();
         DefineStatement items = new DefineResolver().getDefineStatementItemsFromArguments(list.getArguments());
 
-        int sourceIndex = getIndexInParent(defines[0]);
-        int destinationIndex = getIndexInParent(defines[1]);
+        int sourceIndex = PsiUtil.getIndexInParent(defines[0]);
+        int destinationIndex = PsiUtil.getIndexInParent(defines[1]);
         JSParameter[] parameterList = items.getFunction().getParameters();
 
         if(sourceIndex >= parameterList.length || destinationIndex >= parameterList.length)

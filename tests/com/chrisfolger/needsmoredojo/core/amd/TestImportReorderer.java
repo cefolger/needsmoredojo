@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.chrisfolger.needsmoredojo.testutil.BasicPsiElements;
 import com.chrisfolger.needsmoredojo.testutil.MockJSElement;
 import com.chrisfolger.needsmoredojo.testutil.MockJSElementInterface;
@@ -40,7 +41,7 @@ public class TestImportReorderer
      */
     public void testFindingSourceFromComma()
     {
-        PsiElement[] results = reorderer.getSourceAndDestination(second[1], ImportReorderer.Direction.UP);
+        PsiElement[] results = reorderer.getSourceAndDestination(second[1], AMDPsiUtil.Direction.UP);
 
         assertEquals(second[0], results[0]);
         assertEquals(first[0], results[1]);
@@ -54,7 +55,7 @@ public class TestImportReorderer
      */
     public void testFindingSourceFromLineEnding()
     {
-        PsiElement[] results = reorderer.getSourceAndDestination(second[2], ImportReorderer.Direction.UP);
+        PsiElement[] results = reorderer.getSourceAndDestination(second[2], AMDPsiUtil.Direction.UP);
 
         assertEquals(second[0], results[0]);
         assertEquals(first[0], results[1]);
@@ -68,7 +69,7 @@ public class TestImportReorderer
      */
     public void testFindingSourceFromInsideLiteral()
     {
-        PsiElement[] results = reorderer.getSourceAndDestination(second[0], ImportReorderer.Direction.UP);
+        PsiElement[] results = reorderer.getSourceAndDestination(second[0], AMDPsiUtil.Direction.UP);
 
         assertEquals(second[0], results[0]);
         assertEquals(first[0], results[1]);

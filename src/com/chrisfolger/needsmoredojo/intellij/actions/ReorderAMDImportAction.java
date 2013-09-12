@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.ImportReorderer;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -12,14 +13,14 @@ import com.intellij.psi.PsiFile;
 
 public class ReorderAMDImportAction extends JavaScriptAction
 {
-    private final ImportReorderer.Direction direction;
+    private final AMDPsiUtil.Direction direction;
 
     public ReorderAMDImportAction()
     {
-        direction = ImportReorderer.Direction.UP;
+        direction = AMDPsiUtil.Direction.UP;
     }
 
-    public ReorderAMDImportAction(ImportReorderer.Direction direction)
+    public ReorderAMDImportAction(AMDPsiUtil.Direction direction)
     {
         this.direction = direction;
     }

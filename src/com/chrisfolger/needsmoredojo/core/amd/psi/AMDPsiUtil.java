@@ -11,6 +11,12 @@ import java.util.List;
 
 public class AMDPsiUtil
 {
+    public enum Direction
+    {
+        UP,
+        DOWN
+    }
+
     public static PsiElement getDefineForVariable(PsiFile file, String textToCompare)
     {
         List<PsiElement> defines = new ArrayList<PsiElement>();
@@ -44,6 +50,46 @@ public class AMDPsiUtil
             }
 
             sibling = sibling.getPrevSibling();
+        }
+
+        return null;
+    }
+
+    public static JSLiteralExpression getNearestLiteralExpression(PsiElement element, Direction direction)
+    {
+        PsiElement node = element;
+        if(direction == Direction.UP)
+        {
+            node = element.getPrevSibling();
+        }
+        else
+        {
+            node = element.getNextSibling();
+        }
+
+        int tries = 0;
+        while(tries < 5)
+        {
+            if(node instanceof  JSLiteralExpression)
+            {
+                return (JSLiteralExpression) node;
+            }
+
+            if(node == null)
+            {
+                return null;
+            }
+
+            if(direction == Direction.UP)
+            {
+                node = node.getPrevSibling();
+            }
+            else
+            {
+                node = node.getNextSibling();
+            }
+
+            tries ++;
         }
 
         return null;

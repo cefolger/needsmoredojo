@@ -1,11 +1,11 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
-import com.chrisfolger.needsmoredojo.core.amd.ImportReorderer;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 
 public class MoveImportUpAction extends ReorderAMDImportAction
 {
     public MoveImportUpAction()
     {
-        super(ImportReorderer.Direction.UP);
+        super(AMDPsiUtil.Direction.UP);
     }
 }
