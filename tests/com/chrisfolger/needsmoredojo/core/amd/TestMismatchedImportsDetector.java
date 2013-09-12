@@ -28,58 +28,6 @@ public class TestMismatchedImportsDetector
     }
 
     @Test
-    public void matchOnSimpleCase()
-    {
-        assertTrue(detector.defineMatchesParameter("dijit/layout/BorderContainer", "BorderContainer", exceptions));
-    }
-
-    @Test
-    public void mismatchOnSimpleCase()
-    {
-        assertFalse(detector.defineMatchesParameter("dijit/layout/ContentPane", "BorderContainer", exceptions));
-    }
-
-    @Test
-    public void matchOnTemplate()
-    {
-        assertTrue(detector.defineMatchesParameter("dojo/text!foo/template.html", "template", exceptions));
-    }
-
-    @Test
-    public void matchOnTemplateWithTemplatesFolder()
-    {
-        assertTrue(detector.defineMatchesParameter("dojo/text!./templates/MainToolbar.html", "template", exceptions));
-    }
-
-    @Test
-    public void matchOnTemplateWithRelativePath()
-    {
-        assertTrue(detector.defineMatchesParameter("dojo/text!./Foo.html", "template", exceptions));
-    }
-
-    @Test
-    public void matchOnTemplateWithExplicitName()
-    {
-        assertTrue(detector.defineMatchesParameter("dojo/text!./Foo.html", "fooTemplate", exceptions));
-    }
-
-    @Test
-    public void matchI18n()
-    {
-        assertTrue(detector.defineMatchesParameter("dojo/i18n!./resources/resources", "resources", exceptions));
-    }
-
-    @Test
-    public void matchI18nWithConvention()
-    {
-        // I've seen all of these in the dojo libraries
-        assertTrue(detector.defineMatchesParameter("dojo/i18n!./MainToolbar/resources", "resources", exceptions));
-        assertTrue(detector.defineMatchesParameter("dojo/i18n!./MainToolbar/resources", "nlsMaintoolbar", exceptions));
-        assertTrue(detector.defineMatchesParameter("dojo/i18n!./MainToolbar/resources", "i18nMaintoolbar", exceptions));
-        assertTrue(detector.defineMatchesParameter("dojo/i18n!./nls/buttons", "_nls", exceptions));
-    }
-
-    @Test
     public void simpleCorrectList()
     {
         PsiElement[] defines = new PsiElement[] { createPsiElement("dojo/on"), createPsiElement("dojo/_base/array"), createPsiElement("dijit/layout/ContentPane")};
@@ -106,111 +54,11 @@ public class TestMismatchedImportsDetector
         assertEquals(2, detector.matchOnList(defines, parameters, exceptions).size());
     }
 
-    @Test
-    // we encourage sticking to the convention of using the filename as the parameter variable name
-    public void typingMismatch()
-    {
-        assertFalse(detector.defineMatchesParameter("dijit/layout/ContentPane", "pane", exceptions));
-    }
-
-    @Test
-    // we encourage the x-y -> xY convention because that's what's used in the dojo reference examples
-    public void domClassesMatch()
-    {
-        assertTrue(detector.defineMatchesParameter("dojo/dom-construct", "domConstruct", exceptions));
-    }
-
-    // TODO performance penalty when we hit about 1000 lines
-
-    @Test
-    /**
-     * due to presence of _ prefixed modules such as _WidgetBase, we have to account for this
-     */
-    public void testDefinesWithUnderscores()
-    {
-        assertTrue(detector.defineMatchesParameter("dijit/_WidgetBase", "WidgetBase", exceptions));
-    }
-
-    @Test
-    /**
-     * there is a bug where if you have a define without slashes it will cause a false positive
-     */
-    public void testNoSlashMatchesCorrectly()
-    {
-        assertTrue(detector.defineMatchesParameter("a", "a", exceptions));
-    }
-
-    @Test
-    public void testDoubleQuotes()
-    {
-        assertTrue(detector.defineMatchesParameter("\"a\"", "a", exceptions));
-    }
-
-    @Test
-    public void relativePathsMismatch()
-    {
-        assertFalse(detector.defineMatchesParameter("\"../../../../foo/bar/Element\"", "Eledment", exceptions));
-    }
-
-    @Test
-    public void baseFxException()
-    {
-        assertTrue(detector.defineMatchesParameter("dojo/_base/fx", "baseFx", exceptions));
-        assertTrue(detector.defineMatchesParameter("dojo/_base/fx", "fx", exceptions));
-    }
-
-    @Test
-    public void testException()
-    {
-        // has is an explicit exception
-        exceptions.put("dojo/sniff", "has");
-        assertTrue(detector.defineMatchesParameter("dojo/sniff", "has", exceptions));
-    }
-
     private PsiElement createPsiElement(String text)
     {
         PsiElement result = mock(PsiElement.class);
         when(result.getText()).thenReturn(text);
 
         return result;
-    }
-
-    @Test
-    public void testI18nModule()
-    {
-        assertFalse(detector.defineMatchesParameter("dojo/i18n", "resources", exceptions));
-    }
-
-    @Test
-    public void testNamingResourcesIsValidForI18n()
-    {
-        assertTrue(detector.defineMatchesParameter("dojo/i18n!./foo/foonls", "resources", exceptions));
-    }
-
-    @Test
-    /**
-     * based on reported issue: Support for generic AMD loader plugins
-     * https://github.com/cefolger/needsmoredojo/issues/87
-     */
-    public void testArbitraryAMDPluginIsNotFlaggedAsMismatchedForCommonCases()
-    {
-        assertTrue(detector.defineMatchesParameter("test/package/foo!../test", "test", exceptions));
-        assertTrue(detector.defineMatchesParameter("foo!bar", "bar", exceptions));
-        // if someone names the parameter the same name as the plugin, let it slide
-        // this may be taken out in the future though if it proves to be too lax
-        assertTrue(detector.defineMatchesParameter("foo!bar", "foo", exceptions));
-        assertTrue(detector.defineMatchesParameter("foo!a/b/c/d", "d", exceptions));
-        assertTrue(detector.defineMatchesParameter("foo!../../a", "a", exceptions));
-
-        assertFalse(detector.defineMatchesParameter("foo!bar", "bare", exceptions));
-        assertFalse(detector.defineMatchesParameter("foo!bar", "ba", exceptions));
-    }
-
-    @Test
-    public void testExceptionsWithMixedCase()
-    {
-        exceptions.put("dojo/_base/lang", "dLang");
-
-        assertTrue(detector.defineMatchesParameter("dojo/_base/lang", "dLang", exceptions));
     }
 }
