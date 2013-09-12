@@ -1,10 +1,9 @@
 package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
-import com.chrisfolger.needsmoredojo.core.refactoring.ModuleRenamer;
+import com.chrisfolger.needsmoredojo.core.refactoring.ModuleImporter;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.components.ServiceManager;
@@ -40,7 +39,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
         CommandProcessor.getInstance().executeCommand(psiElement.getProject(), new Runnable() {
             @Override
             public void run() {
-                new ModuleRenamer(possibleFiles,
+                new ModuleImporter(possibleFiles,
                         moduleName,
                         (PsiFile) psiElement,
                         new SourcesLocator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]),

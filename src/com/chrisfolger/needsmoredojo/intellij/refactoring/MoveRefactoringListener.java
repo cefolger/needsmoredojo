@@ -1,10 +1,9 @@
 package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
-import com.chrisfolger.needsmoredojo.core.refactoring.ModuleRenamer;
+import com.chrisfolger.needsmoredojo.core.refactoring.ModuleImporter;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
@@ -19,16 +18,16 @@ public class MoveRefactoringListener implements RefactoringElementListener
 {
     private String originalFile = null;
     private PsiFile[] possibleFiles = new PsiFile[0];
-    private List<ModuleRenamer.MatchResult> matches = new ArrayList<ModuleRenamer.MatchResult>();
-    private List<ModuleRenamer.MatchResult> moduleReferences = new ArrayList<ModuleRenamer.MatchResult>();
-    private ModuleRenamer renamer = null;
+    private List<ModuleImporter.MatchResult> matches = new ArrayList<ModuleImporter.MatchResult>();
+    private List<ModuleImporter.MatchResult> moduleReferences = new ArrayList<ModuleImporter.MatchResult>();
+    private ModuleImporter renamer = null;
 
     public MoveRefactoringListener(PsiFile originalPsiFile, String originalFile)
     {
         this.originalFile = originalFile;
         possibleFiles = new ImportResolver().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
 
-        renamer = new ModuleRenamer(possibleFiles,
+        renamer = new ModuleImporter(possibleFiles,
                 originalFile.substring(0, originalFile.indexOf('.')),
                 originalPsiFile,
                 new SourcesLocator().getSourceLibraries(originalPsiFile.getProject()).toArray(new SourceLibrary[0]),
@@ -53,12 +52,12 @@ public class MoveRefactoringListener implements RefactoringElementListener
     {
         PsiFile file = (PsiFile) psiElement;
 
-        for(ModuleRenamer.MatchResult result : matches)
+        for(ModuleImporter.MatchResult result : matches)
         {
             renamer.reimportModule(result, file);
         }
 
-        for(ModuleRenamer.MatchResult result : moduleReferences)
+        for(ModuleImporter.MatchResult result : moduleReferences)
         {
             renamer.reimportModule(result.getIndex(), file, result.getQuote(), result.getPath(), result.getModule(), result.getPluginResourceId(), false);
         }

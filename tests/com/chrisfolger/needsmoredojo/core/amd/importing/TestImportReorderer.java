@@ -1,5 +1,6 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.importing;
 
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportReorderer;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.chrisfolger.needsmoredojo.testutil.BasicPsiElements;
 import com.chrisfolger.needsmoredojo.testutil.MockJSElement;

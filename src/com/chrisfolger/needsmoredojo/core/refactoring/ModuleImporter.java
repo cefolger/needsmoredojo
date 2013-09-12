@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * this is made to find modules that reference another dojo module
  */
-public class ModuleRenamer
+public class ModuleImporter
 {
     private PsiFile[] possibleFiles;
     private SourceLibrary[] libraries;
@@ -74,7 +74,7 @@ public class ModuleRenamer
         }
     }
 
-    public ModuleRenamer(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, Map<String, String> exceptionsMap)
+    public ModuleImporter(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, Map<String, String> exceptionsMap)
     {
         this.moduleName = moduleName;
         this.moduleFile = moduleFile;

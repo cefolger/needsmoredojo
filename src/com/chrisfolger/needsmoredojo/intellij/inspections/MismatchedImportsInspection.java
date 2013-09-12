@@ -1,7 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
-import com.chrisfolger.needsmoredojo.core.amd.MismatchedImportsDetector;
+import com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetector;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.codeInspection.*;
 import com.intellij.openapi.components.ServiceManager;

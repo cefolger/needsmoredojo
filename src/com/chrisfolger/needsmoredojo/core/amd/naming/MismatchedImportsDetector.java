@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.naming;
 
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.AMDValidator;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;

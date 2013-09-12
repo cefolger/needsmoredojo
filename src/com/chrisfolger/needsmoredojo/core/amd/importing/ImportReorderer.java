@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.importing;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;

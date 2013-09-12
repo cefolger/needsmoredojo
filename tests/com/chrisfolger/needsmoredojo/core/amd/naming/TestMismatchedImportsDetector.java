@@ -1,7 +1,7 @@
 
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.naming;
 
-import com.chrisfolger.needsmoredojo.core.amd.MismatchedImportsDetector;
+import com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetector;
 import com.intellij.psi.PsiElement;
 import org.junit.Before;
 import org.junit.Test;
