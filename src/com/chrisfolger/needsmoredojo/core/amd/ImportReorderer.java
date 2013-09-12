@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
-import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;

@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 

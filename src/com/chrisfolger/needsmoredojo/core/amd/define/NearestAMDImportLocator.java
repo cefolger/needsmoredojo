@@ -1,7 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
-import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;

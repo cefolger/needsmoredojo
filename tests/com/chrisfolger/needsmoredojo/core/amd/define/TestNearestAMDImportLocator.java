@@ -1,7 +1,5 @@
 package com.chrisfolger.needsmoredojo.core.amd.define;
 
-import com.chrisfolger.needsmoredojo.core.amd.define.NearestAMDImportLocator;
-import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.testutil.*;
 import com.intellij.lang.javascript.psi.JSElement;
 import org.junit.Before;

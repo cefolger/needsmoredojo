@@ -1,7 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
-import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;

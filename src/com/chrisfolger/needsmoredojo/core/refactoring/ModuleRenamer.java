@@ -5,7 +5,7 @@ import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
-import com.chrisfolger.needsmoredojo.core.util.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.openapi.application.ApplicationManager;

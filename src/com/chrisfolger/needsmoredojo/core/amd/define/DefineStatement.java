@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.util;
+package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.lang.javascript.psi.JSFunctionExpression;
