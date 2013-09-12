@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.notification.Notification;
@@ -51,7 +52,7 @@ public class AddNewImportAction extends JavaScriptAction
         }
 
         DojoSettings settingsService = ServiceManager.getService(psiFile.getProject(), DojoSettings.class);
-        String[] choices = new ImportCreator().getPossibleDojoImports(psiFile, importModule, settingsService.isPreferRelativeImports());
+        String[] choices = new ImportResolver().getPossibleDojoImports(psiFile, importModule, settingsService.isPreferRelativeImports());
         // there will be always one choice (the original module)
         if(choices.length > 0)
         {

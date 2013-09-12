@@ -1,7 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.importing;
 
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
-import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.testutil.MockPsiFile;
 import com.intellij.psi.PsiFile;
 import org.junit.Before;
@@ -15,15 +14,15 @@ import static org.junit.Assert.assertEquals;
 /**
  * the *Priority tests are to check if suggested imports for some common modules come up in the expected order
  */
-public class TestImportCreator
+public class TestImportResolver
 {
-    private ImportCreator creator;
+    private ImportResolver resolver;
     private List<SourceLibrary> libraries;
 
     @Before
     public void setup()
     {
-        creator = new ImportCreator();
+        resolver = new ImportResolver();
         libraries = new ArrayList<SourceLibrary>();
 
         // libraries are guaranteed to be sorted by length
@@ -42,7 +41,7 @@ public class TestImportCreator
                 new MockPsiFile("BorderContainer.js", "js/dijit/layout")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "BorderContainer", null);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "BorderContainer", null);
 
         assertEquals("dijit/layout/BorderContainer", choices[0]);
     }
@@ -55,7 +54,7 @@ public class TestImportCreator
                 new MockPsiFile("functional.js", "js/util/docscripts/tests")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "functional", null);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "functional", null);
 
         assertEquals("dojox/lang/functional", choices[0]);
     }
@@ -68,7 +67,7 @@ public class TestImportCreator
                 new MockPsiFile("_WidgetBase.js", "js/dijit")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "_WidgetBase", null);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "_WidgetBase", null);
 
         assertEquals("dijit/_WidgetBase", choices[0]);
     }
@@ -81,7 +80,7 @@ public class TestImportCreator
                 new MockPsiFile("__WidgetBase.js", "js/dijit")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "__WidgetBase", null);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "__WidgetBase", null);
 
         assertEquals("dijit/__WidgetBase", choices[0]);
     }
@@ -96,7 +95,7 @@ public class TestImportCreator
                 new MockPsiFile("Grid.js", "js/dojox/charting/plot2d")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "Grid", null);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "Grid", null);
 
         assertEquals("dgrid/Grid", choices[0]);
     }
@@ -109,7 +108,7 @@ public class TestImportCreator
                 new MockPsiFile("on.js", "js/dojo")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "on", null);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "on", null);
 
         assertEquals("dojo/on", choices[0]);
     }
@@ -123,7 +122,7 @@ public class TestImportCreator
 
         libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website", true));
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , null);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , null);
 
         assertEquals("website/StandbyWrapper", choices[0]);
     }
@@ -136,7 +135,7 @@ public class TestImportCreator
         };
 
         libraries.add(new SourceLibrary("dojo", "website/static/js", true));
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "Grid", null );
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "Grid", null );
 
         assertEquals("dojo/foo/Grid", choices[0]);
     }
@@ -149,7 +148,7 @@ public class TestImportCreator
                 new MockPsiFile("BorderContainer.js", "js/dojo")
         };
 
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "BorderContainer", null);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "BorderContainer", null);
 
         assertEquals("dojo/BorderContainer", choices[0]);
     }
@@ -164,7 +163,7 @@ public class TestImportCreator
         libraries = new ArrayList<SourceLibrary>();
         libraries.add(new SourceLibrary("dijit", "website/static/deps/dijit", true));
         libraries.add(new SourceLibrary("website", "website/static/js/website", true));
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "ContentPane", null );
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "ContentPane", null );
 
         assertEquals("dijit/layout/ContentPane", choices[0]);
     }
@@ -179,7 +178,7 @@ public class TestImportCreator
         libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website", true));
 
         PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/website/anotherpackage");
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
 
         assertEquals("../StandbyWrapper", choices[0]);
     }
@@ -194,7 +193,7 @@ public class TestImportCreator
         libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website", true));
 
         PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/website");
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
 
         assertEquals("./StandbyWrapper", choices[0]);
     }
@@ -209,7 +208,7 @@ public class TestImportCreator
         libraries.add(new SourceLibrary("website", "C:/foo/path/website/static/js/website", true));
 
         PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/website");
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
 
         assertEquals("./package/StandbyWrapper", choices[0]);
     }
@@ -224,7 +223,7 @@ public class TestImportCreator
         libraries.add(new SourceLibrary("theroot", "C:/foo/path/website/static/js/theroot", true));
 
         PsiFile originalModule = new MockPsiFile("FooModule.js", "C:/foo/path/website/static/js/theroot/other");
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "StandbyWrapper" , originalModule, true);
 
         assertEquals("../website/package/StandbyWrapper", choices[0]);
     }
@@ -238,25 +237,9 @@ public class TestImportCreator
 
         libraries = new ArrayList<SourceLibrary>();
         libraries.add(new SourceLibrary("dojo", "dojo", true));
-        String[] choices = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "text!testing", null );
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]) , "text!testing", null );
 
         assertEquals("dojo/text!testing", choices[0]);
-    }
-
-    @Test
-    public void dojoxIsChosenAsFirstLibraryForModuleInDojox()
-    {
-        SourceLibrary result = creator.getFirstLibraryThatIncludesFile("/website/static/js/dojox/drawing/plugins/drawing/Grid.js", libraries.toArray(new SourceLibrary[0]));
-
-        assertEquals("dojox", result.getName());
-    }
-
-    @Test
-    public void correctLibraryIsChosenForFile()
-    {
-        SourceLibrary result = creator.getFirstLibraryThatIncludesFile("/website/static/js/dijit/module.js", libraries.toArray(new SourceLibrary[0]));
-
-        assertEquals("dijit", result.getName());
     }
 
     @Test
@@ -271,7 +254,7 @@ public class TestImportCreator
         SourceLibrary website = new SourceLibrary("website", "website/static/js/website", true);
         libraries.add(website);
 
-        String[] results = creator.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "MainToolbar", original);
+        String[] results = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "MainToolbar", original);
         assertEquals("website/widgets/MainToolbar", results[0]);
     }
 }

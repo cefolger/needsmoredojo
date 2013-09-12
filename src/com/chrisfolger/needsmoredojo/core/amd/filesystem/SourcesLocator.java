@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.filesystem;
 
+import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
@@ -14,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SourcesLocator
@@ -127,5 +130,80 @@ public class SourcesLocator
         }
 
         return null;
+    }
+
+    public @Nullable SourceLibrary getFirstLibraryThatIncludesFile(@NotNull String fileCanonicalPath, @NotNull SourceLibrary[] libraries)
+    {
+        int firstIndex = Integer.MAX_VALUE;
+        SourceLibrary firstLibrary = null;
+
+        for(SourceLibrary library : libraries)
+        {
+            String fileWithoutLibraryPath = fileCanonicalPath;
+            if(fileWithoutLibraryPath.indexOf(library.getPath()) != -1)
+            {
+                fileWithoutLibraryPath = library.getName() + fileWithoutLibraryPath.substring(fileWithoutLibraryPath.indexOf(library.getPath()) + library.getPath().length());
+            }
+
+            int index = fileWithoutLibraryPath.indexOf(library.getName());
+            if(index > -1 && index < firstIndex)
+            {
+                firstIndex = index;
+                firstLibrary = library;
+            }
+        }
+
+        return firstLibrary;
+    }
+
+    /**
+     * Gets a list of dojo packages in the project
+     * @param project
+     * @return
+     */
+    public List<SourceLibrary> getSourceLibraries(Project project)
+    {
+        List<SourceLibrary> libraries = new ArrayList<SourceLibrary>();
+
+        try
+        {
+            VirtualFile dojoSourcesParentDirectory = SourcesLocator.getDojoSourcesDirectory(project, true);
+            if(dojoSourcesParentDirectory != null)
+            {
+                for(VirtualFile directory : dojoSourcesParentDirectory.getChildren())
+                {
+                    SourceLibrary library = new SourceLibrary(directory.getName(), directory.getCanonicalPath(), true);
+                    libraries.add(library);
+                }
+            }
+
+            VirtualFile[] otherSourceDirectories = SourcesLocator.getProjectSourceDirectories(project, true);
+            for(VirtualFile directory : otherSourceDirectories)
+            {
+                for(VirtualFile sourceDirectory : directory.getChildren())
+                {
+                    if(sourceDirectory.getName().contains("."))
+                    {
+                        continue; // file or hidden directory
+                    }
+
+                    SourceLibrary library = new SourceLibrary(sourceDirectory.getName(), sourceDirectory.getCanonicalPath(), true);
+                    libraries.add(library);
+                }
+            }
+        }
+        catch(NullPointerException exc)
+        {
+            return libraries;
+        }
+
+        Collections.sort(libraries, new Comparator<SourceLibrary>() {
+            @Override
+            public int compare(SourceLibrary o1, SourceLibrary o2) {
+                return o2.getName().length() - o1.getName().length();
+            }
+        });
+
+        return libraries;
     }
 }

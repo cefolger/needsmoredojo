@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.intellij.refactoring;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.refactoring.ModuleRenamer;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.components.ServiceManager;
@@ -25,12 +26,12 @@ public class MoveRefactoringListener implements RefactoringElementListener
     public MoveRefactoringListener(PsiFile originalPsiFile, String originalFile)
     {
         this.originalFile = originalFile;
-        possibleFiles = new ImportCreator().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
+        possibleFiles = new ImportResolver().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
 
         renamer = new ModuleRenamer(possibleFiles,
                 originalFile.substring(0, originalFile.indexOf('.')),
                 originalPsiFile,
-                new ImportCreator().getSourceLibraries(originalPsiFile.getProject()).toArray(new SourceLibrary[0]),
+                new SourcesLocator().getSourceLibraries(originalPsiFile.getProject()).toArray(new SourceLibrary[0]),
                 ServiceManager.getService(originalPsiFile.getProject(),
                         DojoSettings.class).getExceptionsMap());
 

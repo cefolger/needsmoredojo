@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
@@ -100,7 +101,7 @@ public class ModuleRenamer
         }
 
         // get a list of possible modules and their syntax
-        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(possibleFiles, libraries, moduleName, targetFile, false, true);
+        LinkedHashMap<String, PsiFile> results = new ImportResolver().getChoicesFromFiles(possibleFiles, libraries, moduleName, targetFile, false, true);
 
         // go through the defines and determine if there is a match
         int matchIndex = -1;
@@ -239,7 +240,7 @@ public class ModuleRenamer
         DefineStatement defineStatement = new DefineResolver().getDefineStatementItems(currentModule);
 
         String newModuleName = newModule.getName().substring(0, newModule.getName().indexOf('.'));
-        LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, currentModule, false, true);
+        LinkedHashMap<String, PsiFile> results = new ImportResolver().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, currentModule, false, true);
 
         // check if the original used a relative syntax or absolute syntax, and prefer that?
         String[] possibleImports = results.keySet().toArray(new String[0]);
@@ -296,11 +297,11 @@ public class ModuleRenamer
             String modulePath = NameResolver.getModulePath(importModule);
 
             // get the list of possible strings/PsiFiles that would match it
-            PsiFile[] files = new ImportCreator().getPossibleDojoImportFiles(module.getProject(), moduleName, true);
+            PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(module.getProject(), moduleName, true);
 
             // get the files that are being imported
             // TODO performance optimization
-            LinkedHashMap<String, PsiFile> results = new ImportCreator().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
+            LinkedHashMap<String, PsiFile> results = new ImportResolver().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
             if(results.containsKey(modulePath + moduleName))
             {
                 MatchResult match = new MatchResult(results.get(modulePath + moduleName), i, modulePath + moduleName, quote, pluginResourceId);

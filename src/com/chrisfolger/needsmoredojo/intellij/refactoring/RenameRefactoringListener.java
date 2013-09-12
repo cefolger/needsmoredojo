@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.intellij.refactoring;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.refactoring.ModuleRenamer;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.command.CommandProcessor;
@@ -24,7 +25,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
     {
         this.originalFile = originalFile;
 
-        possibleFiles = new ImportCreator().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
+        possibleFiles = new ImportResolver().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
                 new ModuleRenamer(possibleFiles,
                         moduleName,
                         (PsiFile) psiElement,
-                        new ImportCreator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]),
+                        new SourcesLocator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]),
                         ServiceManager.getService(psiElement.getProject(),
                                 DojoSettings.class).getExceptionsMap())
                         .findFilesThatReferenceModule(SourcesLocator.getProjectSourceDirectories(psiElement.getProject(), true), true);
