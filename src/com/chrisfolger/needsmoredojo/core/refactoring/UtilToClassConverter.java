@@ -1,7 +1,8 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
-import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.application.ApplicationManager;
@@ -17,7 +18,7 @@ public class UtilToClassConverter implements CompletionCallback
     @Override
     public void run(Object[] result)
     {
-        final DeclareUtil.DeclareStatementItems item = new DeclareUtil().getDeclareStatementFromParsedStatement(result);
+        final DeclareStatementItems item = new DeclareResolver().getDeclareStatementFromParsedStatement(result);
 
         final List<JSExpressionStatement> methods = (List<JSExpressionStatement>) result[2];
         final JSVarStatement declarationVariable = (JSVarStatement) result[3];

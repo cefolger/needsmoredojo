@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.util;
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -24,20 +25,20 @@ public class TemplatedWidgetUtil {
 
     public PsiFile findTemplatePath()
     {
-        final DeclareUtil.DeclareStatementItems[] utilItem = new DeclareUtil.DeclareStatementItems[1];
+        final DeclareStatementItems[] utilItem = new DeclareStatementItems[1];
 
         // this will call run() when the declare object is found
         file.acceptChildren(new DeclareResolver().getDefineVisitorToRetrieveDeclareObject(new CompletionCallback() {
             @Override
             public void run(Object[] result) {
-                utilItem[0] = new DeclareUtil().getDeclareStatementFromParsedStatement(result);
+                utilItem[0] = new DeclareResolver().getDeclareStatementFromParsedStatement(result);
             }
         }));
 
         return findTemplateFromDeclare(utilItem[0]);
     }
 
-    public PsiFile findTemplateFromDeclare(@Nullable DeclareUtil.DeclareStatementItems statement)
+    public PsiFile findTemplateFromDeclare(@Nullable DeclareStatementItems statement)
     {
         if(statement == null)
         {

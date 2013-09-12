@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.util;
+package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
 import com.chrisfolger.needsmoredojo.testutil.*;
 import com.intellij.lang.javascript.psi.JSCallExpression;
@@ -11,14 +11,14 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class TestDeclareUtil
+public class TestDeclareResolver
 {
-    private DeclareUtil util;
+    private DeclareResolver resolver;
 
     @Before
     public void setup()
     {
-        util = new DeclareUtil();
+        resolver = new DeclareResolver();
     }
 
     @Test
@@ -35,7 +35,7 @@ public class TestDeclareUtil
         JSCallExpression callExpression = new MockJSCallExpression(arguments);
         Object[] statements = new Object[] {callExpression, null};
 
-        DeclareUtil.DeclareStatementItems result = util.getDeclareStatementFromParsedStatement(statements);
+        DeclareStatementItems result = resolver.getDeclareStatementFromParsedStatement(statements);
         assertEquals(2, result.getExpressionsToMixin().length);
         assertEquals(1, result.getMethodsToConvert().length);
     }
@@ -54,7 +54,7 @@ public class TestDeclareUtil
         JSCallExpression callExpression = new MockJSCallExpression(arguments);
         Object[] statements = new Object[] {callExpression, null};
 
-        DeclareUtil.DeclareStatementItems result = util.getDeclareStatementFromParsedStatement(statements);
+        DeclareStatementItems result = resolver.getDeclareStatementFromParsedStatement(statements);
         assertEquals(0, result.getExpressionsToMixin().length);
         assertEquals(1, result.getMethodsToConvert().length);
     }
@@ -74,7 +74,7 @@ public class TestDeclareUtil
         JSCallExpression callExpression = new MockJSCallExpression(arguments);
         Object[] statements = new Object[] {callExpression, null};
 
-        DeclareUtil.DeclareStatementItems result = util.getDeclareStatementFromParsedStatement(statements);
+        DeclareStatementItems result = resolver.getDeclareStatementFromParsedStatement(statements);
         assertEquals("test class", result.getClassName().getText());
     }
 
@@ -93,7 +93,7 @@ public class TestDeclareUtil
         JSCallExpression callExpression = new MockJSCallExpression(arguments);
         Object[] statements = new Object[] {callExpression, null};
 
-        DeclareUtil.DeclareStatementItems result = util.getDeclareStatementFromParsedStatement(statements);
+        DeclareStatementItems result = resolver.getDeclareStatementFromParsedStatement(statements);
         assertEquals(2, result.getExpressionsToMixin().length);
         assertEquals(1, result.getMethodsToConvert().length);
     }

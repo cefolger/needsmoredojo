@@ -1,7 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
-import com.chrisfolger.needsmoredojo.core.util.DeclareUtil;
 import com.intellij.lang.javascript.psi.*;
 
 public class DeclareResolver
@@ -80,5 +79,63 @@ public class DeclareResolver
                 return;
             }
         };
+    }
+
+    public DeclareStatementItems getDeclareStatementFromParsedStatement(Object[] result)
+    {
+        return getDeclareStatementFromParsedStatement(result, true);
+    }
+
+    public DeclareStatementItems getDeclareStatementFromParsedStatement(Object[] result, boolean parseMethodsFromObjectLiteral)
+    {
+        JSCallExpression expression = (JSCallExpression) result[0];
+
+        // this will be used to determine what we mixin to the util
+        JSExpression[] expressionsToMixin = new JSExpression[0];
+
+        /*
+            so many different possibilities...
+
+            declare(null, {});
+            declare([], {});
+            declare(string, [], {});
+            declare(string, mixin, {});
+            declare(mixin, {});
+
+            dojo.declare(...) (legacy)
+         */
+        int objectLiteralIndex = 1;
+        if(expression.getArguments()[0] instanceof JSArrayLiteralExpression)
+        {
+            JSArrayLiteralExpression arrayLiteral = (JSArrayLiteralExpression) expression.getArguments()[0];
+            expressionsToMixin = arrayLiteral.getExpressions();
+        }
+        else if (expression.getArguments()[0] instanceof JSReferenceExpression)
+        {
+            expressionsToMixin = new JSExpression[] { expression.getArguments()[0] };
+        }
+        else if (expression.getArguments().length == 3 && expression.getArguments()[1] instanceof JSReferenceExpression)
+        {
+            expressionsToMixin = new JSExpression[] { expression.getArguments()[1] };
+            objectLiteralIndex = 2;
+        }
+        else if (expression.getArguments().length == 3 && expression.getArguments()[1] instanceof JSArrayLiteralExpression)
+        {
+            JSArrayLiteralExpression arrayLiteral = (JSArrayLiteralExpression) expression.getArguments()[1];
+            expressionsToMixin = arrayLiteral.getExpressions();
+            objectLiteralIndex = 2;
+        }
+
+        JSLiteralExpression className = null;
+        if(expression.getArguments()[0] instanceof JSLiteralExpression)
+        {
+            className = (JSLiteralExpression) expression.getArguments()[0];
+        }
+
+        // now we need to get the object literal with all of the function names
+        JSObjectLiteralExpression literal = (JSObjectLiteralExpression) expression.getArguments()[objectLiteralIndex];
+        JSProperty[] methodsToConvert = literal.getProperties();
+
+        return new DeclareStatementItems(className, expressionsToMixin, methodsToConvert, (JSElement) result[1]);
     }
 }
