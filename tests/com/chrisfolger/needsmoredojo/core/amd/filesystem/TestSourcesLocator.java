@@ -1,7 +1,5 @@
 package com.chrisfolger.needsmoredojo.core.amd.filesystem;
 
-import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
-import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import org.junit.Before;
 import org.junit.Test;
 

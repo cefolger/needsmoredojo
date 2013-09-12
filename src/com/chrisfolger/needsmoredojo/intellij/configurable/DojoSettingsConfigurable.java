@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.configurable;
 
-import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
+import com.chrisfolger.needsmoredojo.core.amd.autodetection.SourcesAutoDetector;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.ide.DataManager;

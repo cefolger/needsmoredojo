@@ -1,6 +1,5 @@
 package com.chrisfolger.needsmoredojo.core.amd.filesystem;
 
-import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;

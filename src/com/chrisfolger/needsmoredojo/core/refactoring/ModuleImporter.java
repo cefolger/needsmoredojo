@@ -1,12 +1,11 @@
 package com.chrisfolger.needsmoredojo.core.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
-import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
-import com.chrisfolger.needsmoredojo.core.amd.SourcesAutoDetector;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
-import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.openapi.application.ApplicationManager;
@@ -341,7 +340,7 @@ public class ModuleImporter
                 // TODO ignore dojo files for this release
                 // TODO rename templates successfully???
                 // TODO intelligently decide whether to use relative or absolute paths
-                if(SourcesAutoDetector.isInDojoSources(file.getCanonicalPath()))
+                if(DojoModuleFileResolver.isInDojoSources(file.getCanonicalPath()))
                 {
                     continue;
                 }

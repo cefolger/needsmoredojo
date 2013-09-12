@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.importing;
 
-import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.util.FileUtil;

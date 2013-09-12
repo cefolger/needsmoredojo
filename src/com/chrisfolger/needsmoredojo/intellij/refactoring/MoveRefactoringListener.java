@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
-import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.refactoring.ModuleImporter;

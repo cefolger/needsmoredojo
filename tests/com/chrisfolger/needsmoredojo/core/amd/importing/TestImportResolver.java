@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.importing;
 
-import com.chrisfolger.needsmoredojo.core.amd.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.testutil.MockPsiFile;
 import com.intellij.psi.PsiFile;
 import org.junit.Before;

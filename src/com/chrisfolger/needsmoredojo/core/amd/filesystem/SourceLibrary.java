@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.amd;
+package com.chrisfolger.needsmoredojo.core.amd.filesystem;
 
 public class SourceLibrary
 {
