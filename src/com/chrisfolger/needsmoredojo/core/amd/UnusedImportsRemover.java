@@ -1,7 +1,10 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
-import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
-import com.intellij.lang.javascript.psi.*;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
+import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
+import com.intellij.lang.javascript.psi.JSNewExpression;
+import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
+import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
@@ -106,7 +109,7 @@ public class UnusedImportsRemover
     {
         try
         {
-            PsiElement trailingComma = DefineUtil.getNearestComma(literal.getLastChild());
+            PsiElement trailingComma = AMDPsiUtil.getNearestComma(literal.getLastChild());
             if(trailingComma != null)
             {
                 deleteList.add(trailingComma);
@@ -124,7 +127,7 @@ public class UnusedImportsRemover
          */
         try
         {
-            PsiElement trailingComma = DefineUtil.getNearestComma(function.getLastChild());
+            PsiElement trailingComma = AMDPsiUtil.getNearestComma(function.getLastChild());
             if(trailingComma != null)
             {
                 deleteList.add(trailingComma);
@@ -237,7 +240,7 @@ public class UnusedImportsRemover
         PsiElement sibling = element.getNextSibling();
         if(sibling != null && (sibling instanceof PsiWhiteSpace || sibling.getText().equals("]")))
         {
-            deleteList.add(DefineUtil.getNearestComma(sibling));
+            deleteList.add(AMDPsiUtil.getNearestComma(sibling));
         }
 
         // only remove the next sibling if it's a comma

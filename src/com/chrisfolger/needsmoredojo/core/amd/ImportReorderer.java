@@ -1,7 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
-import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
@@ -146,7 +146,7 @@ public class ImportReorderer
 
         // get the parameter element
         JSArgumentList list = (JSArgumentList) defines[0].getParent().getParent();
-        DefineStatement items = new DefineUtil().getDefineStatementItemsFromArguments(list.getArguments());
+        DefineStatement items = new DefineResolver().getDefineStatementItemsFromArguments(list.getArguments());
 
         int sourceIndex = getIndexInParent(defines[0]);
         int destinationIndex = getIndexInParent(defines[1]);

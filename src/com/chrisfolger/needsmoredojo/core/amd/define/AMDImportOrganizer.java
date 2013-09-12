@@ -1,6 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.define;
 
-import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -200,7 +200,7 @@ public class AMDImportOrganizer
         {
             try
             {
-                PsiElement trailingComma = DefineUtil.getNearestComma(parent.getLastChild());
+                PsiElement trailingComma = AMDPsiUtil.getNearestComma(parent.getLastChild());
                 if(trailingComma != null)
                 {
                     trailingComma.delete();

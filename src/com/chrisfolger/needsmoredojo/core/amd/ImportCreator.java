@@ -1,11 +1,10 @@
 package com.chrisfolger.needsmoredojo.core.amd;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
-import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
-import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
@@ -391,7 +390,7 @@ public class ImportCreator
                 JSFunction function = (JSFunction) result[1];
 
                 visited[0] = true;
-                DefineStatement items = new DefineUtil().getDefineStatementItemsFromArguments(callExpression.getArguments());
+                DefineStatement items = new DefineResolver().getDefineStatementItemsFromArguments(callExpression.getArguments());
                 createImport(module, items.getArguments(), function.getParameterList());
             }
         });

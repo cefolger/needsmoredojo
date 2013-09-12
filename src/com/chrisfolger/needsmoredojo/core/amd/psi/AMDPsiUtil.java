@@ -1,6 +1,8 @@
 package com.chrisfolger.needsmoredojo.core.amd.psi;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.intellij.lang.javascript.psi.JSLiteralExpression;
+import com.intellij.lang.javascript.psi.JSParameter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
@@ -26,6 +28,22 @@ public class AMDPsiUtil
             {
                 return defines.get(i);
             }
+        }
+
+        return null;
+    }
+
+    public static PsiElement getNearestComma(PsiElement start)
+    {
+        PsiElement sibling = start.getPrevSibling();
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
+        {
+            if(sibling.getText().equals(","))
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getPrevSibling();
         }
 
         return null;

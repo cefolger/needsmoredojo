@@ -1,7 +1,6 @@
 package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
-import com.chrisfolger.needsmoredojo.core.util.DefineUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -37,7 +36,7 @@ public class DefineResolver
                         return;
                     }
 
-                    DefineStatement items = new DefineUtil().getDefineStatementItemsFromArguments(arguments);
+                    DefineStatement items = getDefineStatementItemsFromArguments(arguments);
                     if(items == null)
                     {
                         super.visitJSCallExpression(element);
@@ -103,7 +102,7 @@ public class DefineResolver
                 }
 
                 // get the function
-                DefineStatement items = new DefineUtil().getDefineStatementItemsFromArguments(element.getArguments());
+                DefineStatement items = getDefineStatementItemsFromArguments(element.getArguments());
                 if(items == null)
                 {
                     onDefineFound.run(null);
@@ -137,7 +136,7 @@ public class DefineResolver
                 }
 
                 JSCallExpression callExpression = (JSCallExpression) result[0];
-                items[0] = new DefineUtil().getDefineStatementItemsFromArguments(callExpression.getArguments());
+                items[0] = getDefineStatementItemsFromArguments(callExpression.getArguments());
             }
         }));
 
@@ -147,5 +146,33 @@ public class DefineResolver
         }
 
         return items[0];
+    }
+
+    public DefineStatement getDefineStatementItemsFromArguments(JSExpression[] arguments)
+    {
+        // account for when we get this (even though this is defined as legacy) :
+        /**
+         * define('classname', [], function(...){});
+         */
+        int argumentOffset = 0;
+        String className = null;
+
+        if(arguments.length > 1 && arguments[0] instanceof JSLiteralExpression && arguments[1] instanceof JSArrayLiteralExpression)
+        {
+            argumentOffset = 1;
+            className = arguments[0].getText();
+        }
+        else if(!(arguments.length > 1 && arguments[0] instanceof JSArrayLiteralExpression && arguments[1] instanceof JSFunctionExpression))
+        {
+            return null;
+        }
+
+        // get the first argument which should be an array literal
+        JSArrayLiteralExpression literalExpressions = (JSArrayLiteralExpression) arguments[0 + argumentOffset];
+
+        // get the second argument which should be a function
+        JSFunctionExpression function = (JSFunctionExpression) arguments[1 + argumentOffset];
+
+        return new DefineStatement(literalExpressions, function, className);
     }
 }
