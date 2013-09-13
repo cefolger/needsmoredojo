@@ -2,10 +2,10 @@ package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
-import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
-import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
-import com.intellij.lang.javascript.psi.*;
+import com.intellij.lang.javascript.psi.JSBinaryExpression;
+import com.intellij.lang.javascript.psi.JSLiteralExpression;
+import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;

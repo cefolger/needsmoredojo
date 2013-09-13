@@ -145,6 +145,9 @@
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removesingleimport" class="com.chrisfolger.needsmoredojo.intellij.actions.DeleteSingleImportAction" text="Remove Selected Import" description="Removes the current AMD import">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="4"/>
                 </action>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.cycli" class="com.chrisfolger.needsmoredojo.intellij.actions.CyclicDependencyAnalysisAction" text="Analyze Cyclic Dependencies" description="Analyze Cyclic Dependencies">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="5"/>
+                </action>
             </group>
 
             <separator/>

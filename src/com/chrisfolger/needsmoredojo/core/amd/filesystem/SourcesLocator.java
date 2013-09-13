@@ -36,6 +36,11 @@ public class SourcesLocator
                 }
 
                 result = source.findFileByRelativePath(parsedPath);
+
+                if(result == null)
+                {
+                    result = sourceFileParentDirectory.getVirtualFile().findFileByRelativePath(parsedPath);
+                }
             }
             else
             {
