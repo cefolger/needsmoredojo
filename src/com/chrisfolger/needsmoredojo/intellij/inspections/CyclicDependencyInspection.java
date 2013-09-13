@@ -128,7 +128,7 @@ public class CyclicDependencyInspection extends LocalInspectionTool
                 if(define.getText().equals(lastDependency.modulePath))
                 {
                     LocalQuickFix fix = null;
-                    descriptors.add(manager.createProblemDescriptor(define, "A cyclic dependency exists with the path: \n" + path, fix, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true));
+                    descriptors.add(manager.createProblemDescriptor(define, "A cyclic dependency exists with the path: \n" + path, fix, ProblemHighlightType.GENERIC_ERROR, true));
                 }
             }
         }
