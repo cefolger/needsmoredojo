@@ -27,7 +27,27 @@ import java.util.Set;
  */
 public class CyclicDependencyAnalysisAction extends JavaScriptAction
 {
+    private class DependencyNode
+    {
+        private List<DependencyNode> nodes;
+        private DependencyNode parent;
+        private PsiFile file;
+
+        public DependencyNode(PsiFile file, DependencyNode parent)
+        {
+            nodes = new ArrayList<DependencyNode>();
+            this.parent = parent;
+            this.file = file;
+        }
+
+        public void add(DependencyNode node)
+        {
+            nodes.add(node);
+        }
+    }
+
     private Set<String> dependencies;
+    private PsiFile originalFile;
 
     @Override
     public void actionPerformed(AnActionEvent e)
@@ -35,18 +55,33 @@ public class CyclicDependencyAnalysisAction extends JavaScriptAction
         dependencies = new HashSet<String>();
 
         final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
+        originalFile = psiFile;
 
-        addDependenciesOfFile(e.getProject(), psiFile, dependencies);
+        DependencyNode cycle = addDependenciesOfFile(e.getProject(), psiFile, dependencies, null);
 
-        if(dependencies.contains(psiFile.getName()))
+        if(cycle != null)
         {
-            int i=0;
+            String path = cycle.file.getName();
+
+            DependencyNode parent = cycle.parent;
+            while(parent != null)
+            {
+                path = parent.file.getName() + " -> " + path;
+                parent = parent.parent;
+            }
+
+            path = path;
         }
-        int i=0;
     }
 
-    private void addDependenciesOfFile(Project project, PsiFile psiFile, Set<String> dependencies)
+    private DependencyNode addDependenciesOfFile(Project project, PsiFile psiFile, Set<String> dependencies, DependencyNode parent)
     {
+        DependencyNode node = new DependencyNode(psiFile, parent);
+        if(parent != null)
+        {
+            parent.add(node);
+        }
+
         DefineResolver resolver = new DefineResolver();
         final List<PsiElement> parameters = new ArrayList<PsiElement>();
         final List<PsiElement> defines = new ArrayList<PsiElement>();
@@ -72,6 +107,12 @@ public class CyclicDependencyAnalysisAction extends JavaScriptAction
             }
 
             PsiFile templateFile = PsiManager.getInstance(psiFile.getProject()).findFile(htmlFile);
+            if(templateFile.getName().equals(originalFile.getName()))
+            {
+                DependencyNode original = new DependencyNode(originalFile, node);
+                node.add(original);
+                return original;
+            }
 
             if(dependencies.contains(templateFile.getName()))
             {
@@ -79,8 +120,14 @@ public class CyclicDependencyAnalysisAction extends JavaScriptAction
             }
 
             dependencies.add(templateFile.getName());
-            addDependenciesOfFile(project, templateFile, dependencies);
+            DependencyNode result = addDependenciesOfFile(project, templateFile, dependencies, node);
+            if(result != null)
+            {
+                return result;
+            }
         }
+
+        return null;
     }
 
 }
