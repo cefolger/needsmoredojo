@@ -2,7 +2,7 @@ package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.AMDValidator;
 import com.chrisfolger.needsmoredojo.core.util.HighlightingUtil;
-import com.chrisfolger.needsmoredojo.core.util.TemplatedWidgetUtil;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.TemplatedWidgetUtil;
 import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;

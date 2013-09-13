@@ -16,14 +16,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class ImportCreator
 {
-
-
-
-
-
-
-
-
     protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
         String parameter = NameResolver.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());

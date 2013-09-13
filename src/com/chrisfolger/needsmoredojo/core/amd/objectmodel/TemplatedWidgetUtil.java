@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.util;
+package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;

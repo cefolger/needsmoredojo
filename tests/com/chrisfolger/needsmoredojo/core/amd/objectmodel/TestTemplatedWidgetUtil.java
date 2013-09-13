@@ -1,9 +1,8 @@
-package com.chrisfolger.needsmoredojo.core.util;
+package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.TemplatedWidgetUtil;
 import com.chrisfolger.needsmoredojo.testutil.BasicPsiElements;
-import com.chrisfolger.needsmoredojo.testutil.MockJSExpressionStatement;
 import com.intellij.psi.PsiElement;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.regex.Pattern;

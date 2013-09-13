@@ -56,11 +56,6 @@ public class UtilFinder
         };
     }
 
-    public void convertToClassPattern(PsiFile file)
-    {
-        file.acceptChildren(getDefineVisitor());
-    }
-
     public JSRecursiveElementVisitor getDefineVisitor()
     {
         return new JSRecursiveElementVisitor() {

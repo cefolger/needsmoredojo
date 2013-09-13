@@ -8,6 +8,7 @@ import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -121,5 +122,10 @@ public class UtilToClassConverter implements CompletionCallback
         }
         originalReturnStatement.delete();
         declarationVariable.delete();
+    }
+
+    public void convertToClassPattern(PsiFile file)
+    {
+        file.acceptChildren(new UtilFinder().getDefineVisitor());
     }
 }
