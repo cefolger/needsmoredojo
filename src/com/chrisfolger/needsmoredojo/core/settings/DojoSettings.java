@@ -24,6 +24,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private String projectSourcesDirectory;
     private boolean preferRelativeImports;
     private boolean dojoSourcesShareProjectSourcesRoot;
+    private boolean needsMoreDojoEnabled;
 
     public DojoSettings()
     {
@@ -37,6 +38,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         amdImportNamingExceptions.put("doh/main", "doh");
         preferRelativeImports = false;
         dojoSourcesShareProjectSourcesRoot = false;
+        needsMoreDojoEnabled = true;
     }
 
     public @NotNull LinkedHashMap<String, String> getExceptionsMap()
@@ -113,5 +115,13 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     @Override
     public void loadState(DojoSettings state) {
         XmlSerializerUtil.copyBean(state, this);
+    }
+
+    public boolean isNeedsMoreDojoEnabled() {
+        return needsMoreDojoEnabled;
+    }
+
+    public void setNeedsMoreDojoEnabled(boolean needsMoreDojoEnabled) {
+        this.needsMoreDojoEnabled = needsMoreDojoEnabled;
     }
 }

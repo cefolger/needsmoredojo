@@ -46,6 +46,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JButton addRUIModule;
     private JButton removeRUIModule;
     private JCheckBox dojoSourcesIsTheSame;
+    private JCheckBox pluginEnabled;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -133,7 +134,8 @@ public class DojoSettingsConfigurable implements Configurable {
         modified = !dojoSourcesText.getText().equals(settingsService.getDojoSourcesDirectory()) ||
                 !projectSourcesText.getText().equals(settingsService.getProjectSourcesDirectory()) ||
                 preferRelativePathsWhenCheckBox.isSelected() != settingsService.isPreferRelativeImports() ||
-                dojoSourcesIsTheSame.isSelected() != settingsService.isDojoSourcesShareProjectSourcesRoot();
+                dojoSourcesIsTheSame.isSelected() != settingsService.isDojoSourcesShareProjectSourcesRoot() ||
+                pluginEnabled.isSelected() != settingsService.isNeedsMoreDojoEnabled();
 
     }
 
@@ -205,10 +207,19 @@ public class DojoSettingsConfigurable implements Configurable {
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
         dojoSourcesIsTheSame.setSelected(settingsService.isDojoSourcesShareProjectSourcesRoot());
 
+        pluginEnabled.setSelected(settingsService.isNeedsMoreDojoEnabled());
+
         dojoSourcesText.getTextField().addKeyListener(new TextChangedListener());
         projectSourcesText.getTextField().addKeyListener(new TextChangedListener());
 
         preferRelativePathsWhenCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updateModifiedState();
+            }
+        });
+
+        pluginEnabled.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 updateModifiedState();
@@ -289,6 +300,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
         settingsService.setPreferRelativeImports(preferRelativePathsWhenCheckBox.isSelected());
         settingsService.setDojoSourcesShareProjectSourcesRoot(dojoSourcesIsTheSame.isSelected());
+        settingsService.setNeedsMoreDojoEnabled(pluginEnabled.isSelected());
 
         modified = false;
     }
@@ -310,6 +322,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
         projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
+        pluginEnabled.setSelected(settingsService.isNeedsMoreDojoEnabled());
 
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
 
