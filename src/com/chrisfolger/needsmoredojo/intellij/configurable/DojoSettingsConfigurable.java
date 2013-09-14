@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -52,6 +53,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private String projectSourceString;
     private DojoSettings settingsService;
     private boolean modified = false;
+    private boolean initialized = false;
 
     public String getDisplayName() {
         return "Needs More Dojo";
@@ -208,6 +210,8 @@ public class DojoSettingsConfigurable implements Configurable {
         dojoSourcesIsTheSame.setSelected(settingsService.isDojoSourcesShareProjectSourcesRoot());
 
         pluginEnabled.setSelected(settingsService.isNeedsMoreDojoEnabled());
+        updatePluginEnabledUI();
+        initialized = true;
 
         dojoSourcesText.getTextField().addKeyListener(new TextChangedListener());
         projectSourcesText.getTextField().addKeyListener(new TextChangedListener());
@@ -223,21 +227,14 @@ public class DojoSettingsConfigurable implements Configurable {
             @Override
             public void stateChanged(ChangeEvent e) {
                 updateModifiedState();
+                updatePluginEnabledUI();
             }
         });
 
         dojoSourcesIsTheSame.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if(dojoSourcesIsTheSame.isSelected())
-                {
-                    dojoSourcesText.setEnabled(false);
-                }
-                else
-                {
-                    dojoSourcesText.setEnabled(true);
-                }
-
+                updateSourcesEnabledState();
                 updateModifiedState();
             }
         });
@@ -248,6 +245,18 @@ public class DojoSettingsConfigurable implements Configurable {
     public Icon getIcon()
     {
         return null;
+    }
+
+    private void updateSourcesEnabledState()
+    {
+        if(dojoSourcesIsTheSame.isSelected())
+        {
+            dojoSourcesText.setEnabled(false);
+        }
+        else
+        {
+            dojoSourcesText.setEnabled(true);
+        }
     }
 
     private void addAutoDetectedSource(Collection<String> possibleSourceRoots)
@@ -327,5 +336,33 @@ public class DojoSettingsConfigurable implements Configurable {
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
 
         modified = false;
+    }
+
+    private void updatePluginEnabledUI()
+    {
+        if(!pluginEnabled.isSelected())
+        {
+            for(Component component : myPanel.getComponents())
+            {
+                if(!component.equals(pluginEnabled))
+                {
+                    component.setEnabled(false);
+                }
+            }
+        }
+        else
+        {
+            for(Component component : myPanel.getComponents())
+            {
+                if(!component.equals(pluginEnabled))
+                {
+                    component.setEnabled(true);
+                }
+            }
+
+            // reset the dojo source textbox being enabled/disabled based on whether its checked as being
+            // the same as project sources
+            updateSourcesEnabledState();
+        }
     }
 }
