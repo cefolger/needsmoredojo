@@ -61,6 +61,28 @@ public class AMDPsiUtil
         return null;
     }
 
+    /**
+     * gets the next comma after an element, but stops if a literal or other element is encountered
+     *
+     * @param start
+     * @return
+     */
+    public static PsiElement getNextComma(PsiElement start)
+    {
+        PsiElement sibling = start.getNextSibling();
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
+        {
+            if(sibling.getText().equals(","))
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getNextSibling();
+        }
+
+        return null;
+    }
+
     public static JSLiteralExpression getNearestLiteralExpression(PsiElement element, Direction direction)
     {
         PsiElement node = element;
@@ -136,6 +158,13 @@ public class AMDPsiUtil
         }
     }
 
+    /**
+     * Removes a define literal from the array
+     *
+     * @param element the element to remove
+     * @param deleteList a list that contains a list of elements to delete. This is done in case we want to run the
+     *                   actual deletion later.
+     */
     public static void removeDefineLiteral(PsiElement element, Set<PsiElement> deleteList)
     {
         deleteList.add(element);
@@ -148,6 +177,12 @@ public class AMDPsiUtil
         }
 
         // only remove the next sibling if it's a comma
+        PsiElement comma = getNextComma(element);
+        if(comma != null)
+        {
+            deleteList.add(comma);
+        }
+
         PsiElement nextSibling = element.getNextSibling();
         if(nextSibling != null && !nextSibling.getText().equals("]"))
         {
