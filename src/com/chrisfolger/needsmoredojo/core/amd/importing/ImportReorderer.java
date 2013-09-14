@@ -49,6 +49,10 @@ public class ImportReorderer
             // cursor wasn't in the right spot
             return new PsiElement[0];
         }
+        else if (direction == AMDPsiUtil.Direction.NONE)
+        {
+            return new PsiElement[] { source };
+        }
 
         // find destination
         JSLiteralExpression destination = null;

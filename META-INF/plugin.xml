@@ -151,6 +151,9 @@
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removesingleimport" class="com.chrisfolger.needsmoredojo.intellij.actions.DeleteSingleImportAction" text="Remove Selected Import" description="Removes the current AMD import">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="4"/>
                 </action>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.togglepathsyntax" class="com.chrisfolger.needsmoredojo.intellij.actions.TogglePathSyntaxAction" text="Switch AMD module path syntax" description="Toggles between absolute and relative path syntax">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="S"/>
+                </action>
             </group>
 
             <separator/>

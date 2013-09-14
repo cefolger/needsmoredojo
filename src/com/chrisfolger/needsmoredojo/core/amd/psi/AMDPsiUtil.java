@@ -20,7 +20,8 @@ public class AMDPsiUtil
     public enum Direction
     {
         UP,
-        DOWN
+        DOWN,
+        NONE
     }
 
     public static PsiElement getDefineForVariable(PsiFile file, String textToCompare)
