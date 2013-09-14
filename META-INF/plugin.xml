@@ -42,6 +42,8 @@
                 <li>Add ability to toggle between relative and absolute AMD path syntax </li>
                 <li>Add ability to ignore certain unused imports with /*NMD:Ignore*/ block </li>
                 <li>Add quick fix for renaming a parameter to match its define literal if a mismatch is detected </li>
+                <li>If you use one line per define literal, line comments after the literal will have their order
+                preserved when reorganizing (Issue #53)</li>
                 <li>Minor bug fixes (#107)</li>
             </ul>
 
