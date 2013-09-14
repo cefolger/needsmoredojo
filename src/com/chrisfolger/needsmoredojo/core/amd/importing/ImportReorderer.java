@@ -2,14 +2,20 @@ package com.chrisfolger.needsmoredojo.core.amd.importing;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.chrisfolger.needsmoredojo.core.util.PsiUtil;
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
+import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nullable;
 
 public class ImportReorderer
 {
@@ -113,5 +119,47 @@ public class ImportReorderer
 
         editor.getCaretModel().moveToOffset(elementsWithPositions[0].getTextOffset());
         editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+    }
+
+    public @Nullable PsiElement getOppositePathSyntaxFromImport(PsiElement define, PsiFile file)
+    {
+        if(define == null)
+        {
+            return null;
+        }
+
+        boolean relative = define.getText().charAt(1) == '.';
+        char quote = define.getText().charAt(0);
+        String moduleText = define.getText().replaceAll("'", "").replaceAll("\"", "");
+        String moduleName = NameResolver.getModuleName(moduleText);
+
+        // get the list of possible strings/PsiFiles that would match it
+        PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(file.getProject(), moduleName, true);
+
+        // get the files that are being imported
+        String[] results = new ImportResolver().getChoicesFromFiles(files, new SourcesLocator().getSourceLibraries(file.getProject()).toArray(new SourceLibrary[0]), moduleName, define.getContainingFile(), false);
+        String choice = results[0];
+
+        if(results.length > 1)
+        {
+            if(results[1].startsWith(".") && !relative)
+            {
+                choice = results[1];
+            }
+            else if (!results[1].startsWith(".") && relative)
+            {
+                choice = results[1];
+            }
+            // TODO bug if you have cursor over a plugin resource string.
+        }
+
+        if(choice.equals(moduleText))
+        {
+            return null; // no point in replacing with the same thing
+        }
+
+        PsiElement replacement = JSChangeUtil.createExpressionFromText(define.getProject(), quote + choice + quote).getPsi();
+
+        return replacement;
     }
 }
