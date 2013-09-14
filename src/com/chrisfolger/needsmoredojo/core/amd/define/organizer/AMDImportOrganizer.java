@@ -5,6 +5,7 @@ import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,21 @@ public class AMDImportOrganizer
      */
     public void reorder(PsiElement[] unsorted, SortedPsiElementAdapter[] sorted, boolean deleteTrailingComma, SortingResult result)
     {
+        boolean enableLineCommentPreservation = false;
+        String parentString = "";
+        if(unsorted.length > 0)
+        {
+            parentString = unsorted[0].getParent().getText();
+            int count = StringUtils.countMatches(parentString, "\n");
+            // in this special case, where each define literal is on its own line, it's safe to
+            // try and preserve line comment order.
+            // else, assume we can't be smart enough to try that.
+            if(count >= unsorted.length)
+            {
+                enableLineCommentPreservation = true;
+            }
+        }
+
         PsiElement parent = unsorted[0].getParent();
 
         char quote = '\'';
@@ -80,12 +96,12 @@ public class AMDImportOrganizer
                 // also check if there is a regular comment and move it.
                 // this is only for the case where the define literals are separated by lines and there is
                 // a comment at the end of the line (see dijit/layout/ContentPane for an example)
-                if(regularComment != null)
+                if(enableLineCommentPreservation && regularComment != null)
                 {
                     deleteList.add(regularComment);
                 }
 
-                if(sorted[i].getRegularComment() != null)
+                if(enableLineCommentPreservation && sorted[i].getRegularComment() != null)
                 {
                     PsiElement terminator = AMDPsiUtil.getNextDefineTerminator(unsorted[i]);
                     unsorted[i].getParent().addBefore(sorted[i].getRegularComment(), terminator);
