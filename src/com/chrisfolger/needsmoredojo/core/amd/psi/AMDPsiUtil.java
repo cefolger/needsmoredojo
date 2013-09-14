@@ -83,6 +83,22 @@ public class AMDPsiUtil
         return null;
     }
 
+    public static PsiElement getNextElementOfType(PsiElement start, Class type, Set<String> terminators)
+    {
+        PsiElement sibling = start.getNextSibling();
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter) && !(sibling.getText().equals("]")) && !terminators.contains(sibling.getText()))
+        {
+            if(type.isInstance(sibling))
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getNextSibling();
+        }
+
+        return null;
+    }
+
     public static JSLiteralExpression getNearestLiteralExpression(PsiElement element, Direction direction)
     {
         PsiElement node = element;
