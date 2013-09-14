@@ -156,6 +156,7 @@ public class CyclicDependencyInspection extends LocalInspectionTool
         {
             String define = element.getText().replaceAll("'", "").replaceAll("\"", "") + ".js";
 
+            // TODO exclude dojo sources when they are referenced relatively
             // TODO the correct way to do this is probably through ModuleImporter
             // now open the file and find the reference in it
             VirtualFile htmlFile = SourcesLocator.getAMDImportFile(element.getProject(), define, psiFile.getContainingFile().getContainingDirectory());
