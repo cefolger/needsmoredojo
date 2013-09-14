@@ -121,6 +121,14 @@ public class ImportReorderer
         editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
     }
 
+    /**
+     * Given a module that is being imported using absolute or relative path syntax, return the module
+     * import with the other syntax, if possible.
+     *
+     * @param define
+     * @param file
+     * @return
+     */
     public @Nullable PsiElement getOppositePathSyntaxFromImport(PsiElement define, PsiFile file)
     {
         if(define == null)
@@ -132,25 +140,25 @@ public class ImportReorderer
         char quote = define.getText().charAt(0);
         String moduleText = define.getText().replaceAll("'", "").replaceAll("\"", "");
         String moduleName = NameResolver.getModuleName(moduleText);
+        String resourceId = NameResolver.getAMDPluginResourceIfPossible(moduleText, true);
 
         // get the list of possible strings/PsiFiles that would match it
         PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(file.getProject(), moduleName, true);
 
         // get the files that are being imported
         String[] results = new ImportResolver().getChoicesFromFiles(files, new SourcesLocator().getSourceLibraries(file.getProject()).toArray(new SourceLibrary[0]), moduleName, define.getContainingFile(), false);
-        String choice = results[0];
+        String choice = results[0] + resourceId;
 
         if(results.length > 1)
         {
             if(results[1].startsWith(".") && !relative)
             {
-                choice = results[1];
+                choice = results[1] + resourceId;
             }
             else if (!results[1].startsWith(".") && relative)
             {
-                choice = results[1];
+                choice = results[1] + resourceId;
             }
-            // TODO bug if you have cursor over a plugin resource string.
         }
 
         if(choice.equals(moduleText))

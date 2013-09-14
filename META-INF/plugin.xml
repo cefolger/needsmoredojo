@@ -38,6 +38,7 @@
   <change-notes><![CDATA[
             <b>0.5.1</b>
             <ul>
+                <li>Add ability to toggle between relative and absolute AMD path syntax </li>
                 <li>Add ability to ignore certain unused imports with /*NMD:Ignore*/ block </li>
                 <li>Minor bug fixes (#107)</li>
             </ul>
