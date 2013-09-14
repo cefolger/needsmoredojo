@@ -127,7 +127,7 @@ public class UnusedImportsRemover
         for(int i=0;i<defines.size();i++)
         {
             PsiElement element = defines.get(i);
-            PsiElement ignoreComment = AMDPsiUtil.getNextElementOfType(element, PsiComment.class, terminators);
+            PsiElement ignoreComment = AMDPsiUtil.getNextElementOfType(element, PsiComment.class, terminators, new HashSet<String>());
             if(ignoreComment != null && ignoreComment.getText().equals(IGNORE_COMMENT))
             {
                 defines.remove(i);

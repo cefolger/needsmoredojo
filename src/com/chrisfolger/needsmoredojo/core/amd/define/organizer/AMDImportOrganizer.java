@@ -1,7 +1,5 @@
 package com.chrisfolger.needsmoredojo.core.amd.define.organizer;
 
-import com.chrisfolger.needsmoredojo.core.amd.define.organizer.SortedPsiElementAdapter;
-import com.chrisfolger.needsmoredojo.core.amd.define.organizer.SortingResult;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.openapi.project.Project;
@@ -67,6 +65,8 @@ public class AMDImportOrganizer
                 // in the future maybe it can be made more generic.
                 // we have to delete it because this might be from a different import
                 PsiElement ignoreComment = AMDPsiUtil.getIgnoreCommentAfterLiteral(unsorted[i]);
+                PsiElement regularComment = AMDPsiUtil.getNonIgnoreCommentAfterLiteral(unsorted[i]);
+
                 if(ignoreComment != null)
                 {
                     deleteList.add(ignoreComment);
@@ -75,6 +75,14 @@ public class AMDImportOrganizer
                 if(sorted[i].getIgnoreComment() != null)
                 {
                     unsorted[i].getParent().addAfter(sorted[i].getIgnoreComment(), unsorted[i]);
+                }
+
+                // also check if there is a regular comment and move it.
+                // this is only for the case where the define literals are separated by lines and there is
+                // a comment at the end of the line (see dijit/layout/ContentPane for an example)
+                if(regularComment != null)
+                {
+                    deleteList.add(regularComment);
                 }
 
                 unsorted[i].replace(newElement);
