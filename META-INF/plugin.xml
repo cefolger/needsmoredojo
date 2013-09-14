@@ -44,7 +44,7 @@
                 <li>Add quick fix for renaming a parameter to match its define literal if a mismatch is detected </li>
                 <li>If you use one line per define literal, line comments after the literal will have their order
                 preserved when reorganizing (Issue #53)</li>
-                <li>Minor bug fixes (#107)</li>
+                <li>Minor bug fixes (#107, #68)</li>
             </ul>
 
             <b>0.5</b>
