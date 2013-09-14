@@ -2,11 +2,13 @@ package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
-import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
-import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
-import com.intellij.lang.javascript.psi.*;
+import com.intellij.lang.javascript.psi.JSBinaryExpression;
+import com.intellij.lang.javascript.psi.JSLiteralExpression;
+import com.intellij.lang.javascript.psi.JSProperty;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -101,5 +103,45 @@ public class TemplatedWidgetUtil {
                 Pattern.compile("data-dojo-attach-point=\\\"(\\w|,)*" + reference.getText() + "\\w*\\\""),
                 Pattern.compile("dojoAttachPoint=\\\"(\\w|,)*" + reference.getText() + "\\w*\\\"")
         };
+    }
+
+    /**
+     * Given a file that represents the template for a TemplatedWidget containing sourceElement,
+     * returns the element that represents the node with the corresponding attach point.
+     *
+     * @param sourceElement the reference to the attach point in the templated widget's javascript file
+     * @param templateFile
+     * @return the element in the html file that represents the node with the attach point
+     */
+    public static PsiElement getAttachPointElementInHtmlFile(PsiElement sourceElement, PsiFile templateFile)
+    {
+        if(!AMDValidator.elementIsAttachPoint(sourceElement))
+        {
+            return null;
+        }
+
+        Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
+
+        String documentText = document.getText();
+        Pattern[] searchPatterns = TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement);
+        int indexOfAttachPoint = -1;
+
+        for(Pattern pattern : searchPatterns)
+        {
+            indexOfAttachPoint = TemplatedWidgetUtil.indexOf(pattern, documentText);
+            if(indexOfAttachPoint > -1)
+            {
+                break;
+            }
+        }
+
+        if(indexOfAttachPoint == -1)
+        {
+            return null;
+        }
+
+        PsiElement element = templateFile.findElementAt(indexOfAttachPoint);
+
+        return element;
     }
 }

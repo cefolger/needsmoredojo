@@ -29,7 +29,7 @@
             <b>Other Dojo Specific Features </b>
             <ul>
                 <li>Ctrl+Click supported for dojo/i18n resource strings</li>
-                <li>Jump to attach points (Ctrl+Shift+O, A) in modules that use _TemplatedMixin</li>
+                <li>Ctrl+Click supported for attach points when modules use _TemplatedMixin. Ctrl+Shift+O, A also does this</li>
                 <li>Convert dojo 'util' style to 'class' style or vice-versa</li>
             </ul>
 
@@ -42,6 +42,7 @@
                 <li>Add ability to toggle between relative and absolute AMD path syntax </li>
                 <li>Add ability to ignore certain unused imports with /*NMD:Ignore*/ block </li>
                 <li>Add quick fix for renaming a parameter to match its define literal if a mismatch is detected </li>
+                <li>Add Ctrl+Click support for attach points </li>
                 <li>If you use one line per define literal, line comments after the literal will have their order
                 preserved when reorganizing (Issue #53)</li>
                 <li>Minor bug fixes (#107, #68)</li>

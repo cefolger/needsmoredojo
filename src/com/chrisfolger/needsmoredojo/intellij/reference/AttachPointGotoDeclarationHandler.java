@@ -1,8 +1,8 @@
 package com.chrisfolger.needsmoredojo.intellij.reference;
 
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.TemplatedWidgetUtil;
-import com.chrisfolger.needsmoredojo.intellij.actions.JumpToAttachPointAction;
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler;
+import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
@@ -15,9 +15,23 @@ public class AttachPointGotoDeclarationHandler implements GotoDeclarationHandler
     @Override
     public PsiElement[] getGotoDeclarationTargets(PsiElement psiElement, int i, Editor editor)
     {
+        if(!psiElement.getLanguage().equals(Language.findLanguageByID("JavaScript")))
+        {
+            return new PsiElement[0];
+        }
+
         PsiFile templateFile = new TemplatedWidgetUtil(psiElement.getContainingFile()).findTemplatePath();
 
-        PsiElement attachPoint = JumpToAttachPointAction.getAttachPointElementInHtmlFile(psiElement, templateFile, false);
+        if(templateFile == null)
+        {
+            return new PsiElement[0];
+        }
+
+        PsiElement attachPoint = TemplatedWidgetUtil.getAttachPointElementInHtmlFile(psiElement, templateFile);
+        if(attachPoint == null)
+        {
+            return new PsiElement[0];
+        }
 
         return new PsiElement[] { attachPoint };
     }
@@ -26,6 +40,6 @@ public class AttachPointGotoDeclarationHandler implements GotoDeclarationHandler
     @Override
     public String getActionText(DataContext dataContext)
     {
-        return "testing";
+        return "Jump to attach point";
     }
 }
