@@ -65,8 +65,8 @@ public class MismatchedImportsInspection extends LocalInspectionTool
         final List<ProblemDescriptor> descriptors = new ArrayList<ProblemDescriptor>();
 
         resolver.gatherDefineAndParameters(file, defines, parameters);
+        LocalQuickFix noFix = null;
 
-        LocalQuickFix fix = null;
         List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(defines.toArray(new PsiElement[0]), parameters.toArray(new PsiElement[0]), ServiceManager.getService(file.getProject(), DojoSettings.class).getExceptionsMap());
         for(int i=0;i<mismatches.size();i++)
         {
@@ -85,6 +85,12 @@ public class MismatchedImportsInspection extends LocalInspectionTool
             if(parameter != null)
             {
                 parameterString = parameter.getText();
+            }
+
+            LocalQuickFix fix = noFix;
+            if(define != null && parameter != null)
+            {
+                new MismatchedImportsQuickFix(define, parameter);
             }
 
             if (parameter != null)
