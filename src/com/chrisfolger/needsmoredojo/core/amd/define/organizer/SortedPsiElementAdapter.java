@@ -8,23 +8,29 @@ public class SortedPsiElementAdapter
     private PsiElement element;
     private boolean inactive;
     private PsiComment ignoreComment;
+    private PsiComment regularComment;
 
-    public SortedPsiElementAdapter(PsiElement element, boolean inactive, PsiComment ignoreComment) {
+    public SortedPsiElementAdapter(PsiElement element, boolean inactive, PsiComment ignoreComment, PsiComment regularComment) {
         this.element = element;
         this.inactive = inactive;
         this.ignoreComment = ignoreComment;
+        this.regularComment = regularComment;
     }
 
     public static SortedPsiElementAdapter fromParameter(SortItem item)
     {
-        SortedPsiElementAdapter adapter = new SortedPsiElementAdapter(item.getParameter(), item.isInactive(), item.getIgnoreComment());
+        SortedPsiElementAdapter adapter = new SortedPsiElementAdapter(item.getParameter(), item.isInactive(), null, null);
         return adapter;
     }
 
     public static SortedPsiElementAdapter fromDefine(SortItem item)
     {
-        SortedPsiElementAdapter adapter = new SortedPsiElementAdapter(item.getDefine(), item.isInactive(), item.getIgnoreComment());
+        SortedPsiElementAdapter adapter = new SortedPsiElementAdapter(item.getDefine(), item.isInactive(), item.getIgnoreComment(), item.getRegularComment());
         return adapter;
+    }
+
+    public PsiComment getRegularComment() {
+        return regularComment;
     }
 
     public PsiComment getIgnoreComment() {

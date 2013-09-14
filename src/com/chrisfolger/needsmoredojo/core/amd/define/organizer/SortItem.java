@@ -9,8 +9,9 @@ class SortItem
     private PsiElement parameter;
     private boolean inactive;
     private PsiComment ignoreComment;
+    private PsiComment regularComment;
 
-    public SortItem(PsiElement define, PsiElement parameter, boolean inactive, PsiComment ignoreComment)
+    public SortItem(PsiElement define, PsiElement parameter, boolean inactive, PsiComment ignoreComment, PsiElement regularComment)
     {
         this.define = define;
         this.parameter = parameter;
@@ -19,6 +20,15 @@ class SortItem
         {
             this.ignoreComment = (PsiComment) ignoreComment.copy();
         }
+
+        if(regularComment != null)
+        {
+            this.regularComment = (PsiComment) regularComment.copy();
+        }
+    }
+
+    PsiComment getRegularComment() {
+        return regularComment;
     }
 
     public PsiComment getIgnoreComment() {

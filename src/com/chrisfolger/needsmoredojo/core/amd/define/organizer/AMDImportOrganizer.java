@@ -85,6 +85,12 @@ public class AMDImportOrganizer
                     deleteList.add(regularComment);
                 }
 
+                if(sorted[i].getRegularComment() != null)
+                {
+                    PsiElement terminator = AMDPsiUtil.getNextDefineTerminator(unsorted[i]);
+                    unsorted[i].getParent().addBefore(sorted[i].getRegularComment(), terminator);
+                }
+
                 unsorted[i].replace(newElement);
             }
             else
@@ -146,13 +152,16 @@ public class AMDImportOrganizer
             }
 
             PsiComment ignoreComment = null;
+            PsiComment regularComment = null;
+
             if(defines.size() > i)
             {
                 define = defines.get(i);
                 ignoreComment = (PsiComment) AMDPsiUtil.getIgnoreCommentAfterLiteral(define);
+                regularComment = (PsiComment) AMDPsiUtil.getNonIgnoreCommentAfterLiteral(define);
             }
 
-            items.add(new SortItem(define, parameter, false, ignoreComment));
+            items.add(new SortItem(define, parameter, false, ignoreComment, regularComment));
         }
 
         return items;

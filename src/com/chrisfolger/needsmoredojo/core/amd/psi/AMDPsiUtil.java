@@ -85,6 +85,29 @@ public class AMDPsiUtil
     }
 
     /**
+     * gets the next comma after an element OR in the case of the last define in the list it will get whitespace
+     * or the bracket.
+     *
+     * @param start
+     * @return
+     */
+    public static PsiElement getNextDefineTerminator(PsiElement start)
+    {
+        PsiElement sibling = start.getNextSibling();
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
+        {
+            if(sibling instanceof PsiWhiteSpace)
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getNextSibling();
+        }
+
+        return start.getParent().getLastChild();
+    }
+
+    /**
      * gets a comment after the define literal, if it has one.
      *
      * Does not stop at commas
@@ -131,7 +154,7 @@ public class AMDPsiUtil
         PsiElement sibling = start.getNextSibling();
         while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter) && !(sibling.getText().equals("]")) && !terminators.contains(sibling.getText()))
         {
-            if(type.isInstance(sibling) && exclusions.contains(sibling.getText()))
+            if(type.isInstance(sibling) && !exclusions.contains(sibling.getText()))
             {
                 return sibling;
             }
