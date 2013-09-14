@@ -1,6 +1,7 @@
-package com.chrisfolger.needsmoredojo.core.amd.define;
+package com.chrisfolger.needsmoredojo.core.amd.define.organizer;
 
-import com.chrisfolger.needsmoredojo.core.amd.define.AMDImportOrganizer;
+import com.chrisfolger.needsmoredojo.core.amd.define.organizer.AMDImportOrganizer;
+import com.chrisfolger.needsmoredojo.core.amd.define.organizer.SortingResult;
 import com.intellij.psi.PsiElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class TestAMDImportOrganizer
         parameters.add(createPsiElement("z"));
         parameters.add(createPsiElement("a"));
 
-        AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
+        SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
         assertEquals(2, results.getDefines().length);
         assertEquals(2, results.getParameters().length);
@@ -65,7 +66,7 @@ public class TestAMDImportOrganizer
         parameters.add(createPsiElement("a"));
         parameters.add(createPsiElement("z"));
 
-        AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
+        SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
         assertEquals("'../a'", results.getDefines()[0].getElement().getText());
         assertEquals("a", results.getParameters()[0].getElement().getText());
@@ -82,7 +83,7 @@ public class TestAMDImportOrganizer
         List<PsiElement> parameters = new ArrayList<PsiElement>();
         parameters.add(createPsiElement("c"));
 
-        AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
+        SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
         assertEquals("\"dojo/c\"", results.getDefines()[0].getElement().getText());
     }
@@ -99,7 +100,7 @@ public class TestAMDImportOrganizer
         parameters.add(createPsiElement("z"));
         parameters.add(createPsiElement("a"));
 
-        AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
+        SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
         assertEquals(2, results.getSingleQuotes());
         assertEquals(1, results.getDoubleQuotes());
@@ -119,7 +120,7 @@ public class TestAMDImportOrganizer
         parameters.add(createPsiElement("z"));
         parameters.add(createPsiElement("a"));
 
-        AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
+        SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
         assertEquals("'../a'", results.getDefines()[0].getElement().getText());
         assertEquals("a", results.getParameters()[0].getElement().getText());
@@ -139,7 +140,7 @@ public class TestAMDImportOrganizer
         parameters.add(createPsiElement("a"));
         parameters.add(createPsiElement("c"));
 
-        AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
+        SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
         assertTrue(results.getDefines()[1].isInactive());
     }
@@ -157,7 +158,7 @@ public class TestAMDImportOrganizer
         parameters.add(createPsiElement("a"));
         parameters.add(createPsiElement("z"));
 
-        AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
+        SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
         assertEquals("'../a'", results.getDefines()[0].getElement().getText());
         assertEquals("a", results.getParameters()[0].getElement().getText());
@@ -177,12 +178,12 @@ public class TestAMDImportOrganizer
         parameters.add(createPsiElement("a"));
         parameters.add(createPsiElement("c"));
 
-        AMDImportOrganizer.SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
+        SortingResult results = organizer.sortDefinesAndParameters(defines, parameters);
 
-        AMDImportOrganizer.SortedPsiElementAdapter[] resultingDefines = results.getDefines();
+        SortedPsiElementAdapter[] resultingDefines = results.getDefines();
         assertTrue(resultingDefines[0].isInactive() || resultingDefines[1].isInactive() || resultingDefines[2].isInactive());
 
-        AMDImportOrganizer.SortedPsiElementAdapter[] resultingParameters = results.getParameters();
+        SortedPsiElementAdapter[] resultingParameters = results.getParameters();
         assertTrue(resultingParameters[0].isInactive() || resultingParameters[1].isInactive() || resultingParameters[2].isInactive());
     }
 

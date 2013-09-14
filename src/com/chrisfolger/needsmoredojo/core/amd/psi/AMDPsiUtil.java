@@ -85,6 +85,25 @@ public class AMDPsiUtil
     }
 
     /**
+     * gets a comment after the define literal, if it has one.
+     * @param start
+     * @return
+     */
+    @Nullable
+    public static PsiElement getCommaAfterLiteral(PsiElement start)
+    {
+        Set<String> terminators = new HashSet<String>();
+        terminators.add(",");
+        PsiElement comment = getNextElementOfType(start, PsiComment.class, terminators);
+        if(comment != null)
+        {
+            return comment;
+        }
+
+        return null;
+    }
+
+    /**
      * gets an ignore comment after the define literal but before the comma, if it has one.
      * @param start
      * @return
