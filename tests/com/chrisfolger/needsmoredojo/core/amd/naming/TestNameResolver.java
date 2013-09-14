@@ -78,8 +78,20 @@ public class TestNameResolver
     }
 
     @Test
+    public void testGetModuleName_quotesAreStripped()
+    {
+        assertEquals("d", NameResolver.getModuleName("\"a/b/c/d\""));
+    }
+
+    @Test
     public void testConversionOfCustomPlugins()
     {
         assertEquals("foo", NameResolver.defineToParameter("foo!bar", exceptions));
+    }
+
+    @Test
+    public void defineToParameter_quotesAreStripped()
+    {
+        assertEquals("Foo", NameResolver.defineToParameter("\"Foo\"", exceptions));
     }
 }

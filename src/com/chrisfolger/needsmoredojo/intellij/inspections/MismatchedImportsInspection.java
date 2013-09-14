@@ -90,7 +90,7 @@ public class MismatchedImportsInspection extends LocalInspectionTool
             LocalQuickFix fix = noFix;
             if(define != null && parameter != null)
             {
-                new MismatchedImportsQuickFix(define, parameter);
+                fix = new MismatchedImportsQuickFix(define, parameter);
             }
 
             if (parameter != null)

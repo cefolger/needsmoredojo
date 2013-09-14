@@ -12,6 +12,8 @@ public class NameResolver
 
     public static String defineToParameter(String define, Map<String, String> exceptions)
     {
+        define = define.replaceAll("\"|'", "");
+
         // since there are two fx modules we have this exception
         if(define.contains("/_base/fx"))
         {
@@ -114,6 +116,8 @@ public class NameResolver
 
     public static String getModuleName(String modulePath)
     {
+        modulePath = modulePath.replaceAll("'|\"", "");
+
         if(modulePath.contains("!"))
         {
             String moduleWithoutPlugin = modulePath.substring(0, modulePath.indexOf('!'));
