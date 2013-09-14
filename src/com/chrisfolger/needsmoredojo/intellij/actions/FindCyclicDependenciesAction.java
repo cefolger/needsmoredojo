@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.intellij.inspections.CyclicDependencyInspection;
 import com.chrisfolger.needsmoredojo.intellij.toolwindows.FindCyclicDependenciesToolWindow;
 import com.intellij.codeInspection.InspectionManager;
@@ -27,6 +28,11 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
         // TODO only get project sources
         for(VirtualFile file : FilenameIndex.getAllFilesByExt(e.getProject(), "js"))
         {
+            if(DojoModuleFileResolver.isInDojoSources(file.getParent().getPath()))
+            {
+                continue;
+            }
+
             PsiFile psiFile = PsiManager.getInstance(e.getProject()).findFile(file);
 
             try
