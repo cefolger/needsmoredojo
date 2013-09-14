@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.amd.define;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 
 import java.util.ArrayList;
@@ -68,10 +69,16 @@ public class AMDImportOrganizer
     {
         private PsiElement element;
         private boolean inactive;
+        private PsiComment ignoreComment;
 
-        public SortedPsiElementAdapter(PsiElement element, boolean inactive) {
+        public SortedPsiElementAdapter(PsiElement element, boolean inactive, PsiComment ignoreComment) {
             this.element = element;
             this.inactive = inactive;
+            this.ignoreComment = ignoreComment;
+        }
+
+        public PsiComment getIgnoreComment() {
+            return ignoreComment;
         }
 
         public PsiElement getElement() {
@@ -96,11 +103,21 @@ public class AMDImportOrganizer
         private PsiElement define;
         private PsiElement parameter;
         private boolean inactive;
+        private PsiComment ignoreComment;
 
-        public SortItem(PsiElement define, PsiElement parameter, boolean inactive)
+        public SortItem(PsiElement define, PsiElement parameter, boolean inactive, PsiComment ignoreComment)
         {
             this.define = define;
             this.parameter = parameter;
+
+            if(ignoreComment != null)
+            {
+                this.ignoreComment = (PsiComment) ignoreComment.copy();
+            }
+        }
+
+        private PsiComment getIgnoreComment() {
+            return ignoreComment;
         }
 
         public PsiElement getDefine() {
@@ -163,15 +180,32 @@ public class AMDImportOrganizer
                 String text = newElement.getText();
                 char mark = text.charAt(0);
 
-                if(mark != quote && (mark == '\'' || mark == '\"'))
+                if(mark == '\'' || mark == '\"')
                 {
-                    newElement = JSChangeUtil.createExpressionFromText(project,text.replace(text.charAt(0), quote)).getPsi();
+                    String newElementText = text.replace(text.charAt(0), quote);
+                    newElement = JSChangeUtil.createExpressionFromText(project, newElementText).getPsi();
+                }
+
+
+                // check to see if the element has a NMD:Ignore comment. I know this adds coupling but
+                // in the future maybe it can be made more generic.
+                // we have to delete it because this might be from a different import
+                PsiElement ignoreComment = AMDPsiUtil.getIgnoreCommentAfterLiteral(unsorted[i]);
+                if(ignoreComment != null)
+                {
+                    deleteList.add(ignoreComment);
+                }
+
+                if(sorted[i].getIgnoreComment() != null)
+                {
+                    unsorted[i].getParent().addAfter(sorted[i].getIgnoreComment(), unsorted[i]);
                 }
 
                 unsorted[i].replace(newElement);
             }
             else
             {
+                deleteList.add(unsorted[i]);
                 deleteList.add(unsorted[i]);
                 if(unsorted[i].getNextSibling() != null && deleteTrailingComma)
                 {
@@ -184,7 +218,7 @@ public class AMDImportOrganizer
         {
             try
             {
-                deleteList.get(i).delete();;
+                deleteList.get(i).delete();
             }
             catch(Exception e)
             {
@@ -227,12 +261,14 @@ public class AMDImportOrganizer
                 parameter = parameters.get(i);
             }
 
+            PsiComment ignoreComment = null;
             if(defines.size() > i)
             {
                 define = defines.get(i);
+                ignoreComment = (PsiComment) AMDPsiUtil.getIgnoreCommentAfterLiteral(define);
             }
 
-            items.add(new SortItem(define, parameter, false));
+            items.add(new SortItem(define, parameter, false, ignoreComment));
         }
 
         return items;
@@ -315,12 +351,12 @@ public class AMDImportOrganizer
                     doubleQuotes++;
                 }
 
-                sortedDefines[i] = new SortedPsiElementAdapter(items.get(i).getDefine(), items.get(i).isInactive());
+                sortedDefines[i] = new SortedPsiElementAdapter(items.get(i).getDefine(), items.get(i).isInactive(), items.get(i).getIgnoreComment());
             }
 
             if(sortedParameters.length > i)
             {
-                sortedParameters[i] = new SortedPsiElementAdapter(items.get(i).getParameter(), items.get(i).isInactive());
+                sortedParameters[i] = new SortedPsiElementAdapter(items.get(i).getParameter(), items.get(i).isInactive(), null);
             }
         }
 

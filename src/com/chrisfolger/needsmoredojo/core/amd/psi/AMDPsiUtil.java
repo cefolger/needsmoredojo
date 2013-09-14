@@ -2,18 +2,18 @@ package com.chrisfolger.needsmoredojo.core.amd.psi;
 
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AMDPsiUtil
 {
@@ -78,6 +78,25 @@ public class AMDPsiUtil
             }
 
             sibling = sibling.getNextSibling();
+        }
+
+        return null;
+    }
+
+    /**
+     * gets an ignore comment after the define literal but before the comma, if it has one.
+     * @param start
+     * @return
+     */
+    @Nullable
+    public static PsiElement getIgnoreCommentAfterLiteral(PsiElement start)
+    {
+        Set<String> terminators = new HashSet<String>();
+        terminators.add(",");
+        PsiElement ignoreComment = getNextElementOfType(start, PsiComment.class, terminators);
+        if(ignoreComment != null && ignoreComment.getText().equals(UnusedImportsRemover.IGNORE_COMMENT))
+        {
+            return ignoreComment;
         }
 
         return null;
