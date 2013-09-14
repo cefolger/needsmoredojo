@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetector;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.codeInspection.*;
@@ -17,13 +18,12 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CyclicDependencyInspection extends LocalInspectionTool
 {
+    private Map<String, List<String>> incriminatingModules = new HashMap<String, List<String>>();
+
     private class DependencyNode
     {
         private List<DependencyNode> nodes;
@@ -104,19 +104,22 @@ public class CyclicDependencyInspection extends LocalInspectionTool
             String path = cycle.file.getName();
 
             DependencyNode parent = cycle.parent;
+            Set<String> dependencies = new HashSet<String>();
             while(parent != null)
             {
                 path = parent.file.getName() + " -> " + path;
+
                 if(parent.parent != null && parent.parent.parent == null)
                 {
                     lastDependency = parent;
                 }
 
+                if(parent != null && parent.modulePath != null)
+                {
+                    dependencies.add(NameResolver.getModuleName(parent.modulePath));
+                }
                 parent = parent.parent;
             }
-
-            path = path;
-            lastDependency = lastDependency;
 
             DefineResolver resolver = new DefineResolver();
             final List<PsiElement> parameters = new ArrayList<PsiElement>();
@@ -129,6 +132,22 @@ public class CyclicDependencyInspection extends LocalInspectionTool
                 {
                     LocalQuickFix fix = null;
                     descriptors.add(manager.createProblemDescriptor(define, "A cyclic dependency exists with the path: \n" + path, fix, ProblemHighlightType.GENERIC_ERROR, true));
+                }
+            }
+
+            if(!isOnTheFly)
+            {
+                for(String module : dependencies)
+                {
+                    if(incriminatingModules.containsKey(module))
+                    {
+                        incriminatingModules.get(module).add(path);
+                    }
+                    else
+                    {
+                        incriminatingModules.put(module, new ArrayList<String>());
+                        incriminatingModules.get(module).add(path);
+                    }
                 }
             }
         }
