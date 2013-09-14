@@ -5,15 +5,16 @@ import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.lang.javascript.psi.JSNewExpression;
 import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class UnusedImportsRemover
 {
+    public static String IGNORE_COMMENT = "/*NMD:Ignore*/";
+
     public class RemovalResult
     {
         private Set<PsiElement> elementsToDelete;
@@ -120,6 +121,23 @@ public class UnusedImportsRemover
     public JSRecursiveElementVisitor getVisitorToRemoveUsedModulesFromLists(final List<PsiElement> parameters, final List<PsiElement> defines, LinkedHashMap<String, String> exceptions)
     {
         final Collection<String> parameterExceptions = exceptions.values();
+
+        Set<String> terminators = new HashSet<String>();
+        terminators.add(",");
+        for(int i=0;i<defines.size();i++)
+        {
+            PsiElement element = defines.get(i);
+            PsiElement ignoreComment = AMDPsiUtil.getNextElementOfType(element, PsiComment.class, terminators);
+            if(ignoreComment != null && ignoreComment.getText().equals(IGNORE_COMMENT))
+            {
+                defines.remove(i);
+                if(i < parameters.size())
+                {
+                    parameters.remove(i);
+                }
+                i--;
+            }
+        }
 
         JSRecursiveElementVisitor visitor = new JSRecursiveElementVisitor() {
             @Override

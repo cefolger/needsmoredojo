@@ -2,14 +2,20 @@ package com.chrisfolger.needsmoredojo.core.amd.importing;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.chrisfolger.needsmoredojo.core.util.PsiUtil;
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
+import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nullable;
 
 public class ImportReorderer
 {
@@ -48,6 +54,10 @@ public class ImportReorderer
         {
             // cursor wasn't in the right spot
             return new PsiElement[0];
+        }
+        else if (direction == AMDPsiUtil.Direction.NONE)
+        {
+            return new PsiElement[] { source };
         }
 
         // find destination
@@ -109,5 +119,55 @@ public class ImportReorderer
 
         editor.getCaretModel().moveToOffset(elementsWithPositions[0].getTextOffset());
         editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+    }
+
+    /**
+     * Given a module that is being imported using absolute or relative path syntax, return the module
+     * import with the other syntax, if possible.
+     *
+     * @param define
+     * @param file
+     * @return
+     */
+    public @Nullable PsiElement getOppositePathSyntaxFromImport(PsiElement define, PsiFile file)
+    {
+        if(define == null)
+        {
+            return null;
+        }
+
+        boolean relative = define.getText().charAt(1) == '.';
+        char quote = define.getText().charAt(0);
+        String moduleText = define.getText().replaceAll("'", "").replaceAll("\"", "");
+        String moduleName = NameResolver.getModuleName(moduleText);
+        String resourceId = NameResolver.getAMDPluginResourceIfPossible(moduleText, true);
+
+        // get the list of possible strings/PsiFiles that would match it
+        PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(file.getProject(), moduleName, true);
+
+        // get the files that are being imported
+        String[] results = new ImportResolver().getChoicesFromFiles(files, new SourcesLocator().getSourceLibraries(file.getProject()).toArray(new SourceLibrary[0]), moduleName, define.getContainingFile(), false);
+        String choice = results[0] + resourceId;
+
+        if(results.length > 1)
+        {
+            if(results[1].startsWith(".") && !relative)
+            {
+                choice = results[1] + resourceId;
+            }
+            else if (!results[1].startsWith(".") && relative)
+            {
+                choice = results[1] + resourceId;
+            }
+        }
+
+        if(choice.equals(moduleText))
+        {
+            return null; // no point in replacing with the same thing
+        }
+
+        PsiElement replacement = JSChangeUtil.createExpressionFromText(define.getProject(), quote + choice + quote).getPsi();
+
+        return replacement;
     }
 }

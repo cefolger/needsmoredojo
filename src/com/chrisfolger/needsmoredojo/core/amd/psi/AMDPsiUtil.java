@@ -2,25 +2,26 @@ package com.chrisfolger.needsmoredojo.core.amd.psi;
 
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AMDPsiUtil
 {
     public enum Direction
     {
         UP,
-        DOWN
+        DOWN,
+        NONE
     }
 
     public static PsiElement getDefineForVariable(PsiFile file, String textToCompare)
@@ -56,6 +57,63 @@ public class AMDPsiUtil
             }
 
             sibling = sibling.getPrevSibling();
+        }
+
+        return null;
+    }
+
+    /**
+     * gets the next comma after an element, but stops if a literal or other element is encountered
+     *
+     * @param start
+     * @return
+     */
+    public static PsiElement getNextComma(PsiElement start)
+    {
+        PsiElement sibling = start.getNextSibling();
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
+        {
+            if(sibling.getText().equals(","))
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getNextSibling();
+        }
+
+        return null;
+    }
+
+    /**
+     * gets an ignore comment after the define literal but before the comma, if it has one.
+     * @param start
+     * @return
+     */
+    @Nullable
+    public static PsiElement getIgnoreCommentAfterLiteral(PsiElement start)
+    {
+        Set<String> terminators = new HashSet<String>();
+        terminators.add(",");
+        PsiElement ignoreComment = getNextElementOfType(start, PsiComment.class, terminators);
+        if(ignoreComment != null && ignoreComment.getText().equals(UnusedImportsRemover.IGNORE_COMMENT))
+        {
+            return ignoreComment;
+        }
+
+        return null;
+    }
+
+    public static PsiElement getNextElementOfType(PsiElement start, Class type, Set<String> terminators)
+    {
+        PsiElement sibling = start.getNextSibling();
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter) && !(sibling.getText().equals("]")) && !terminators.contains(sibling.getText()))
+        {
+            if(type.isInstance(sibling))
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getNextSibling();
         }
 
         return null;
@@ -136,6 +194,13 @@ public class AMDPsiUtil
         }
     }
 
+    /**
+     * Removes a define literal from the array
+     *
+     * @param element the element to remove
+     * @param deleteList a list that contains a list of elements to delete. This is done in case we want to run the
+     *                   actual deletion later.
+     */
     public static void removeDefineLiteral(PsiElement element, Set<PsiElement> deleteList)
     {
         deleteList.add(element);
@@ -148,6 +213,12 @@ public class AMDPsiUtil
         }
 
         // only remove the next sibling if it's a comma
+        PsiElement comma = getNextComma(element);
+        if(comma != null)
+        {
+            deleteList.add(comma);
+        }
+
         PsiElement nextSibling = element.getNextSibling();
         if(nextSibling != null && !nextSibling.getText().equals("]"))
         {

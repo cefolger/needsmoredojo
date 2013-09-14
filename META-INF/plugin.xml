@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.5</version>
+  <version>0.5.1</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -22,6 +22,7 @@
                 <li>Flags unused imports with a strikethrough and allows you to remove them all at once </li>
                 <li>Organize imports alphabetically and remove duplicates </li>
                 <li>Detect inconsistently named imports </li>
+                <li>Convert between absolute and relative path syntax </li>
                 <li>Aware of plugins, modules with resource ids, etc.
             </ul>
 
@@ -36,6 +37,13 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>0.5.1</b>
+            <ul>
+                <li>Add ability to toggle between relative and absolute AMD path syntax </li>
+                <li>Add ability to ignore certain unused imports with /*NMD:Ignore*/ block </li>
+                <li>Minor bug fixes (#107)</li>
+            </ul>
+
             <b>0.5</b>
             <ul>
                 <li>Move refactoring is supported for project AMD modules </li>
@@ -59,17 +67,6 @@
                 <li>Fixed plugins not being inserted correctly when using add import (Issue #20)</li>
                 <li>Fixed a case that would prevent a module from being flagged as unused (Issue #88)</li>
                 <li>Fix bug when importing modules from another package (Issue #90)</li>
-            </ul>
-
-            <b>0.4</b>
-            <ul>
-                <li>Project sources no longer have to be on the same level as the dojo sources for some features to work </li>
-                <li>Settings dialog to configure location of project and dojo sources</li>
-                <li>Module naming exceptions for the mismatched define/parameter inspection</li>
-                <li>Relative paths are now supported in the add AMD imports popup</li>
-                <li>Auto-detection for dojo and project sources (experimental)</li>
-                <li>When adding an import, an initial value is used based on what's near the current caret position</li>
-                <li>Add import popup won't add an import if it's already been defined</li>
             </ul>
 
             <br><br>
@@ -144,6 +141,9 @@
                 </action>
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.removesingleimport" class="com.chrisfolger.needsmoredojo.intellij.actions.DeleteSingleImportAction" text="Remove Selected Import" description="Removes the current AMD import">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="4"/>
+                </action>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.togglepathsyntax" class="com.chrisfolger.needsmoredojo.intellij.actions.TogglePathSyntaxAction" text="Toggle AMD Import Path Syntax" description="Toggles between absolute and relative path syntax">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="S"/>
                 </action>
             </group>
 
