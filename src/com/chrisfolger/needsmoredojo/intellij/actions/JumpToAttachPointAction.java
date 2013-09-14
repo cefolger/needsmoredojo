@@ -54,6 +54,40 @@ public class JumpToAttachPointAction extends JavaScriptAction
         jumpToElementInTemplate(templateFile, element);
     }
 
+    // TODO move to TemplatedWidgetUtil
+    public static PsiElement getAttachPointElementInHtmlFile(PsiElement sourceElement, PsiFile templateFile)
+    {
+        if(!AMDValidator.elementIsAttachPoint(sourceElement))
+        {
+            return null;
+        }
+
+        Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
+
+        String documentText = document.getText();
+        Pattern[] searchPatterns = TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement);
+        int indexOfAttachPoint = -1;
+
+        for(Pattern pattern : searchPatterns)
+        {
+            indexOfAttachPoint = TemplatedWidgetUtil.indexOf(pattern, documentText);
+            if(indexOfAttachPoint > -1)
+            {
+                break;
+            }
+        }
+
+        if(indexOfAttachPoint == -1)
+        {
+            return null;
+        }
+
+        //if(enableNotifications) editor.getCaretModel().moveToOffset(indexOfAttachPoint);
+        PsiElement element = templateFile.findElementAt(indexOfAttachPoint);
+
+        return element;
+    }
+
     private void jumpToElementInTemplate(PsiFile templateFile, PsiElement sourceElement)
     {
         if(!AMDValidator.elementIsAttachPoint(sourceElement))

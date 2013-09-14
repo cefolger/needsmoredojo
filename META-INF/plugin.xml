@@ -158,6 +158,8 @@
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.UnusedImportsProvider"/>
 
+        <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.AttachPointGotoDeclarationHandler"/>
+
         <projectConfigurable implementation="com.chrisfolger.needsmoredojo.intellij.configurable.DojoSettingsConfigurable"></projectConfigurable>
 
         <psi.referenceContributor
