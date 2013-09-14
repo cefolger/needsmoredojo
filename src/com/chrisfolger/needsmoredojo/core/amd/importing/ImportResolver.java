@@ -29,15 +29,25 @@ public class ImportResolver
         libraryScores.put("build/", 1);
     }
 
-    private int getScore(String item)
+    private int getScore(String item, String secondItem)
     {
         int baseScore = 0;
+
+        // one non-nls module vs another one should be scored lower
+        if(item.contains("nls") && !secondItem.contains("nls"))
+        {
+            baseScore -= 1;
+        }
+        else if (!item.contains("nls") && secondItem.contains("nls"))
+        {
+            baseScore += 1;
+        }
 
         for(String key : libraryScores.keySet().toArray(new String[0]))
         {
             if(item.indexOf(key) != -1)
             {
-                return libraryScores.get(key);
+                return libraryScores.get(key) + baseScore;
             }
         }
 
@@ -130,7 +140,7 @@ public class ImportResolver
         Collections.sort(choices, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return getScore(o2) - getScore(o1);
+                return getScore(o2, o1) - getScore(o1, o2);
             }
         });
 
