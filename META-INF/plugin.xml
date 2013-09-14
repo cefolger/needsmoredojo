@@ -145,6 +145,10 @@
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.togglepathsyntax" class="com.chrisfolger.needsmoredojo.intellij.actions.TogglePathSyntaxAction" text="Toggle AMD Import Path Syntax" description="Toggles between absolute and relative path syntax">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="S"/>
                 </action>
+                <action id="com.chrisfolger.needsmoredojo.refactoring.menu.findcyclicdependencies" class="com.chrisfolger.needsmoredojo.intellij.actions.FindCyclicDependenciesAction" text="Find Cyclic Dependencies" description="Toggles between absolute and relative path syntax">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="C"/>
+                </action>
+
             </group>
 
             <separator/>
@@ -152,6 +156,10 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="FindCyclicDependencies" anchor="bottom" factoryClass="com.chrisfolger.needsmoredojo.intellij.toolwindows.FindCyclicDependenciesToolWindowFactory">
+
+        </toolWindow>
+
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.UnusedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.CyclicDependencyProvider"/>

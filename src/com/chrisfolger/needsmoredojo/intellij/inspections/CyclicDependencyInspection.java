@@ -20,6 +20,10 @@ public class CyclicDependencyInspection extends LocalInspectionTool
 {
     private Map<String, List<String>> incriminatingModules = new HashMap<String, List<String>>();
 
+    public Map<String, List<String>> getIncriminatingModules() {
+        return incriminatingModules;
+    }
+
     private class DependencyNode
     {
         private List<DependencyNode> nodes;
@@ -127,7 +131,7 @@ public class CyclicDependencyInspection extends LocalInspectionTool
                 if(define.getText().equals(lastDependency.modulePath))
                 {
                     LocalQuickFix fix = null;
-                    descriptors.add(manager.createProblemDescriptor(define, "A cyclic dependency exists with the path: \n" + path, fix, ProblemHighlightType.GENERIC_ERROR, true));
+                  //  descriptors.add(manager.createProblemDescriptor(define, "A cyclic dependency exists with the path: \n" + path, fix, ProblemHighlightType.GENERIC_ERROR, true));
                 }
             }
 
@@ -147,8 +151,6 @@ public class CyclicDependencyInspection extends LocalInspectionTool
                 }
             }
         }
-
-//        descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), fix, ProblemHighlightType.ERROR, true));
 
         return descriptors.toArray(new ProblemDescriptor[0]);
     }
