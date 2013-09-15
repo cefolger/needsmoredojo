@@ -24,6 +24,7 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 11. [Convert between class style and util style module](#convert-between-class-style-and-util-style-module)
 12. [Mismatched imports inspection](#mismatched-imports-inspection)
 13. [Navigate to Declaration for i18n resource keys](#navigate-to-declaration-for-i18n-resource-keys)
+14. [Toggle between Absolute and Relative AMD Imports](#toggle-between-absolute-and-relative-amd-imports)
 
 ##### Issues and Feature Requests
 
@@ -114,14 +115,14 @@ Finally, you can access this option when your cursor is near a module name, eith
 Ctrl+Shift+O, 2 in these cases and the dialog will be pre-populated. In the following examples, the _ represents the cursor,
 and both cases will result in "Button" being the initial value:
 
-<pre>
+```javascript
     new Button_({});
-</pre>
-<pre>
+```
+```javascript
     new Button({
         _
     });
-</pre>
+```
 
 > **Note: Needs More Dojo will import "dom-attr" "dom-class" etc. even if your cursor is over domAttr or domClass references**
 
@@ -149,6 +150,21 @@ Some AMD modules are not directly referenced. To prevent these from being flagge
 to add a new exception. After this, the import will never be flagged as unused.
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/unusedimportexception.png)
+
+Sometimes, you will want imports in a specific file to be kept even if they are flagged as unused. You can indicate
+that an import should not be flagged as unused by using the /*NMD:Ignore*/ block comment next to the
+define literal but before the comma. For example:
+
+```javascript
+define([
+    'dijit/layout/ContentPane' /*NMD:Ignore*/,
+    'dijit/layout/BorderContainer'
+], function(ContentPane, BorderContainer) {
+    /* ... */
+});
+```
+
+In this example, dijit/layout/ContentPane will not be flagged as unused even if it normally would be.
 
 Finally, in IntelliJ IDEA you can also run this as an inspection in batch mode on your entire project or a subset. To do this, use Analyze ->
 Run Inspection By Name -> Check for unused imports.
@@ -204,23 +220,23 @@ and class style (many instances, directly instantiated) module.
 
 A class module looks like the following:
 
-<pre>
-define([..], function(..., {
-    return declare(....);
+```javascript
+define([...], function(...), {
+    return declare(...);
 });
-</pre>
+```
 
 A util module looks like this:
 
-<pre>
-define([..], function(.., {
+```javascript
+define([...], function(...), {
   var util = declare(...);
 
   util.method1 = ...
 
   return util;
 });
-</pre>
+```
 
 ##### Mismatched imports inspection
 
@@ -244,9 +260,33 @@ Run Inspection By Name -> Check for inconsistently named imports.
 For keys imported via the dojo/i18n! plugin, Navigate ... Declaration is supported. In the example below, the resources
 module has been imported via dojo/i18n! and can be jumped to:
 
-<pre>
+```javascript
     resources['website.maintoolbar.gocontact']
-</pre>
+```
+
+##### Toggle between Absolute and Relative AMD Imports
+
+You can toggle between using a relative path and an absolute (package) path for your AMD Imports. This option
+appears under the Code menu as "Toggle AMD Import Path Syntax" or via the hotkey combination Ctrl+Shift+O, S.
+
+For example, if you have an absolute reference:
+```javascript
+define([
+    'website/ProjectDisplay/ProjectDisplay',
+    'dojo/_base/declare'
+], function(ProjectDisplay, declare) {
+    /* ... */
+});
+```
+It will be converted to a relative path syntax and vice-versa:
+```javascript
+define([
+    './ProjectDisplay',
+    'dojo/_base/declare'
+], function(ProjectDisplay, declare) {
+    /* ... */
+});
+```
 
 #### License
 
