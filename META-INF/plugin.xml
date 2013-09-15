@@ -43,6 +43,8 @@
                 <li>Add ability to ignore certain unused imports with /*NMD:Ignore*/ block </li>
                 <li>Add quick fix for renaming a parameter to match its define literal if a mismatch is detected </li>
                 <li>Add Ctrl+Click support for attach points </li>
+                <li>When performing a Refactor: Move File operation, AMD plugin resources that use relative paths will
+                have their path updated</li>
                 <li>If you use one line per define literal, line comments after the literal will have their order
                 preserved when reorganizing (Issue #53)</li>
                 <li>Minor bug fixes (#107, #68)</li>
