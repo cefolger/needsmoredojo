@@ -75,14 +75,12 @@ public class CyclicDependencyDetector
 
         for(PsiElement element : defines)
         {
-            String define = element.getText().replaceAll("'", "").replaceAll("\"", "") + ".js";
+            String moduleName = element.getText().replaceAll("'|\"", "");
+            String define = moduleName + ".js";
 
-            // TODO exclude dojo sources when they are referenced relatively
-            // TODO the correct way to do this is probably through ModuleImporter
             // now open the file and find the reference in it
             VirtualFile htmlFile = SourcesLocator.getAMDImportFile(element.getProject(), define, psiFile.getContainingFile().getContainingDirectory());
-
-            if(DojoModuleFileResolver.isDojoModule(element.getText().replaceAll("'", "").replaceAll("\"", "")))
+            if(DojoModuleFileResolver.isDojoModule(moduleName))
             {
                 continue;
             }

@@ -28,6 +28,7 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
 
         CyclicDependencyDetector detector = new CyclicDependencyDetector();
 
+        int count = 0;
         // TODO only get project sources
         for(VirtualFile file : FilenameIndex.getAllFilesByExt(e.getProject(), "js"))
         {
@@ -46,6 +47,7 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
                 {
                     DetectionResult cycleDetectionResult = detector.getCycleDetectionResult(cycle);
                     detector.updateIncriminatingModules(cycleDetectionResult.getDependencies(), cycleDetectionResult.getCyclePath());
+                    count++;
                 }
             }
             catch(Exception ex)
@@ -57,6 +59,6 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
 
 
         Map<String,List<String>> incriminatingModules = detector.getIncriminatingModules();
-        new FindCyclicDependenciesToolWindow().createContent(e.getProject(), window, incriminatingModules);
+        new FindCyclicDependenciesToolWindow().createContent(e.getProject(), window, incriminatingModules, count);
     }
 }
