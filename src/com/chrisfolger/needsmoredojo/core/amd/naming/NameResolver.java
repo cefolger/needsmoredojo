@@ -12,6 +12,8 @@ public class NameResolver
 
     public static String defineToParameter(String define, Map<String, String> exceptions)
     {
+        define = define.replaceAll("\"|'", "");
+
         // since there are two fx modules we have this exception
         if(define.contains("/_base/fx"))
         {
@@ -114,6 +116,8 @@ public class NameResolver
 
     public static String getModuleName(String modulePath)
     {
+        modulePath = modulePath.replaceAll("'|\"", "");
+
         if(modulePath.contains("!"))
         {
             String moduleWithoutPlugin = modulePath.substring(0, modulePath.indexOf('!'));
@@ -163,6 +167,34 @@ public class NameResolver
             // failing where this is being consumed.
             return null;
         }
+    }
+
+    /**
+     * Dojo relative paths use "./" for same level and "../" for additional levels.
+     * This will ensure that a relative path passed to the method returns a dojo-friendly version
+     *
+     * @param relativePath
+     * @return
+     */
+    public static String convertRelativePathToDojoPath(String relativePath)
+    {
+        if(relativePath != null)
+        {
+            // need to use dojo syntax when two files are in the same directory
+            if(relativePath.equals("."))
+            {
+                relativePath = "./";
+            }
+            else if (relativePath.charAt(0) != '.' && relativePath.charAt(0) != '/')
+            {
+                // top level module
+                relativePath = "./" + relativePath;
+            }
+
+            return relativePath;
+        }
+
+        return null;
     }
 
     public static String getModulePath(String fullModulePath)

@@ -1,7 +1,8 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
-import com.chrisfolger.needsmoredojo.core.amd.define.AMDImportOrganizer;
+import com.chrisfolger.needsmoredojo.core.amd.define.organizer.AMDImportOrganizer;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.organizer.SortingResult;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -39,7 +40,7 @@ public class OrganizeAMDImportsAction extends JavaScriptAction
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        final AMDImportOrganizer.SortingResult result = organizer.sortDefinesAndParameters(defines, parameters);
+                        final SortingResult result = organizer.sortDefinesAndParameters(defines, parameters);
 
                         if(defines.size() == 0 || parameters.size() == 0)
                         {

@@ -183,6 +183,8 @@ things
 
 > **Note: At this time, refactoring of the dojo library sources is not supported.**
 
+> **Note: In 0.5, AMD plugins will not have their resource paths updated. This should change in 0.5.1**
+
 ##### Navigate to Attach Point
 
 Inside a module that uses _TemplatedMixin, use this option with the caret over an attach point reference.

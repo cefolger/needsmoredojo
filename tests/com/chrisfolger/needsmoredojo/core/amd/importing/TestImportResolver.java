@@ -257,4 +257,17 @@ public class TestImportResolver
         String[] results = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "MainToolbar", original);
         assertEquals("website/widgets/MainToolbar", results[0]);
     }
+
+    @Test
+    public void testNlsModuleIsLowerPriorityWhenItHasTheSameNameAsTheModule()
+    {
+        PsiFile[] files = new PsiFile[] {
+                new MockPsiFile("Comment.js", "js/dojo/Comment/nls"),
+                new MockPsiFile("Comment.js", "js/dojo/Comment")
+        };
+
+        String[] choices = resolver.getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), "Comment", null);
+
+        assertEquals("dojo/Comment/Comment", choices[0]);
+    }
 }

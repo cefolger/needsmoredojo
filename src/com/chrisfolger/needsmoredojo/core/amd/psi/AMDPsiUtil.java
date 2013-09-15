@@ -85,6 +85,52 @@ public class AMDPsiUtil
     }
 
     /**
+     * gets the next comma after an element OR in the case of the last define in the list it will get whitespace
+     * or the bracket.
+     *
+     * @param start
+     * @return
+     */
+    public static PsiElement getNextDefineTerminator(PsiElement start)
+    {
+        PsiElement sibling = start.getNextSibling();
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
+        {
+            if(sibling instanceof PsiWhiteSpace)
+            {
+                return sibling;
+            }
+
+            sibling = sibling.getNextSibling();
+        }
+
+        return start.getParent().getLastChild();
+    }
+
+    /**
+     * gets a comment after the define literal, if it has one.
+     *
+     * Does not stop at commas
+     * @param start
+     * @return
+     */
+    @Nullable
+    public static PsiElement getNonIgnoreCommentAfterLiteral(PsiElement start)
+    {
+        Set<String> terminators = new HashSet<String>();
+        Set<String> exclusions = new HashSet<String>();
+        exclusions.add(UnusedImportsRemover.IGNORE_COMMENT);
+
+        PsiElement comment = getNextElementOfType(start, PsiComment.class, terminators, exclusions);
+        if(comment != null)
+        {
+            return comment;
+        }
+
+        return null;
+    }
+
+    /**
      * gets an ignore comment after the define literal but before the comma, if it has one.
      * @param start
      * @return
@@ -94,7 +140,7 @@ public class AMDPsiUtil
     {
         Set<String> terminators = new HashSet<String>();
         terminators.add(",");
-        PsiElement ignoreComment = getNextElementOfType(start, PsiComment.class, terminators);
+        PsiElement ignoreComment = getNextElementOfType(start, PsiComment.class, terminators, new HashSet<String>());
         if(ignoreComment != null && ignoreComment.getText().equals(UnusedImportsRemover.IGNORE_COMMENT))
         {
             return ignoreComment;
@@ -103,12 +149,12 @@ public class AMDPsiUtil
         return null;
     }
 
-    public static PsiElement getNextElementOfType(PsiElement start, Class type, Set<String> terminators)
+    public static PsiElement getNextElementOfType(PsiElement start, Class type, Set<String> terminators, Set<String> exclusions)
     {
         PsiElement sibling = start.getNextSibling();
         while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter) && !(sibling.getText().equals("]")) && !terminators.contains(sibling.getText()))
         {
-            if(type.isInstance(sibling))
+            if(type.isInstance(sibling) && !exclusions.contains(sibling.getText()))
             {
                 return sibling;
             }

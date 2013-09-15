@@ -1,10 +1,11 @@
-package com.chrisfolger.needsmoredojo.core.amd.define;
+package com.chrisfolger.needsmoredojo.core.amd.define.organizer;
 
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,132 +20,6 @@ import java.util.List;
  */
 public class AMDImportOrganizer
 {
-    public class SortingResult
-    {
-        private SortedPsiElementAdapter[] defines;
-        private SortedPsiElementAdapter[] parameters;
-        private int singleQuotes;
-        private int doubleQuotes;
-
-        public SortingResult(SortedPsiElementAdapter[] defines, SortedPsiElementAdapter[] parameters)
-        {
-            this.defines = defines;
-            this.parameters = parameters;
-        }
-
-        public SortedPsiElementAdapter[] getParameters() {
-            return parameters;
-        }
-
-        public void setParameters(SortedPsiElementAdapter[] parameters) {
-            this.parameters = parameters;
-        }
-
-        public SortedPsiElementAdapter[] getDefines() {
-            return defines;
-        }
-
-        public void setDefines(SortedPsiElementAdapter[] defines) {
-            this.defines = defines;
-        }
-
-        public int getSingleQuotes() {
-            return singleQuotes;
-        }
-
-        public void setSingleQuotes(int singleQuotes) {
-            this.singleQuotes = singleQuotes;
-        }
-
-        public int getDoubleQuotes() {
-            return doubleQuotes;
-        }
-
-        public void setDoubleQuotes(int doubleQuotes) {
-            this.doubleQuotes = doubleQuotes;
-        }
-    }
-
-    public class SortedPsiElementAdapter
-    {
-        private PsiElement element;
-        private boolean inactive;
-        private PsiComment ignoreComment;
-
-        public SortedPsiElementAdapter(PsiElement element, boolean inactive, PsiComment ignoreComment) {
-            this.element = element;
-            this.inactive = inactive;
-            this.ignoreComment = ignoreComment;
-        }
-
-        public PsiComment getIgnoreComment() {
-            return ignoreComment;
-        }
-
-        public PsiElement getElement() {
-            return element;
-        }
-
-        public void setElement(PsiElement element) {
-            this.element = element;
-        }
-
-        public boolean isInactive() {
-            return inactive;
-        }
-
-        public void setInactive(boolean inactive) {
-            this.inactive = inactive;
-        }
-    }
-
-    private class SortItem
-    {
-        private PsiElement define;
-        private PsiElement parameter;
-        private boolean inactive;
-        private PsiComment ignoreComment;
-
-        public SortItem(PsiElement define, PsiElement parameter, boolean inactive, PsiComment ignoreComment)
-        {
-            this.define = define;
-            this.parameter = parameter;
-
-            if(ignoreComment != null)
-            {
-                this.ignoreComment = (PsiComment) ignoreComment.copy();
-            }
-        }
-
-        private PsiComment getIgnoreComment() {
-            return ignoreComment;
-        }
-
-        public PsiElement getDefine() {
-            return define;
-        }
-
-        public void setDefine(PsiElement define) {
-            this.define = define;
-        }
-
-        public PsiElement getParameter() {
-            return parameter;
-        }
-
-        public void setParameter(PsiElement parameter) {
-            this.parameter = parameter;
-        }
-
-        public boolean isInactive() {
-            return inactive;
-        }
-
-        public void setInactive(boolean inactive) {
-            this.inactive = inactive;
-        }
-    }
-
     /**
      * this method replaces an unsorted array of PsiElements with a sorted version. This is meant to sort
      * AMD imports in a define(...) call
@@ -158,6 +33,21 @@ public class AMDImportOrganizer
      */
     public void reorder(PsiElement[] unsorted, SortedPsiElementAdapter[] sorted, boolean deleteTrailingComma, SortingResult result)
     {
+        boolean enableLineCommentPreservation = false;
+        String parentString = "";
+        if(unsorted.length > 0)
+        {
+            parentString = unsorted[0].getParent().getText();
+            int count = StringUtils.countMatches(parentString, "\n");
+            // in this special case, where each define literal is on its own line, it's safe to
+            // try and preserve line comment order.
+            // else, assume we can't be smart enough to try that.
+            if(count >= unsorted.length)
+            {
+                enableLineCommentPreservation = true;
+            }
+        }
+
         PsiElement parent = unsorted[0].getParent();
 
         char quote = '\'';
@@ -191,6 +81,8 @@ public class AMDImportOrganizer
                 // in the future maybe it can be made more generic.
                 // we have to delete it because this might be from a different import
                 PsiElement ignoreComment = AMDPsiUtil.getIgnoreCommentAfterLiteral(unsorted[i]);
+                PsiElement regularComment = AMDPsiUtil.getNonIgnoreCommentAfterLiteral(unsorted[i]);
+
                 if(ignoreComment != null)
                 {
                     deleteList.add(ignoreComment);
@@ -199,6 +91,20 @@ public class AMDImportOrganizer
                 if(sorted[i].getIgnoreComment() != null)
                 {
                     unsorted[i].getParent().addAfter(sorted[i].getIgnoreComment(), unsorted[i]);
+                }
+
+                // also check if there is a regular comment and move it.
+                // this is only for the case where the define literals are separated by lines and there is
+                // a comment at the end of the line (see dijit/layout/ContentPane for an example)
+                if(enableLineCommentPreservation && regularComment != null)
+                {
+                    deleteList.add(regularComment);
+                }
+
+                if(enableLineCommentPreservation && sorted[i].getRegularComment() != null)
+                {
+                    PsiElement terminator = AMDPsiUtil.getNextDefineTerminator(unsorted[i]);
+                    unsorted[i].getParent().addBefore(sorted[i].getRegularComment(), terminator);
                 }
 
                 unsorted[i].replace(newElement);
@@ -262,13 +168,16 @@ public class AMDImportOrganizer
             }
 
             PsiComment ignoreComment = null;
+            PsiComment regularComment = null;
+
             if(defines.size() > i)
             {
                 define = defines.get(i);
                 ignoreComment = (PsiComment) AMDPsiUtil.getIgnoreCommentAfterLiteral(define);
+                regularComment = (PsiComment) AMDPsiUtil.getNonIgnoreCommentAfterLiteral(define);
             }
 
-            items.add(new SortItem(define, parameter, false, ignoreComment));
+            items.add(new SortItem(define, parameter, false, ignoreComment, regularComment));
         }
 
         return items;
@@ -351,12 +260,12 @@ public class AMDImportOrganizer
                     doubleQuotes++;
                 }
 
-                sortedDefines[i] = new SortedPsiElementAdapter(items.get(i).getDefine(), items.get(i).isInactive(), items.get(i).getIgnoreComment());
+                sortedDefines[i] = SortedPsiElementAdapter.fromDefine(items.get(i));
             }
 
             if(sortedParameters.length > i)
             {
-                sortedParameters[i] = new SortedPsiElementAdapter(items.get(i).getParameter(), items.get(i).isInactive(), null);
+                sortedParameters[i] = SortedPsiElementAdapter.fromParameter(items.get(i));
             }
         }
 

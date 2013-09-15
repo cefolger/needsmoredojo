@@ -64,42 +64,26 @@ public class JumpToAttachPointAction extends JavaScriptAction
 
         FileEditorManager.getInstance(templateFile.getProject()).openFile(templateFile.getVirtualFile(), true, true);
         Editor editor = EditorFactory.getInstance().getEditors(PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile))[0];
-        Document document = PsiDocumentManager.getInstance(templateFile.getProject()).getDocument(templateFile);
 
-        String documentText = document.getText();
-        Pattern[] searchPatterns = TemplatedWidgetUtil.getAttachPointStringFromReference(sourceElement);
-        int indexOfAttachPoint = -1;
+        PsiElement templateElement = TemplatedWidgetUtil.getAttachPointElementInHtmlFile(sourceElement, templateFile);
 
-        for(Pattern pattern : searchPatterns)
+        if(templateElement == null)
         {
-            indexOfAttachPoint = TemplatedWidgetUtil.indexOf(pattern, documentText);
-            if(indexOfAttachPoint > -1)
-            {
-                break;
-            }
-        }
-
-        if(indexOfAttachPoint == -1)
-        {
-            // this is the last resort, when an attach point is just found because it was invalid, jump back to the previous file
-            FileEditorManager.getInstance(templateFile.getProject()).openFile(sourceElement.getContainingFile().getVirtualFile(), true, true);
             Notifications.Bus.notify(new Notification("needsmoredojo", "Jump To Attach Point", "Attach point not found in " + templateFile.getVirtualFile().getName() + ": '" + sourceElement.getText() + "'", NotificationType.INFORMATION));
-            return;
         }
 
-        editor.getCaretModel().moveToOffset(indexOfAttachPoint);
-        PsiElement element = templateFile.findElementAt(indexOfAttachPoint);
-
+        int index = templateElement.getTextOffset();
+        editor.getCaretModel().moveToOffset(index);
         editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
 
         List<PsiElement> elementsToHighlight = new ArrayList<PsiElement>();
-        elementsToHighlight.add(element);
-        if(element.getNextSibling() != null)
+        elementsToHighlight.add(templateElement);
+        if(templateElement.getNextSibling() != null)
         {
-            elementsToHighlight.add(element.getNextSibling());
-            if(element.getNextSibling().getNextSibling() != null)
+            elementsToHighlight.add(templateElement.getNextSibling());
+            if(templateElement.getNextSibling().getNextSibling() != null)
             {
-                elementsToHighlight.add(element.getNextSibling().getNextSibling());
+                elementsToHighlight.add(templateElement.getNextSibling().getNextSibling());
             }
         }
 
