@@ -246,6 +246,11 @@ corresponding parameter name.
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/mismatchedimports1.png)
 
+It will also provide a quick fix. The fix will rename the parameter (and update all references to it) to match the
+define literal. If the fix is appropriate, just activate it and the mismatch will be corrected and unflagged.
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/quickfix.png)
+
 You can disable it by going in the inspections menu under **JavaScript -> Needs More Dojo** and unchecking it.
 
 Sometimes the Needs More Dojo conventions may inappropriately flag an import as mismatched. For these cases, you can
