@@ -25,7 +25,7 @@ public class FindCyclicDependenciesToolWindow
         Collections.sort(sortedKeys, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return modules.get(o1).size() - modules.get(o2).size();
+                return modules.get(o2).size() - modules.get(o1).size();
             }
         });
 

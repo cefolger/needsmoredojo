@@ -22,6 +22,6 @@ public class FindCyclicDependenciesToolWindowFactory implements ToolWindowFactor
 {
     @Override
     public void createToolWindowContent(Project project, ToolWindow toolWindow) {
-        new FindCyclicDependenciesToolWindow().createContent(project, toolWindow, new HashMap<String, List<String>>());
+        new FindCyclicDependenciesToolWindow().createContent(project, toolWindow, new HashMap<String, List<String>>(), 0);
     }
 }
