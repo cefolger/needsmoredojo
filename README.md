@@ -150,6 +150,9 @@ to add a new exception. After this, the import will never be flagged as unused.
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/unusedimportexception.png)
 
+Finally, in IntelliJ IDEA you can also run this as an inspection in batch mode on your entire project or a subset. To do this, use Analyze ->
+Run Inspection By Name -> Check for unused imports.
+
 ##### Rename Refactoring
 
 In versions 0.5 and later, renaming a module is now supported. When you rename a module, Needs More Dojo will scan
@@ -227,6 +230,14 @@ corresponding parameter name.
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/mismatchedimports1.png)
 
 You can disable it by going in the inspections menu under **JavaScript -> Needs More Dojo** and unchecking it.
+
+Sometimes the Needs More Dojo conventions may inappropriately flag an import as mismatched. For these cases, you can
+add a naming exception via the Needs More Dojo settings:
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/modulenamingexception.png)
+
+In IntelliJ IDEA, you can also run this inspection in batch mode on your entire project or a subset. To do this, use Analyze ->
+Run Inspection By Name -> Check for inconsistently named imports.
 
 ##### Navigate to Declaration for i18n resource keys
 
