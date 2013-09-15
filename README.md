@@ -25,6 +25,7 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 12. [Mismatched imports inspection](#mismatched-imports-inspection)
 13. [Navigate to Declaration for i18n resource keys](#navigate-to-declaration-for-i18n-resource-keys)
 14. [Toggle between Absolute and Relative AMD Imports](#toggle-between-absolute-and-relative-amd-imports)
+15. [Find Cyclic Dependencies](#find-cyclic-dependencies)
 
 ##### Issues and Feature Requests
 
@@ -293,6 +294,37 @@ define([
     /* ... */
 });
 ```
+
+##### Find Cyclic Dependencies
+
+New starting with 0.5.1 is the ability to find potential cyclic dependencies. A cyclic dependency can result in subtle
+bugs because one of the dependencies gets resolved to {}. In Needs More Dojo, there are two ways to detect cyclic
+dependencies. As this is a new experimental feature, please open any issues you find on the github issue page.
+
+###### Enable the cyclic dependencies inspection.
+
+This inspection is disabled by default, but can be enabled via the inspections menu:
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/cyclicinspection.png)
+
+When enabled, the inspection will run in the background and scan your dependency graph for cycles involving the current
+module. If it finds one, it will flag it and list the path:
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/cyclicinspectionwarning.png)
+
+In IntelliJ IDEA, you can also run the inspection in batch mode to scan for cycles in your project. To do this, use
+Analyze -> Run Inspection by Name -> Check for cyclic dependencies in AMD modules.
+
+###### Run the "Find Cyclic AMD Dependencies" action.
+
+This action differs from the inspection because it displays a sorted list of modules involved in the cyclic dependency.
+You can access this action via the Code menu or with Ctrl+Shift+O, C. This action will check the entire project and
+put the results in a tool window at the bottom:
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/cyclicaction.png)
+
+If you have many modules that have a cycle in the dependency try, this output might be helpful when trying to isolate
+the culprit module.
 
 #### License
 
