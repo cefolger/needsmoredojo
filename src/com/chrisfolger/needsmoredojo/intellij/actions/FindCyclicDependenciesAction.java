@@ -5,6 +5,8 @@ import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.CyclicD
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.DependencyNode;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.DetectionResult;
 import com.chrisfolger.needsmoredojo.intellij.toolwindows.FindCyclicDependenciesToolWindow;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
@@ -23,6 +25,8 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
     {
         ToolWindow window = ToolWindowManager.getInstance(e.getProject()).getToolWindow("FindCyclicDependencies");
         window.getComponent().removeAll();
+        window.setAvailable(false, null);
+        window.hide(null);
 
         CyclicDependencyDetector detector = new CyclicDependencyDetector();
 
@@ -57,7 +61,18 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
         }
 
 
-        Map<String,List<String>> incriminatingModules = detector.getIncriminatingModules();
-        new FindCyclicDependenciesToolWindow().createContent(e.getProject(), window, incriminatingModules, count);
+        if(count == 0)
+        {
+            new Notification("needsmoredojo", "Find Cyclic Dependencies", "No cycles were found in the dependency graph", NotificationType.INFORMATION).notify(e.getProject());
+        }
+        else
+        {
+            window.setAvailable(true, null);
+            window.show(null);
+            window.activate(null);
+
+            Map<String,List<String>> incriminatingModules = detector.getIncriminatingModules();
+            new FindCyclicDependenciesToolWindow().createContent(e.getProject(), window, incriminatingModules, count);
+        }
     }
 }
