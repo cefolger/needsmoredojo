@@ -42,6 +42,9 @@ your project sources are on the same level as the dojo sources.
 - Navigate to "Needs More Dojo" under project settings which will look like this:
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/needsmoredojosettings.png)
 
+> **Note: You can disable Needs More Dojo for a project by using "disable for this project" in the warning or unchecking "Enable Needs More Dojo"
+in the Needs More Dojo settings.**
+
 **Dojo Sources**
 - The dojo sources directory should be set one level above the dojo sources. So, if you store your dojo sources in a folder called "deps":
     - deps
