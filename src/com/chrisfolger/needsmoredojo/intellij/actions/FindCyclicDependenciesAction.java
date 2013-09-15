@@ -1,6 +1,9 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.CyclicDependencyDetector;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.DependencyNode;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.DetectionResult;
 import com.chrisfolger.needsmoredojo.intellij.inspections.CyclicDependencyInspection;
 import com.chrisfolger.needsmoredojo.intellij.toolwindows.FindCyclicDependenciesToolWindow;
 import com.intellij.codeInspection.InspectionManager;
@@ -23,12 +26,12 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
         ToolWindow window = ToolWindowManager.getInstance(e.getProject()).getToolWindow("FindCyclicDependencies");
         window.getComponent().removeAll();
 
-        CyclicDependencyInspection inspection = new CyclicDependencyInspection();
+        CyclicDependencyDetector detector = new CyclicDependencyDetector();
 
         // TODO only get project sources
         for(VirtualFile file : FilenameIndex.getAllFilesByExt(e.getProject(), "js"))
         {
-            if(DojoModuleFileResolver.isInDojoSources(file.getParent().getPath()))
+            if(DojoModuleFileResolver.isInDojoSources(file.getPath()))
             {
                 continue;
             }
@@ -37,17 +40,23 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
 
             try
             {
-                inspection.checkFile(psiFile, InspectionManager.getInstance(e.getProject()), false);
+                DependencyNode cycle = detector.addDependenciesOfFile(psiFile, psiFile.getProject(), psiFile, null, null);
+
+                if(cycle != null)
+                {
+                    DetectionResult cycleDetectionResult = detector.getCycleDetectionResult(cycle);
+                    detector.updateIncriminatingModules(cycleDetectionResult.getDependencies(), cycleDetectionResult.getCyclePath());
+                }
             }
             catch(Exception ex)
             {
                 // TODO write
+                int i=0;
             }
         }
 
 
-        Map<String,List<String>> incriminatingModules = inspection.getIncriminatingModules();
-
+        Map<String,List<String>> incriminatingModules = detector.getIncriminatingModules();
         new FindCyclicDependenciesToolWindow().createContent(e.getProject(), window, incriminatingModules);
     }
 }
