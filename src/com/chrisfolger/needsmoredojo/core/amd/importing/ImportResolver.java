@@ -95,20 +95,10 @@ public class ImportResolver
                     originalModulePath = originalModuleLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(originalModuleLibrary.getPath()) + originalModuleLibrary.getPath().length());
 
                     String relativePath = FileUtil.convertToRelativePath(originalModulePath, result);
+                    relativePath = NameResolver.convertRelativePathToDojoPath(relativePath);
 
                     if(relativePath != null)
                     {
-                        // need to use dojo syntax when two files are in the same directory
-                        if(relativePath.equals("."))
-                        {
-                            relativePath = "./";
-                        }
-                        else if (relativePath.charAt(0) != '.' && relativePath.charAt(0) != '/')
-                        {
-                            // top level module
-                            relativePath = "./" + relativePath;
-                        }
-
                         relativePathOption = relativePath;
                     }
                 }

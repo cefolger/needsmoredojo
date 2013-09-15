@@ -169,6 +169,34 @@ public class NameResolver
         }
     }
 
+    /**
+     * Dojo relative paths use "./" for same level and "../" for additional levels.
+     * This will ensure that a relative path passed to the method returns a dojo-friendly version
+     *
+     * @param relativePath
+     * @return
+     */
+    public static String convertRelativePathToDojoPath(String relativePath)
+    {
+        if(relativePath != null)
+        {
+            // need to use dojo syntax when two files are in the same directory
+            if(relativePath.equals("."))
+            {
+                relativePath = "./";
+            }
+            else if (relativePath.charAt(0) != '.' && relativePath.charAt(0) != '/')
+            {
+                // top level module
+                relativePath = "./" + relativePath;
+            }
+
+            return relativePath;
+        }
+
+        return null;
+    }
+
     public static String getModulePath(String fullModulePath)
     {
         String modulePath = fullModulePath;
