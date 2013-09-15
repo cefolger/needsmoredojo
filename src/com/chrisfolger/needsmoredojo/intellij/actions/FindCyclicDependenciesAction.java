@@ -8,71 +8,92 @@ import com.chrisfolger.needsmoredojo.intellij.toolwindows.FindCyclicDependencies
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.wm.ToolWindowType;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class FindCyclicDependenciesAction extends JavaScriptAction
 {
-    @Override
-    public void actionPerformed(AnActionEvent e)
+    private Logger logger = Logger.getLogger(FindCyclicDependenciesAction.class);
+
+    private void updateToolWindow(int count, final Project project, final CyclicDependencyDetector detector)
     {
-        ToolWindow window = ToolWindowManager.getInstance(e.getProject()).getToolWindow("FindCyclicDependencies");
-        window.getComponent().removeAll();
-        window.setAvailable(false, null);
-        window.hide(null);
+        final int finalCount = count;
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ToolWindowManager.getInstance(project).unregisterToolWindow("FindCyclicDependencies");
+                ToolWindow window = ToolWindowManager.getInstance(project).registerToolWindow("FindCyclicDependencies", true, ToolWindowAnchor.BOTTOM);
+                window.setDefaultState(ToolWindowAnchor.BOTTOM, ToolWindowType.DOCKED, null);
+                window.show(null);
+                window.activate(null);
 
-        CyclicDependencyDetector detector = new CyclicDependencyDetector();
-
-        Collection<VirtualFile> filesToSearch = new DojoModuleFileResolver().getAllDojoProjectSourceFiles(e.getProject());
-
-        int count = 0;
-        for(VirtualFile file : filesToSearch)
-        {
-            if(DojoModuleFileResolver.isInDojoSources(file.getPath()))
-            {
-                continue;
+                Map<String, List<String>> incriminatingModules = detector.getIncriminatingModules();
+                new FindCyclicDependenciesToolWindow().createContent(project, window, incriminatingModules, finalCount);
             }
+        });
+    }
 
-            PsiFile psiFile = PsiManager.getInstance(e.getProject()).findFile(file);
+    @Override
+    public void actionPerformed(final AnActionEvent e)
+    {
+        final ProgressManager instance = ProgressManager.getInstance();
 
-            try
-            {
-                DependencyNode cycle = detector.addDependenciesOfFile(psiFile, psiFile.getProject(), psiFile, null, null);
+        instance.runProcessWithProgressSynchronously(new Runnable() {
+            @Override
+            public void run() {
+                instance.getProgressIndicator().setIndeterminate(true);
 
-                if(cycle != null)
+                final CyclicDependencyDetector detector = new CyclicDependencyDetector();
+                Collection<VirtualFile> filesToSearch = new DojoModuleFileResolver().getAllDojoProjectSourceFiles(e.getProject());
+
+                int count = 0;
+                for (VirtualFile file : filesToSearch)
                 {
-                    DetectionResult cycleDetectionResult = detector.getCycleDetectionResult(cycle);
-                    detector.updateIncriminatingModules(cycleDetectionResult.getDependencies(), cycleDetectionResult.getCyclePath());
-                    count++;
+                    if (DojoModuleFileResolver.isInDojoSources(file.getPath()))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        PsiFile psiFile = PsiManager.getInstance(e.getProject()).findFile(file);
+                        DependencyNode cycle = detector.addDependenciesOfFile(psiFile, psiFile.getProject(), psiFile, null, null);
+
+                        if (cycle != null)
+                        {
+                            DetectionResult cycleDetectionResult = detector.getCycleDetectionResult(cycle);
+                            detector.updateIncriminatingModules(cycleDetectionResult.getDependencies(), cycleDetectionResult.getCyclePath());
+                            count++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.error(ex, ex);
+                    }
+                }
+
+                if (count == 0)
+                {
+                    new Notification("needsmoredojo", "Find Circular Dependencies", "No cycles were found in the dependency graph", NotificationType.INFORMATION).notify(e.getProject());
+                }
+                else
+                {
+                    updateToolWindow(count, e.getProject(), detector);
                 }
             }
-            catch(Exception ex)
-            {
-                // TODO write
-                int i=0;
-            }
-        }
-
-
-        if(count == 0)
-        {
-            new Notification("needsmoredojo", "Find Cyclic Dependencies", "No cycles were found in the dependency graph", NotificationType.INFORMATION).notify(e.getProject());
-        }
-        else
-        {
-            window.setAvailable(true, null);
-            window.show(null);
-            window.activate(null);
-
-            Map<String,List<String>> incriminatingModules = detector.getIncriminatingModules();
-            new FindCyclicDependenciesToolWindow().createContent(e.getProject(), window, incriminatingModules, count);
-        }
+        }, "Searching for circular dependencies", false, e.getProject());
     }
 }

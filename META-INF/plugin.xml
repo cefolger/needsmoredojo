@@ -162,10 +162,6 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="FindCyclicDependencies" anchor="bottom" factoryClass="com.chrisfolger.needsmoredojo.intellij.toolwindows.FindCyclicDependenciesToolWindowFactory">
-
-        </toolWindow>
-
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.UnusedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.CyclicDependencyProvider"/>
