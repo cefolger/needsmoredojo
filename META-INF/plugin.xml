@@ -17,13 +17,14 @@
 
             <b>Dojo AMD Module Import Management</b>
             <ul>
+                <li>Cyclic dependency analysis action and on the fly inspection for cyclic dependencies (inspection must be enabled) </li>
                 <li>Add imports by name instead of module path. Let the plugin insert them for you. Use either absolute or relative path syntax.</li>
                 <li>Remove or reorder import statements </li>
                 <li>Flags unused imports with a strikethrough and allows you to remove them all at once </li>
                 <li>Organize imports alphabetically and remove duplicates </li>
                 <li>Detect inconsistently named imports </li>
                 <li>Convert between absolute and relative path syntax </li>
-                <li>Aware of plugins, modules with resource ids, etc.
+                <li>Aware of plugins, modules with resource ids, etc. </li>
             </ul>
 
             <b>Other Dojo Specific Features </b>
@@ -39,6 +40,8 @@
   <change-notes><![CDATA[
             <b>0.5.1</b>
             <ul>
+                <li>Add experimental cyclic dependency detection both as an inspection and an action (Ctrl+Alt+O, C). Inspection
+                 must be enabled via the settings menu</li>
                 <li>Add ability to toggle between relative and absolute AMD path syntax </li>
                 <li>Add ability to ignore certain unused imports with /*NMD:Ignore*/ block </li>
                 <li>Add quick fix for renaming a parameter to match its define literal if a mismatch is detected </li>

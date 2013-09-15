@@ -15,7 +15,7 @@ public class FindCyclicDependenciesToolWindow
     public void createContent(Project project, ToolWindow toolWindow, final Map<String, List<String>> modules, int numberOfPaths)
     {
         Tree tree = new Tree();
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Top modules that are part of a cyclic dependency. There were " + numberOfPaths + " total paths with cycles");
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Modules that are part of a cyclic dependency, sorted by number of occurrences. There were " + numberOfPaths + " paths with cycles");
 
         List<String> sortedKeys = new ArrayList<String>();
         for(String key : modules.keySet())
@@ -44,6 +44,5 @@ public class FindCyclicDependenciesToolWindow
 
         JScrollPane scrollPane = new JBScrollPane(tree);
         toolWindow.getComponent().add(scrollPane);
-        // TODO dispose
     }
 }

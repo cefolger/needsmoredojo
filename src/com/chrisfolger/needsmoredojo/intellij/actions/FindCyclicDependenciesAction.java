@@ -37,8 +37,9 @@ public class FindCyclicDependenciesAction extends AnAction
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                ToolWindowManager.getInstance(project).unregisterToolWindow("FindCyclicDependencies");
-                ToolWindow window = ToolWindowManager.getInstance(project).registerToolWindow("FindCyclicDependencies", true, ToolWindowAnchor.BOTTOM);
+                ToolWindowManager.getInstance(project).unregisterToolWindow("Find Cyclic AMD Dependencies");
+                ToolWindow window = ToolWindowManager.getInstance(project).registerToolWindow("Find Cyclic AMD Dependencies", true, ToolWindowAnchor.BOTTOM);
+                window.setTitle("Find Cyclic AMD Dependencies");
                 window.setDefaultState(ToolWindowAnchor.BOTTOM, ToolWindowType.DOCKED, null);
                 window.show(null);
                 window.activate(null);
