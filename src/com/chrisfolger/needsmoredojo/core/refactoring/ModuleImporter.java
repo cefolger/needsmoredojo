@@ -38,49 +38,6 @@ public class ModuleImporter
     private String moduleName;
     private Map<String, String> moduleNamingExceptionMap;
 
-    public class MatchResult
-    {
-        private int index;
-        private String path;
-        private char quote;
-        private PsiFile module;
-        private String pluginResourceId;
-        private PsiFile pluginResourceFile;
-
-        private MatchResult(PsiFile module, int index, String path, char quote, String pluginResourceId, PsiFile pluginResourceFile) {
-            this.index = index;
-            this.path = path;
-            this.quote = quote;
-            this.module = module;
-            this.pluginResourceId = pluginResourceId;
-            this.pluginResourceFile = pluginResourceFile;
-        }
-
-        public String getPluginResourceId() {
-            return pluginResourceId;
-        }
-
-        public PsiFile getPluginResourceFile() {
-            return pluginResourceFile;
-        }
-
-        public PsiFile getModule() {
-            return module;
-        }
-
-        public char getQuote() {
-            return quote;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public String getPath() {
-            return path;
-        }
-    }
-
     public ModuleImporter(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, Map<String, String> exceptionsMap)
     {
         this.moduleName = moduleName;
@@ -233,6 +190,24 @@ public class ModuleImporter
         return chosenImport;
     }
 
+    private String getUpdatedPluginResource(PsiFile pluginResourceFile, String pluginPostfix, PsiFile currentModule)
+    {
+        if(pluginResourceFile != null)
+        {
+            String relativePath = NameResolver.convertRelativePathToDojoPath(FileUtil.convertToRelativePath(currentModule.getContainingDirectory().getVirtualFile().getCanonicalPath(), pluginResourceFile.getVirtualFile().getCanonicalPath()));
+            if(relativePath != null)
+            {
+                return "!" + relativePath;
+            }
+        }
+        else if (pluginPostfix != null && pluginPostfix.length() > 1)
+        {
+            // don't do anything for the absolute path case, because it would not have changed.
+        }
+
+        return pluginPostfix;
+    }
+
     /**
      * takes an existing AMD import and updates it. Used when a module changes locations
      *
@@ -253,18 +228,7 @@ public class ModuleImporter
         String[] possibleImports = results.keySet().toArray(new String[0]);
         String chosenImport = chooseImportToReplaceAnImport(path, possibleImports);
 
-        if(pluginResourceFile != null)
-        {
-            boolean reimportSuccess = false;
-
-            String relativePath = NameResolver.convertRelativePathToDojoPath(FileUtil.convertToRelativePath(currentModule.getContainingDirectory().getVirtualFile().getCanonicalPath(), pluginResourceFile.getVirtualFile().getCanonicalPath()));
-            if(relativePath != null)
-            {
-                reimportSuccess = true;
-                pluginPostfix = "!" + relativePath;
-                // TODO absolute imports
-            }
-        }
+        pluginPostfix = getUpdatedPluginResource(pluginResourceFile, pluginPostfix, currentModule);
 
         PsiElement defineLiteral = defineStatement.getArguments().getExpressions()[index];
         PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), quote + chosenImport + pluginPostfix + quote);
@@ -315,7 +279,6 @@ public class ModuleImporter
             String pluginResourceId = NameResolver.getAMDPluginResourceIfPossible(importModule, true);
             String modulePath = NameResolver.getModulePath(importModule);
 
-            // TODO get the file if any that the plugin resource represents
             PsiFile pluginResourceFile = null;
             if(pluginResourceId.startsWith("!") && pluginResourceId.length() > 2 && pluginResourceId.charAt(1) == '.')
             {

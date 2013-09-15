@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.intellij.refactoring;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
+import com.chrisfolger.needsmoredojo.core.refactoring.MatchResult;
 import com.chrisfolger.needsmoredojo.core.refactoring.ModuleImporter;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.components.ServiceManager;
@@ -18,8 +19,8 @@ public class MoveRefactoringListener implements RefactoringElementListener
 {
     private String originalFile = null;
     private PsiFile[] possibleFiles = new PsiFile[0];
-    private List<ModuleImporter.MatchResult> matches = new ArrayList<ModuleImporter.MatchResult>();
-    private List<ModuleImporter.MatchResult> moduleReferences = new ArrayList<ModuleImporter.MatchResult>();
+    private List<MatchResult> matches = new ArrayList<MatchResult>();
+    private List<MatchResult> moduleReferences = new ArrayList<MatchResult>();
     private ModuleImporter renamer = null;
 
     public MoveRefactoringListener(PsiFile originalPsiFile, String originalFile)
@@ -52,12 +53,12 @@ public class MoveRefactoringListener implements RefactoringElementListener
     {
         PsiFile file = (PsiFile) psiElement;
 
-        for(ModuleImporter.MatchResult result : matches)
+        for(MatchResult result : matches)
         {
             renamer.reimportModule(result, file);
         }
 
-        for(ModuleImporter.MatchResult result : moduleReferences)
+        for(MatchResult result : moduleReferences)
         {
             renamer.reimportModule(result.getIndex(), file, result.getQuote(), result.getPath(), result.getModule(), result.getPluginResourceId(), false, result.getPluginResourceFile());
         }
