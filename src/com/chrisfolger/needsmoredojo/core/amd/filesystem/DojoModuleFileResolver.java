@@ -5,6 +5,7 @@ import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
@@ -15,9 +16,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class DojoModuleFileResolver
 {
@@ -29,6 +28,39 @@ public class DojoModuleFileResolver
     public static boolean isInDojoSources(String directory)
     {
         return directory.contains("/xstyle/") || directory.contains("/nls/") || directory.contains("/dojo/") || directory.contains("/dijit/") || directory.contains("/dojox/") || directory.contains("/dgrid/") || directory.contains("/util/buildscripts/");
+    }
+
+    /**
+     * gets a list of all files that are part of your dojo project sources.
+     * only retrieves javascript files
+     *
+     * @param project
+     * @return
+     */
+    public Collection<VirtualFile> getAllDojoProjectSourceFiles(Project project)
+    {
+        VirtualFile[] sourceDirectories = SourcesLocator.getProjectSourceDirectories(project, true);
+        List<VirtualFile> files = new ArrayList<VirtualFile>();
+        for(VirtualFile file : sourceDirectories)
+        {
+            files.add(file);
+        }
+
+        Set<VirtualFile> psiFiles = new HashSet<VirtualFile>();
+        Collection<VirtualFile> results = FilenameIndex.getAllFilesByExt(project, "js", GlobalSearchScope.projectScope(project));
+        for(VirtualFile result : results)
+        {
+            for(VirtualFile directory : sourceDirectories)
+            {
+                if(VfsUtilCore.isAncestor(directory, result, false))
+                {
+                    psiFiles.add(result);
+                    continue;
+                }
+            }
+        }
+
+        return results;
     }
 
     public Set<String> getDojoModulesInJavaScriptFiles(Project project)
