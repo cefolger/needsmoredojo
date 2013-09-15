@@ -32,7 +32,7 @@ public class CyclicDependencyInspection extends LocalInspectionTool
     @Override
     public boolean isEnabledByDefault()
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -43,8 +43,8 @@ public class CyclicDependencyInspection extends LocalInspectionTool
 
     @Nullable    @Override
     public String getStaticDescription() {
-        return "Detects AMD imports that have inconsistent naming between the module path and the variable name. " +
-                "\n\nExample: \n\ndefine([\n    'dojo/foo'\n], function(someOtherName) {}); \n\nvs\n\n define([\n    'dojo/foo'\n'], function(foo) {});";
+        return "Detects potential cycles on the current file. Cyclic dependencies in dojo can cause obscure bugs if not accounted for. This inspection is "
+                + "disabled by default.";
     }
 
     @Nls

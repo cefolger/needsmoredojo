@@ -4,10 +4,13 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.CyclicDependencyDetector;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.DependencyNode;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection.DetectionResult;
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.intellij.toolwindows.FindCyclicDependenciesToolWindow;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -24,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class FindCyclicDependenciesAction extends JavaScriptAction
+public class FindCyclicDependenciesAction extends AnAction
 {
     private Logger logger = Logger.getLogger(FindCyclicDependenciesAction.class);
 
@@ -49,6 +52,16 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
     @Override
     public void actionPerformed(final AnActionEvent e)
     {
+        if(!ServiceManager.getService(e.getProject(), DojoSettings.class).isNeedsMoreDojoEnabled())
+        {
+            e.getPresentation().setEnabled(false);
+            return;
+        }
+        else
+        {
+            e.getPresentation().setEnabled(true);
+        }
+
         final ProgressManager instance = ProgressManager.getInstance();
 
         instance.runProcessWithProgressSynchronously(new Runnable() {
