@@ -11,13 +11,28 @@ public class DependencyNode
     private DependencyNode parent;
     private PsiFile file;
     private String modulePath;
+    private boolean unused;
 
-    public DependencyNode(PsiFile file, DependencyNode parent, String modulePath)
+    public DependencyNode(PsiFile file, DependencyNode parent, String modulePath, boolean unused)
     {
         nodes = new ArrayList<DependencyNode>();
         this.parent = parent;
         this.file = file;
         this.modulePath = modulePath;
+        this.unused = unused;
+    }
+
+    public DependencyNode(PsiFile file, DependencyNode parent, String modulePath)
+    {
+        this(file, parent, modulePath, false);
+    }
+
+    public void setUnused(boolean unused) {
+        this.unused = unused;
+    }
+
+    public boolean isUnused() {
+        return unused;
     }
 
     public void add(DependencyNode node)

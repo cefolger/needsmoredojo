@@ -84,7 +84,7 @@ public class FindCyclicDependenciesAction extends AnAction
                     try
                     {
                         PsiFile psiFile = PsiManager.getInstance(e.getProject()).findFile(file);
-                        DependencyNode cycle = detector.addDependenciesOfFile(psiFile, psiFile.getProject(), psiFile, null, null);
+                        DependencyNode cycle = detector.addDependenciesOfFile(psiFile, psiFile.getProject(), psiFile, null, null, false);
 
                         if (cycle != null)
                         {

@@ -71,7 +71,7 @@ public class CyclicDependencyInspection extends LocalInspectionTool
 
         final List<ProblemDescriptor> descriptors = new ArrayList<ProblemDescriptor>();
 
-        DependencyNode cycle = detector.addDependenciesOfFile(file, file.getProject(), file, null, null);
+        DependencyNode cycle = detector.addDependenciesOfFile(file, file.getProject(), file, null, null, false);
 
         if(cycle != null)
         {

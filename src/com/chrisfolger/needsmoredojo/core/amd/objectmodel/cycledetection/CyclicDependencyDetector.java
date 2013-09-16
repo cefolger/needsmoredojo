@@ -3,7 +3,11 @@ package com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
+import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -37,7 +41,12 @@ public class CyclicDependencyDetector
         Set<String> dependencies = new HashSet<String>();
         while(parent != null)
         {
-            path = parent.getFile().getName() + " -> " + path;
+            String unusedString = "";
+            if(parent.isUnused())
+            {
+                unusedString = " (unused)";
+            }
+            path = parent.getFile().getName() + unusedString + " -> " + path;
 
             if(parent.getParent() != null && parent.getParent().getParent() == null)
             {
@@ -54,14 +63,26 @@ public class CyclicDependencyDetector
         return new DetectionResult(path, lastDependency, dependencies);
     }
 
-    public DependencyNode addDependenciesOfFile(PsiFile originalFile, Project project, PsiFile psiFile, DependencyNode parent, String modulePath)
+    private boolean importInList(List<PsiElement> defines, String module)
+    {
+        for(PsiElement define : defines)
+        {
+            if(define.getText().replaceAll("'|\"", "").equals(module))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public DependencyNode addDependenciesOfFile(PsiFile originalFile, Project project, PsiFile psiFile, DependencyNode parent, String modulePath, boolean unused)
     {
         if(parent == null)
         {
             dependencies = new HashSet<String>();
         }
 
-        DependencyNode node = new DependencyNode(psiFile, parent, modulePath);
+        DependencyNode node = new DependencyNode(psiFile, parent, modulePath, unused);
         if(parent != null)
         {
             parent.add(node);
@@ -72,6 +93,19 @@ public class CyclicDependencyDetector
         final List<PsiElement> defines = new ArrayList<PsiElement>();
 
         resolver.gatherDefineAndParameters(psiFile, defines, parameters);
+
+        /*
+            get a list of unused defines and parameters
+
+            this way we can note if a module dependency is unused when the path is displayed
+        */
+        List<PsiElement> unusedDefines = new ArrayList<PsiElement>();
+        List<PsiElement> unusedParameters = new ArrayList<PsiElement>();
+        unusedDefines.addAll(defines);
+        unusedParameters.addAll(parameters);
+
+        UnusedImportsRemover detector = new UnusedImportsRemover();
+        psiFile.accept(detector.getVisitorToRemoveUsedModulesFromLists(unusedParameters, unusedDefines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions()));
 
         for(PsiElement element : defines)
         {
@@ -90,10 +124,12 @@ public class CyclicDependencyDetector
                 continue;
             }
 
+            boolean isUnused = importInList(unusedDefines, moduleName);
+
             PsiFile templateFile = PsiManager.getInstance(psiFile.getProject()).findFile(htmlFile);
             if(templateFile.getName().equals(originalFile.getName()))
             {
-                DependencyNode original = new DependencyNode(originalFile, node, element.getText());
+                DependencyNode original = new DependencyNode(originalFile, node, element.getText(), isUnused);
                 node.add(original);
                 return original;
             }
@@ -104,7 +140,7 @@ public class CyclicDependencyDetector
             }
 
             dependencies.add(templateFile.getName());
-            DependencyNode result = addDependenciesOfFile(originalFile, project, templateFile, node, element.getText());
+            DependencyNode result = addDependenciesOfFile(originalFile, project, templateFile, node, element.getText(), isUnused);
             if(result != null)
             {
                 return result;
