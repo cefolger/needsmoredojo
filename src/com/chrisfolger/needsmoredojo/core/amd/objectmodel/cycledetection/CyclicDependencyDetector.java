@@ -131,8 +131,9 @@ public class CyclicDependencyDetector
 
             if(templateFile == null)
             {
-                Logger.getLogger(CyclicDependencyDetector.class).error("could not find module file: " + htmlFile.getCanonicalPath() + " current module is "
+                Logger.getLogger(CyclicDependencyDetector.class).warn("could not find module file: " + htmlFile.getCanonicalPath() + " current module is "
                         + psiFile.getVirtualFile().getCanonicalPath() + " and dependency is " + element.getText());
+                continue;
             }
 
             if(templateFile.getName().equals(originalFile.getName()))
