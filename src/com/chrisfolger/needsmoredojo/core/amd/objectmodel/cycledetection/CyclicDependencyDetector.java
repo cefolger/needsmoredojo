@@ -13,6 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
@@ -127,6 +128,12 @@ public class CyclicDependencyDetector
             boolean isUnused = importInList(unusedDefines, moduleName);
 
             PsiFile templateFile = PsiManager.getInstance(psiFile.getProject()).findFile(htmlFile);
+
+            if(templateFile == null)
+            {
+                Logger.getLogger(CyclicDependencyDetector.class).error("could not find module file: " + htmlFile.getCanonicalPath());
+            }
+
             if(templateFile.getName().equals(originalFile.getName()))
             {
                 DependencyNode original = new DependencyNode(originalFile, node, element.getText(), isUnused);
