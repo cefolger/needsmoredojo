@@ -37,7 +37,7 @@ don't hesitate to open up an issue right here on github. You can also send me an
 In version 0.4 and later, you can set up your project source location and dojo source location to enable certain features. By default, Needs More Dojo assumes that
 your project sources are on the same level as the dojo sources.
 
-- If you haven't setup your sources, you will get the following warning each time you load the project:
+- If you haven't set up your sources, you will get the following warning each time you load the project:
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/projectwarning.png)
 - Open the settings dialog via the File menu or keyboard shortcut
 - Navigate to "Needs More Dojo" under project settings which will look like this:
@@ -208,9 +208,14 @@ things
 
 ##### Navigate to Attach Point
 
-Inside a module that uses _TemplatedMixin, use this option with the caret over an attach point reference.
+Inside a module that uses _TemplatedMixin, use this option with the caret over an attach point reference. The default
+key binding is Ctrl+Shift+O, A.
+
 The attach point will be looked up in the widget's template file (specified by the templateString property) and highlighted.
-Press Esc to remove the highlighting
+Press Esc to remove the highlighting.
+
+You can also use Ctrl+Click over an attach point reference. However, note that the attach point references are flagged
+as unresolved variables even though they can be looked up.
 
 > **Note: If you don't set the location of your project sources, this feature will search for them in the directory
 containing all of the dojo sources**
@@ -323,7 +328,7 @@ put the results in a tool window at the bottom:
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/cyclicaction.png)
 
-If you have many modules that have a cycle in the dependency try, this output might be helpful when trying to isolate
+If you have many modules that have a cycle in the dependency graph, this output might be helpful when trying to isolate
 the culprit module.
 
 #### License
