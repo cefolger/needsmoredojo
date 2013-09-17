@@ -23,6 +23,11 @@ public class DeleteSingleImportAction extends JavaScriptAction
         final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
 
+        if(editor == null)
+        {
+            return;
+        }
+
         PsiElement element = psiFile.findElementAt(editor.getCaretModel().getOffset());
 
         final AMDImport amdImport = new NearestAMDImportLocator().findNearestImport(element, psiFile);
