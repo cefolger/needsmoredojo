@@ -261,6 +261,12 @@ public class ModuleImporter
         DefineStatement statement = resolver.getDefineStatementItems(module);
         List<MatchResult> matches = new ArrayList<MatchResult>();
 
+        if(statement == null)
+        {
+            // define statement wasn't valid
+            return matches;
+        }
+
         for(int i=0;i<statement.getArguments().getExpressions().length;i++)
         {
             JSExpression expression = statement.getArguments().getExpressions()[i];
