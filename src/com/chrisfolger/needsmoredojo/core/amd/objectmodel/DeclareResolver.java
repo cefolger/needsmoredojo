@@ -72,11 +72,16 @@ public class DeclareResolver
                     return;
                 }
 
+                if(element.getArguments().length < 2)
+                {
+                    // incomplete or invalid define
+                    super.visitJSCallExpression(element);
+                    return;
+                }
+
                 // get the function
                 JSFunction function = (JSFunction) element.getArguments()[1];
                 function.acceptChildren(getVisitorToRetrieveDeclare(onDeclareFound));
-
-                return;
             }
         };
     }

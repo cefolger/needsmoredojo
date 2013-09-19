@@ -15,7 +15,7 @@ public class AttachPointGotoDeclarationHandler implements GotoDeclarationHandler
     @Override
     public PsiElement[] getGotoDeclarationTargets(PsiElement psiElement, int i, Editor editor)
     {
-        if(!psiElement.getLanguage().equals(Language.findLanguageByID("JavaScript")))
+        if(psiElement == null || !psiElement.getLanguage().equals(Language.findLanguageByID("JavaScript")))
         {
             return new PsiElement[0];
         }
