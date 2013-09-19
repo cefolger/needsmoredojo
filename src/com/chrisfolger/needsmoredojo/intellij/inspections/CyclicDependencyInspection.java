@@ -84,7 +84,7 @@ public class CyclicDependencyInspection extends LocalInspectionTool
 
             for(PsiElement define : defines)
             {
-                if(define.getText().equals(cycleDetectionResult.getLastDependency().getModulePath()))
+                if(cycleDetectionResult.getLastDependency() != null && define.getText().equals(cycleDetectionResult.getLastDependency().getModulePath()))
                 {
                     LocalQuickFix fix = null;
                     descriptors.add(manager.createProblemDescriptor(define, "A cyclic dependency exists with the path: \n" + cycleDetectionResult.getCyclePath(), fix, ProblemHighlightType.GENERIC_ERROR, true));
