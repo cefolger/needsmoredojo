@@ -13,6 +13,12 @@ public abstract class JavaScriptAction extends AnAction
     @Override
     public void update(AnActionEvent e)
     {
+        if(e.getProject() == null)
+        {
+            e.getPresentation().setEnabled(false);
+            return;
+        }
+
         if(!ServiceManager.getService(e.getProject(), DojoSettings.class).isNeedsMoreDojoEnabled())
         {
             e.getPresentation().setEnabled(false);
