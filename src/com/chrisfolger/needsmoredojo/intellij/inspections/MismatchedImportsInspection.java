@@ -93,14 +93,51 @@ public class MismatchedImportsInspection extends LocalInspectionTool
                 fix = new MismatchedImportsQuickFix(define, parameter);
             }
 
+            // check if the previous import was also mismatched. If it was, it's possible that they were flipped by accident.
+            // but exclude the case where there are three or more in a row, because then it's probably just that the two
+            // lists are completely out of sync.
+            boolean importsSwapped = false;
+            if(i > 0)
+            {
+                boolean nextIsMismatched = false;
+                if(i <= mismatches.size() - 2)
+                {
+                    MismatchedImportsDetector.Mismatch nextMismatch = mismatches.get(i+1);
+                    if(nextMismatch.getIndex() == mismatch.getIndex() + 1)
+                    {
+                        nextIsMismatched = true;
+                    }
+                }
+
+                MismatchedImportsDetector.Mismatch previousMismatch = mismatches.get(i-1);
+                if(previousMismatch.getIndex() == mismatch.getIndex() - 1 && !nextIsMismatched)
+                {
+                    importsSwapped = true;
+                }
+            }
+
+            LocalQuickFix importFix = null;
+            if(importsSwapped)
+            {
+                importFix = new MismatchedImportsQuickFix(define, parameter);
+            }
+
             if (parameter != null)
             {
-                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), fix, ProblemHighlightType.ERROR, true));
+                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
             }
 
             if (define != null)
             {
-                descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), fix, ProblemHighlightType.ERROR, true));
+                if(importFix != null)
+                {
+                    descriptors.add(manager.createProblemDescriptor(define, String.format("foooo", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix, new MismatchedImportsQuickFix(parameter, define)));
+                }
+                else
+                {
+                    descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
+                }
+
             }
         }
 
