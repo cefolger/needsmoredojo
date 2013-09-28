@@ -116,12 +116,6 @@ public class MismatchedImportsInspection extends LocalInspectionTool
                 }
             }
 
-            LocalQuickFix importFix = null;
-            if(importsSwapped)
-            {
-                importFix = new MismatchedImportsQuickFix(define, parameter);
-            }
-
             if (parameter != null)
             {
                 descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
@@ -129,18 +123,32 @@ public class MismatchedImportsInspection extends LocalInspectionTool
 
             if (define != null)
             {
-                if(importFix != null)
-                {
-                    descriptors.add(manager.createProblemDescriptor(define, String.format("foooo", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix, new MismatchedImportsQuickFix(parameter, define)));
-                }
-                else
-                {
-                    descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
-                }
+                descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
+            }
 
+            if(importsSwapped)
+            {
+                SwapImportsQuickFix importFix = new SwapImportsQuickFix(mismatch, mismatches.get(i-1));
+                descriptors.add(addQuickFixToOtherMismatch(mismatch, mismatches.get(i-1), importFix, manager));
+                descriptors.add(addQuickFixToOtherMismatch(mismatches.get(i-1), mismatch, importFix, manager));
             }
         }
 
         return descriptors.toArray(new ProblemDescriptor[0]);
+    }
+
+    private ProblemDescriptor addQuickFixToOtherMismatch(MismatchedImportsDetector.Mismatch mismatch, MismatchedImportsDetector.Mismatch secondMismatch,  SwapImportsQuickFix quickFix, InspectionManager manager)
+    {
+        if(mismatch.getDefine() != null)
+        {
+            return manager.createProblemDescriptor(mismatch.getDefine(), String.format("Potentially swapped imports: %s and %s", mismatch.getDefine().getText(), secondMismatch.getDefine().getText()), true, ProblemHighlightType.ERROR, true, quickFix);
+        }
+
+        if(mismatch.getParameter() !=null)
+        {
+            return manager.createProblemDescriptor(mismatch.getParameter(), String.format("Potentially swapped imports: %s and %s", mismatch.getDefine().getText(), secondMismatch.getDefine().getText()), true, ProblemHighlightType.ERROR, true, quickFix);
+        }
+
+        return null;
     }
 }
