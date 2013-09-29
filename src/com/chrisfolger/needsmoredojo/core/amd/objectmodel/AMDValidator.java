@@ -33,9 +33,11 @@ public class AMDValidator
         String defineComparison = define.toLowerCase().replaceAll("'|\"", "").replace("\"", "");
         String parameterComparison = parameter.toLowerCase();
 
-        if(exceptions.containsKey(defineComparison))
+        // if an exception like dojo/sniff -> has yields a match, then return true. Else, just continue
+        // because they could also use a more standard convention like dojo/sniff -> sniff
+        if(exceptions.containsKey(defineComparison) && parameterComparison.equals(exceptions.get(defineComparison).toLowerCase()))
         {
-            return parameterComparison.equals(exceptions.get(defineComparison).toLowerCase());
+            return true;
         }
 
         if(defineComparison.contains("/_base/fx"))

@@ -41,6 +41,7 @@
             <b>0.6</b>
             <ul>
                 <li>Add quickfix for swapping two mismatched imports </li>
+                <li>Minor bug fixes (#119)</li>
             </ul>
 
             <b>0.5.1</b>

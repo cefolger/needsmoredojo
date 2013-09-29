@@ -141,6 +141,14 @@ public class TestAMDValidator
     }
 
     @Test
+    public void testStandardConventionStillWorksWithExceptions()
+    {
+        // has is an explicit exception
+        exceptions.put("dojo/sniff", "has");
+        assertTrue(validator.defineMatchesParameter("dojo/sniff", "sniff", exceptions));
+    }
+
+    @Test
     public void testNamingResourcesIsValidForI18n()
     {
         assertTrue(validator.defineMatchesParameter("dojo/i18n!./foo/foonls", "resources", exceptions));
