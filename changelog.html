@@ -1,5 +1,45 @@
 <html>
     <body>
+        <b>0.5.1</b>
+        <ul>
+            <li>Add experimental cyclic dependency detection both as an inspection and an action (Ctrl+Alt+O, C). Inspection
+                must be enabled via the settings menu</li>
+            <li>Add ability to toggle between relative and absolute AMD path syntax </li>
+            <li>Add ability to ignore certain unused imports with /*NMD:Ignore*/ block </li>
+            <li>Add quick fix for renaming a parameter to match its define literal if a mismatch is detected </li>
+            <li>Add Ctrl+Click support for attach points </li>
+            <li>When performing a Refactor: Move File operation, AMD plugin resources that use relative paths will
+                have their path updated</li>
+            <li>If you use one line per define literal, line comments after the literal will have their order
+                preserved when reorganizing (Issue #53)</li>
+            <li>Minor bug fixes (#107, #68, #112, #116)</li>
+        </ul>
+
+        <b>0.5</b>
+        <ul>
+            <li>Move refactoring is supported for project AMD modules </li>
+            <li>Rename refactoring is supported for project AMD modules </li>
+            <li>Can now use the project source directory as the dojo source location if they are in the same place </li>
+            <li>Can now delete single imports</li>
+            <li>You are now able to use a jar or zip file for your dojo sources (Issue #91)</li>
+            <li>When adding an import, you can use domAttr, domStyle etc. instead of the hyphenated versions </li>
+            <li>Fix problem with naming exceptions not being honored (Issue #99) </li>
+            <li>Minor bug fixes (Issues #92, #93, #95)</li>
+        </ul>
+
+        <b>0.4.1</b>
+        <ul>
+            <li>Added unused import exceptions </li>
+            <li>Fixed index out of bounds when removing 0 imports (Issue #77)</li>
+            <li>Fixed trailing comma when organizing imports with duplicates (Issue #78)</li>
+            <li>No longer need one module already imported when trying to add one (Issue #70)</li>
+            <li>Added ability to move imports up and down with Ctrl+Alt+Page Up/Down</li>
+            <li>Mismatched imports detector takes custom AMD plugins into account (Issue #87)</li>
+            <li>Fixed plugins not being inserted correctly when using add import (Issue #20)</li>
+            <li>Fixed a case that would prevent a module from being flagged as unused (Issue #88)</li>
+            <li>Fix bug when importing modules from another package (Issue #90)</li>
+        </ul>
+
         <b>0.4</b>
         <ul>
             <li>Project sources no longer have to be on the same level as the dojo sources for some features to work </li>
