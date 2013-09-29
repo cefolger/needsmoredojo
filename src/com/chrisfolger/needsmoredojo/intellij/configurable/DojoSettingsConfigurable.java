@@ -48,6 +48,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JButton removeRUIModule;
     private JCheckBox dojoSourcesIsTheSame;
     private JCheckBox pluginEnabled;
+    private JCheckBox addModulesIfThereAreNoneDetected;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -137,7 +138,8 @@ public class DojoSettingsConfigurable implements Configurable {
                 !projectSourcesText.getText().equals(settingsService.getProjectSourcesDirectory()) ||
                 preferRelativePathsWhenCheckBox.isSelected() != settingsService.isPreferRelativeImports() ||
                 dojoSourcesIsTheSame.isSelected() != settingsService.isDojoSourcesShareProjectSourcesRoot() ||
-                pluginEnabled.isSelected() != settingsService.isNeedsMoreDojoEnabled();
+                pluginEnabled.isSelected() != settingsService.isNeedsMoreDojoEnabled() ||
+                addModulesIfThereAreNoneDetected.isSelected() != settingsService.isAddModuleIfThereAreNoneDefined();
 
     }
 
@@ -208,6 +210,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
         dojoSourcesIsTheSame.setSelected(settingsService.isDojoSourcesShareProjectSourcesRoot());
+        addModulesIfThereAreNoneDetected.setSelected(settingsService.isAddModuleIfThereAreNoneDefined());
 
         pluginEnabled.setSelected(settingsService.isNeedsMoreDojoEnabled());
         updatePluginEnabledUI();
@@ -215,6 +218,13 @@ public class DojoSettingsConfigurable implements Configurable {
 
         dojoSourcesText.getTextField().addKeyListener(new TextChangedListener());
         projectSourcesText.getTextField().addKeyListener(new TextChangedListener());
+
+        addModulesIfThereAreNoneDetected.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updateModifiedState();
+            }
+        });
 
         preferRelativePathsWhenCheckBox.addChangeListener(new ChangeListener() {
             @Override
@@ -310,6 +320,7 @@ public class DojoSettingsConfigurable implements Configurable {
         settingsService.setPreferRelativeImports(preferRelativePathsWhenCheckBox.isSelected());
         settingsService.setDojoSourcesShareProjectSourcesRoot(dojoSourcesIsTheSame.isSelected());
         settingsService.setNeedsMoreDojoEnabled(pluginEnabled.isSelected());
+        settingsService.setAddModuleIfThereAreNoneDefined(addModulesIfThereAreNoneDetected.isSelected());
 
         modified = false;
     }
@@ -334,6 +345,7 @@ public class DojoSettingsConfigurable implements Configurable {
         pluginEnabled.setSelected(settingsService.isNeedsMoreDojoEnabled());
 
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
+        addModulesIfThereAreNoneDetected.setSelected(settingsService.isAddModuleIfThereAreNoneDefined());
 
         modified = false;
     }

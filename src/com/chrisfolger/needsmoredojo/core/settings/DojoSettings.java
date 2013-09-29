@@ -25,6 +25,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private boolean preferRelativeImports;
     private boolean dojoSourcesShareProjectSourcesRoot;
     private boolean needsMoreDojoEnabled;
+    private boolean addModuleIfThereAreNoneDefined;
 
     public DojoSettings()
     {
@@ -39,6 +40,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         preferRelativeImports = false;
         dojoSourcesShareProjectSourcesRoot = false;
         needsMoreDojoEnabled = true;
+        addModuleIfThereAreNoneDefined = false;
     }
 
     public @NotNull LinkedHashMap<String, String> getExceptionsMap()
@@ -100,6 +102,14 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public boolean isDojoSourcesShareProjectSourcesRoot() {
         return dojoSourcesShareProjectSourcesRoot;
+    }
+
+    public boolean isAddModuleIfThereAreNoneDefined() {
+        return addModuleIfThereAreNoneDefined;
+    }
+
+    public void setAddModuleIfThereAreNoneDefined(boolean addModuleIfThereAreNoneDefined) {
+        this.addModuleIfThereAreNoneDefined = addModuleIfThereAreNoneDefined;
     }
 
     public void setDojoSourcesShareProjectSourcesRoot(boolean dojoSourcesShareProjectSourcesRoot) {
