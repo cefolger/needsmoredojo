@@ -93,17 +93,62 @@ public class MismatchedImportsInspection extends LocalInspectionTool
                 fix = new MismatchedImportsQuickFix(define, parameter);
             }
 
+            // check if the previous import was also mismatched. If it was, it's possible that they were flipped by accident.
+            // but exclude the case where there are three or more in a row, because then it's probably just that the two
+            // lists are completely out of sync.
+            boolean importsSwapped = false;
+            if(i > 0)
+            {
+                boolean nextIsMismatched = false;
+                if(i <= mismatches.size() - 2)
+                {
+                    MismatchedImportsDetector.Mismatch nextMismatch = mismatches.get(i+1);
+                    if(nextMismatch.getIndex() == mismatch.getIndex() + 1)
+                    {
+                        nextIsMismatched = true;
+                    }
+                }
+
+                MismatchedImportsDetector.Mismatch previousMismatch = mismatches.get(i-1);
+                if(previousMismatch.getIndex() == mismatch.getIndex() - 1 && !nextIsMismatched)
+                {
+                    importsSwapped = true;
+                }
+            }
+
             if (parameter != null)
             {
-                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), fix, ProblemHighlightType.ERROR, true));
+                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
             }
 
             if (define != null)
             {
-                descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), fix, ProblemHighlightType.ERROR, true));
+                descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
+            }
+
+            if(importsSwapped)
+            {
+                SwapImportsQuickFix importFix = new SwapImportsQuickFix(mismatch, mismatches.get(i-1));
+                descriptors.add(addQuickFixToOtherMismatch(mismatch, mismatches.get(i-1), importFix, manager));
+                descriptors.add(addQuickFixToOtherMismatch(mismatches.get(i-1), mismatch, importFix, manager));
             }
         }
 
         return descriptors.toArray(new ProblemDescriptor[0]);
+    }
+
+    private ProblemDescriptor addQuickFixToOtherMismatch(MismatchedImportsDetector.Mismatch mismatch, MismatchedImportsDetector.Mismatch secondMismatch,  SwapImportsQuickFix quickFix, InspectionManager manager)
+    {
+        if(mismatch.getDefine() != null)
+        {
+            return manager.createProblemDescriptor(mismatch.getDefine(), String.format("Potentially swapped imports: %s and %s", mismatch.getDefine().getText(), secondMismatch.getDefine().getText()), true, ProblemHighlightType.ERROR, true, quickFix);
+        }
+
+        if(mismatch.getParameter() !=null)
+        {
+            return manager.createProblemDescriptor(mismatch.getParameter(), String.format("Potentially swapped imports: %s and %s", mismatch.getDefine().getText(), secondMismatch.getDefine().getText()), true, ProblemHighlightType.ERROR, true, quickFix);
+        }
+
+        return null;
     }
 }

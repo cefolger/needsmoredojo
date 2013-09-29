@@ -14,13 +14,19 @@ public class MismatchedImportsDetector
 
     public class Mismatch
     {
+        private int index;
         private PsiElement define;
         private PsiElement parameter;
 
-        public Mismatch(PsiElement define, PsiElement parameter)
+        public Mismatch(PsiElement define, PsiElement parameter, int index)
         {
             this.define = define;
             this.parameter = parameter;
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return index;
         }
 
         public PsiElement getDefine() {
@@ -41,7 +47,7 @@ public class MismatchedImportsDetector
             // special case where there are missing defines most likely
             for(int i=defines.length;i<parameters.length;i++)
             {
-                results.add(new Mismatch(null, parameters[i]));
+                results.add(new Mismatch(null, parameters[i], i));
             }
         }
 
@@ -56,7 +62,7 @@ public class MismatchedImportsDetector
 
             if(!new AMDValidator().defineMatchesParameter(defines[i].getText(), parameters[i].getText(), exceptions))
             {
-                results.add(new Mismatch(defines[i], parameters[i]));
+                results.add(new Mismatch(defines[i], parameters[i], i));
             }
         }
 

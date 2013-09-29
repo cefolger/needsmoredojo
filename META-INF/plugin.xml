@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.5.1</version>
+  <version>0.6</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -38,6 +38,11 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>0.6</b>
+            <ul>
+                <li>Add quickfix for swapping two mismatched imports </li>
+            </ul>
+
             <b>0.5.1</b>
             <ul>
                 <li>Add experimental cyclic dependency detection both as an inspection and an action (Ctrl+Alt+O, C). Inspection
@@ -63,19 +68,6 @@
                 <li>When adding an import, you can use domAttr, domStyle etc. instead of the hyphenated versions </li>
                 <li>Fix problem with naming exceptions not being honored (Issue #99) </li>
                 <li>Minor bug fixes (Issues #92, #93, #95)</li>
-            </ul>
-
-            <b>0.4.1</b>
-            <ul>
-                <li>Added unused import exceptions </li>
-                <li>Fixed index out of bounds when removing 0 imports (Issue #77)</li>
-                <li>Fixed trailing comma when organizing imports with duplicates (Issue #78)</li>
-                <li>No longer need one module already imported when trying to add one (Issue #70)</li>
-                <li>Added ability to move imports up and down with Ctrl+Alt+Page Up/Down</li>
-                <li>Mismatched imports detector takes custom AMD plugins into account (Issue #87)</li>
-                <li>Fixed plugins not being inserted correctly when using add import (Issue #20)</li>
-                <li>Fixed a case that would prevent a module from being flagged as unused (Issue #88)</li>
-                <li>Fix bug when importing modules from another package (Issue #90)</li>
             </ul>
 
             <br><br>
