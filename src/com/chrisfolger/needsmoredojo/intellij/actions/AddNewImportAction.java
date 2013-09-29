@@ -44,7 +44,7 @@ public class AddNewImportAction extends JavaScriptAction
             warning += "\n*For best results, configure your project sources in the settings dialog*";
         }
 
-        String importModule = Messages.showInputDialog("Enter the module name" + warning, "Add new AMD import", null, initialChoice, null);
+        String importModule = Messages.showInputDialog("Enter the module name or its full path" + warning, "Add new AMD import", null, initialChoice, null);
 
         if(importModule == null)
         {
@@ -52,11 +52,20 @@ public class AddNewImportAction extends JavaScriptAction
         }
 
         DojoSettings settingsService = ServiceManager.getService(psiFile.getProject(), DojoSettings.class);
-        String[] choices = new ImportResolver().getPossibleDojoImports(psiFile, importModule, settingsService.isPreferRelativeImports());
-        // there will be always one choice (the original module)
-        if(choices.length > 0)
+        String[] choices = new ImportResolver().getPossibleDojoImports(psiFile, importModule, settingsService.isPreferRelativeImports(), settingsService.isAddModuleIfThereAreNoneDefined());
+
+        if(choices.length == 1 && settingsService.isAddModuleIfThereAreNoneDefined())
+        {
+            // do nothing for this case
+        }
+        else if(choices.length > 0)
         {
             importModule = Messages.showEditableChooseDialog("", "Add new AMD Import", null, choices, choices[0], null);
+        }
+        else if (choices.length == 0)
+        {
+            new Notification("needsmoredojo", "Add new Import", "No module was found to import", NotificationType.WARNING).notify(psiFile.getProject());
+            return;
         }
 
         if(importModule == null)

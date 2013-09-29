@@ -211,14 +211,19 @@ public class ImportResolver
      * @param psiFile   the current file the user is adding an import to
      * @param module    the module the user wanted to add
      * @param prioritizeRelativeImports if true, will return relative path modules first instead of absolutely referenced files
+     * @param useEnteredModuleAsChoice if true, the entered module name will be returned as a possible import.
      * @return a string array of possible modules to import (fully qualified)
      */
-    public String[] getPossibleDojoImports(List<SourceLibrary> libraries, PsiFile psiFile, String module, boolean prioritizeRelativeImports)
+    public String[] getPossibleDojoImports(List<SourceLibrary> libraries, PsiFile psiFile, String module, boolean prioritizeRelativeImports, boolean useEnteredModuleAsChoice)
     {
         PsiFile[] files = getPossibleDojoImportFiles(psiFile.getProject(), module, prioritizeRelativeImports);
-        if(files == null)
+        if((files == null || files.length == 0) && useEnteredModuleAsChoice)
         {
             return new String[] { module };
+        }
+        else if (files == null || files.length == 0)
+        {
+            return new String[0];
         }
 
         return getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), module, psiFile, prioritizeRelativeImports);
@@ -232,8 +237,8 @@ public class ImportResolver
      * @param prioritizeRelativeImports if true, will return relative path modules first instead of absolutely referenced files
      * @return a string array of possible modules to import (fully qualified)
      */
-    public String[] getPossibleDojoImports(PsiFile psiFile, String module, boolean prioritizeRelativeImports)
+    public String[] getPossibleDojoImports(PsiFile psiFile, String module, boolean prioritizeRelativeImports, boolean useEnteredModuleAsChoice)
     {
-        return getPossibleDojoImports(new SourcesLocator().getSourceLibraries(psiFile.getProject()), psiFile, module, prioritizeRelativeImports);
+        return getPossibleDojoImports(new SourcesLocator().getSourceLibraries(psiFile.getProject()), psiFile, module, prioritizeRelativeImports, useEnteredModuleAsChoice);
     }
 }
