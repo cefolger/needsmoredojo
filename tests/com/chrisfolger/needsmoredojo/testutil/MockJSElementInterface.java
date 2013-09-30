@@ -11,4 +11,5 @@ public interface MockJSElementInterface extends PsiElement
     public void setNextSibling(MockJSElementInterface element);
     public PsiElement getLastChild();
     public void setParent(MockJSElementInterface element);
+    public String printTree();
 }

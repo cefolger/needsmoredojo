@@ -59,4 +59,9 @@ public class MockJSParameter extends JSParameterImpl implements MockJSElementInt
     {
         return this.nextSibling;
     }
+
+    @Override
+    public String printTree() {
+        return MockJSElementInterfaceUtil.printTree(this);
+    }
 }

@@ -111,4 +111,9 @@ public class MockJSElement extends JSElementImpl implements  MockJSElementInterf
 
         return this;
     }
+
+    @Override
+    public String printTree() {
+        return MockJSElementInterfaceUtil.printTree(this);
+    }
 }

@@ -62,4 +62,9 @@ public class MockJSLiteralExpression extends JSLiteralExpressionImpl implements 
     public void setParent(MockJSElementInterface element) {
         throw new NotImplementedException();
     }
+
+    @Override
+    public String printTree() {
+        return MockJSElementInterfaceUtil.printTree(this);
+    }
 }

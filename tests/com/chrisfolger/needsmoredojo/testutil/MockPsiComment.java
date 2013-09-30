@@ -55,4 +55,9 @@ public class MockPsiComment extends PsiCommentImpl implements MockJSElementInter
     public void setParent(MockJSElementInterface element) {
         throw new NotImplementedException();
     }
+
+    @Override
+    public String printTree() {
+        return MockJSElementInterfaceUtil.printTree(this);
+    }
 }

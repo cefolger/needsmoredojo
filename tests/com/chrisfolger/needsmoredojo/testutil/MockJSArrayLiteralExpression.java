@@ -61,6 +61,11 @@ public class MockJSArrayLiteralExpression extends JSArrayLiteralExpressionImpl i
         throw new NotImplementedException();
     }
 
+    @Override
+    public String printTree() {
+        return MockJSElementInterfaceUtil.printTree(this);
+    }
+
     public void setLastChild(JSElement lastChild) {
         this.lastChild = lastChild;
     }
