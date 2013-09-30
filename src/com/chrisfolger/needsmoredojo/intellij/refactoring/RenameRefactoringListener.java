@@ -24,7 +24,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
     {
         this.originalFile = originalFile;
 
-        possibleFiles = new ImportResolver().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
+        possibleFiles = new ImportResolver().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true, false);
     }
 
     @Override

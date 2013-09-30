@@ -302,7 +302,7 @@ public class ModuleImporter
             }
 
             // get the list of possible strings/PsiFiles that would match it
-            PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(module.getProject(), moduleName, true);
+            PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(module.getProject(), moduleName, true, false);
 
             // get the files that are being imported
             // TODO performance optimization

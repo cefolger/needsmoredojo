@@ -272,6 +272,7 @@
         </constraints>
         <properties>
           <text value="Use case-insensitive searching "/>
+          <toolTipText value="Uncheck this if you are seeing performance problems using the add new import dialog"/>
         </properties>
       </component>
     </children>

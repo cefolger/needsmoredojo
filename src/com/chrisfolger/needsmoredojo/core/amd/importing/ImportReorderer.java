@@ -143,7 +143,7 @@ public class ImportReorderer
         String resourceId = NameResolver.getAMDPluginResourceIfPossible(moduleText, true);
 
         // get the list of possible strings/PsiFiles that would match it
-        PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(file.getProject(), moduleName, true);
+        PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(file.getProject(), moduleName, true, false);
 
         // get the files that are being imported
         String[] results = new ImportResolver().getChoicesFromFiles(files, new SourcesLocator().getSourceLibraries(file.getProject()).toArray(new SourceLibrary[0]), moduleName, define.getContainingFile(), false);

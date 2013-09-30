@@ -26,7 +26,7 @@ public class MoveRefactoringListener implements RefactoringElementListener
     public MoveRefactoringListener(PsiFile originalPsiFile, String originalFile)
     {
         this.originalFile = originalFile;
-        possibleFiles = new ImportResolver().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true);
+        possibleFiles = new ImportResolver().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true, false);
 
         renamer = new ModuleImporter(possibleFiles,
                 originalFile.substring(0, originalFile.indexOf('.')),

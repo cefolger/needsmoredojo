@@ -52,7 +52,7 @@ public class AddNewImportAction extends JavaScriptAction
         }
 
         DojoSettings settingsService = ServiceManager.getService(psiFile.getProject(), DojoSettings.class);
-        String[] choices = new ImportResolver().getPossibleDojoImports(psiFile, importModule, settingsService.isPreferRelativeImports(), settingsService.isAddModuleIfThereAreNoneDefined());
+        String[] choices = new ImportResolver().getPossibleDojoImports(psiFile, importModule, settingsService.isPreferRelativeImports(), settingsService.isAddModuleIfThereAreNoneDefined(), settingsService.isAllowCaseInsensitiveSearch());
 
         if(choices.length == 1 && settingsService.isAddModuleIfThereAreNoneDefined())
         {

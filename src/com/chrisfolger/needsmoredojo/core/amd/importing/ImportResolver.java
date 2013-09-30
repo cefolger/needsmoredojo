@@ -11,6 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -171,48 +172,74 @@ public class ImportResolver
         return getChoicesFromFiles(filesArray, libraries, module, originalModule, prioritizeRelativePaths, true).keySet().toArray(new String[0]);
     }
 
-    public PsiFile[] getPossibleDojoImportFiles(Project project, String module, boolean prioritizeRelativeImports)
+    /**
+     * gets a list of all files that match a module name
+     *
+     * @param module    the module to search on
+     * @param prioritizeRelativeImports if true, will return relative path modules first instead of absolutely referenced files
+     * @param allowCaseInsensitiveSearch if true, you can type "contentpane" and get "ContentPane" and similar things.
+     * @return an array of possible files that match the given module name
+     */
+    public PsiFile[] getPossibleDojoImportFiles(Project project, String module, boolean prioritizeRelativeImports, boolean allowCaseInsensitiveSearch)
     {
         String actualModuleName = NameResolver.getAMDPluginNameIfPossible(module);
-
-        PsiFile[] files = null;
-        PsiFile[] filesWithUnderscore = null;
-        PsiFile[] filesWithHyphenatedVersion = new PsiFile[0];
-
-     /*   try
-        {
-            files = FilenameIndex.getFilesByName(project, actualModuleName + ".js", GlobalSearchScope.projectScope(project));
-            // this will let us search for _TemplatedMixin and friends
-            filesWithUnderscore = FilenameIndex.getFilesByName(project, "_" + actualModuleName + ".js", GlobalSearchScope.projectScope(project));
-            // search for dom-attr and friends when you have typed domAttr
-            String hyphenatedModule = NameResolver.getPossibleHyphenatedModule(module);
-            if(hyphenatedModule != null)
-            {
-                filesWithHyphenatedVersion = FilenameIndex.getFilesByName(project, hyphenatedModule + ".js", GlobalSearchScope.projectScope(project));
-            }
-        }
-        catch(NullPointerException exc)
-        {
-            return null;
-        }
-
-*/
         Set<PsiFile> allFiles = new HashSet<PsiFile>();
 
-        for(VirtualFile file : FilenameIndex.getAllFilesByExt(project, "js", GlobalSearchScope.projectScope(project)))
+        // I decided to allow both case-insensitive and case-sensitive searches at the moment. This is because I did some
+        // crude profiling and here's what I got when a project contained all of the dojo sources + the project sources:
+
+        // case-sensitive search, index on SSD, project on SSD: 1ms
+        // case-insensitive search, index on SSD, project on SSD: 100ms
+        // case-insensitive search, index on SSD, project on HDD: 100ms
+        // case-insensitive search, index on HDD, project on HDD: 500ms
+
+        // It doesn't really matter that it takes half a second though, so I will most likely remove the
+        // case-insensitive option entirely in future releases. It also took 100ms after the first import due to
+        // caching I assume. 
+        if(!allowCaseInsensitiveSearch)
         {
-            if(file.getName().equalsIgnoreCase(actualModuleName + ".js") || file.getName().equalsIgnoreCase("_" + actualModuleName + ".js"))
+            PsiFile[] files = null;
+            PsiFile[] filesWithUnderscore = null;
+            PsiFile[] filesWithHyphenatedVersion = new PsiFile[0];
+
+            try
             {
-                allFiles.add(PsiManager.getInstance(project).findFile(file));
+                files = FilenameIndex.getFilesByName(project, actualModuleName + ".js", GlobalSearchScope.projectScope(project));
+                // this will let us search for _TemplatedMixin and friends
+                filesWithUnderscore = FilenameIndex.getFilesByName(project, "_" + actualModuleName + ".js", GlobalSearchScope.projectScope(project));
+                // search for dom-attr and friends when you have typed domAttr
+                String hyphenatedModule = NameResolver.getPossibleHyphenatedModule(module);
+                if(hyphenatedModule != null)
+                {
+                    filesWithHyphenatedVersion = FilenameIndex.getFilesByName(project, hyphenatedModule + ".js", GlobalSearchScope.projectScope(project));
+                }
+            }
+            catch(NullPointerException exc)
+            {
+                return null;
+            }
+
+            for(PsiFile file : files) allFiles.add(file);
+            for(PsiFile file : filesWithUnderscore) allFiles.add(file);
+            for(PsiFile file : filesWithHyphenatedVersion) allFiles.add(file);
+        }
+        else
+        {
+            Collection<VirtualFile> results = FilenameIndex.getAllFilesByExt(project, "js", GlobalSearchScope.projectScope(project));
+
+            String baseFilename = actualModuleName + ".js";
+            String underscoreName = "_" + actualModuleName + ".js";
+
+            for(VirtualFile file : results)
+            {
+                if(file.getName().equalsIgnoreCase(baseFilename) || file.getName().equalsIgnoreCase(underscoreName))
+                {
+                    allFiles.add(PsiManager.getInstance(project).findFile(file));
+                }
             }
         }
-/*
-        for(PsiFile file : files) allFiles.add(file);
-        for(PsiFile file : filesWithUnderscore) allFiles.add(file);
-        for(PsiFile file : filesWithHyphenatedVersion) allFiles.add(file);
-*/
-        PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
+        PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
         return filesArray;
     }
 
@@ -224,11 +251,12 @@ public class ImportResolver
      * @param module    the module the user wanted to add
      * @param prioritizeRelativeImports if true, will return relative path modules first instead of absolutely referenced files
      * @param useEnteredModuleAsChoice if true, the entered module name will be returned as a possible import.
+     * @param allowCaseInsensitiveSearch if true, you can type "contentpane" and get "ContentPane" and similar things.
      * @return a string array of possible modules to import (fully qualified)
      */
-    public String[] getPossibleDojoImports(List<SourceLibrary> libraries, PsiFile psiFile, String module, boolean prioritizeRelativeImports, boolean useEnteredModuleAsChoice)
+    public String[] getPossibleDojoImports(List<SourceLibrary> libraries, PsiFile psiFile, String module, boolean prioritizeRelativeImports, boolean useEnteredModuleAsChoice, boolean allowCaseInsensitiveSearch)
     {
-        PsiFile[] files = getPossibleDojoImportFiles(psiFile.getProject(), module, prioritizeRelativeImports);
+        PsiFile[] files = getPossibleDojoImportFiles(psiFile.getProject(), module, prioritizeRelativeImports, allowCaseInsensitiveSearch);
         if((files == null || files.length == 0) && useEnteredModuleAsChoice)
         {
             return new String[] { module };
@@ -249,8 +277,8 @@ public class ImportResolver
      * @param prioritizeRelativeImports if true, will return relative path modules first instead of absolutely referenced files
      * @return a string array of possible modules to import (fully qualified)
      */
-    public String[] getPossibleDojoImports(PsiFile psiFile, String module, boolean prioritizeRelativeImports, boolean useEnteredModuleAsChoice)
+    public String[] getPossibleDojoImports(PsiFile psiFile, String module, boolean prioritizeRelativeImports, boolean useEnteredModuleAsChoice, boolean allowCaseInsensitiveSearch)
     {
-        return getPossibleDojoImports(new SourcesLocator().getSourceLibraries(psiFile.getProject()), psiFile, module, prioritizeRelativeImports, useEnteredModuleAsChoice);
+        return getPossibleDojoImports(new SourcesLocator().getSourceLibraries(psiFile.getProject()), psiFile, module, prioritizeRelativeImports, useEnteredModuleAsChoice, allowCaseInsensitiveSearch);
     }
 }
