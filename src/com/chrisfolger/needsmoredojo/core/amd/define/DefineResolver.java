@@ -21,7 +21,14 @@ public class DefineResolver
 {
     private Logger logger = Logger.getLogger(DefineResolver.class);
 
-    public JSRecursiveElementVisitor getDefineAndParametersVisitor( final List<PsiElement> defines, final List<PsiElement> parameters, final PsiElementVisitor defineVisitor)
+    /**
+     * @deprecated use gatherDefineAndParameters instead.
+     * @param defines
+     * @param parameters
+     * @param defineVisitor
+     * @return
+     */
+    protected JSRecursiveElementVisitor getDefineAndParametersVisitor( final List<PsiElement> defines, final List<PsiElement> parameters, final PsiElementVisitor defineVisitor)
     {
         return new JSRecursiveElementVisitor() {
             @Override
@@ -71,7 +78,13 @@ public class DefineResolver
         };
     }
 
-    public JSRecursiveElementVisitor getDefineAndParametersVisitor( final List<PsiElement> defines, final List<PsiElement> parameters)
+    /**
+     * @deprecated use gatherDefineAndParameters instead.
+     * @param defines
+     * @param parameters
+     * @return
+     */
+    protected JSRecursiveElementVisitor getDefineAndParametersVisitor( final List<PsiElement> defines, final List<PsiElement> parameters)
     {
         return getDefineAndParametersVisitor(defines, parameters, null);
     }
