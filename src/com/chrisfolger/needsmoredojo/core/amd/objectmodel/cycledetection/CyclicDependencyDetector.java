@@ -105,7 +105,7 @@ public class CyclicDependencyDetector
         unusedParameters.addAll(parameters);
 
         UnusedImportsRemover detector = new UnusedImportsRemover();
-        detector.filterUnusedModules(psiFile, unusedParameters, unusedDefines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
+        detector.filterUsedModules(psiFile, unusedParameters, unusedDefines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
 
         for(PsiElement element : defines)
         {

@@ -7,24 +7,20 @@ import com.intellij.psi.PsiElement;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Chris
- * Date: 9/30/13
- * Time: 8:06 AM
- * To change this template use File | Settings | File Templates.
- */
 public class UnusedImportsRemovalVisitor extends JSRecursiveElementVisitor
 {
     private List<PsiElement> defines;
     private List<PsiElement> parameters;
     private Collection<String> parameterExceptions;
+    private Set<PsiElement> visitedElements;
 
-    public UnusedImportsRemovalVisitor(List<PsiElement> defines, List<PsiElement> parameters, Collection<String> parameterExceptions)
+    public UnusedImportsRemovalVisitor(Set<PsiElement> visitedElements, List<PsiElement> defines, List<PsiElement> parameters, Collection<String> parameterExceptions)
     {
         super();
 
+        this.visitedElements = visitedElements;
         this.defines = defines;
         this.parameters = parameters;
         this.parameterExceptions = parameterExceptions;
@@ -33,6 +29,14 @@ public class UnusedImportsRemovalVisitor extends JSRecursiveElementVisitor
     @Override
     public void visitJSReferenceExpression(JSReferenceExpression node)
     {
+        if(this.visitedElements.contains(node))
+        {
+            super.visitJSReferenceExpression(node);
+            return;
+        }
+
+        this.visitedElements.add(node);
+
         for(int i=0;i<parameters.size();i++)
         {
             if(parameterExceptions.contains(parameters.get(i).getText()))
@@ -64,6 +68,14 @@ public class UnusedImportsRemovalVisitor extends JSRecursiveElementVisitor
     @Override
     public void visitJSNewExpression(JSNewExpression node)
     {
+        if(this.visitedElements.contains(node))
+        {
+            super.visitJSNewExpression(node);
+            return;
+        }
+
+        this.visitedElements.add(node);
+
         for(int i=0;i<parameters.size();i++)
         {
             if(parameterExceptions.contains(parameters.get(i).getText()))

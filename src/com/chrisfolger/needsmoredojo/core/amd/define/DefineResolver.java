@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
+import com.chrisfolger.needsmoredojo.core.amd.define.organizer.InvalidDefineException;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -21,6 +22,35 @@ public class DefineResolver
 {
     private Logger logger = Logger.getLogger(DefineResolver.class);
 
+    public void addDefinesAndParametersOfImportBlock(JSCallExpression existingImportBlock, final List<PsiElement> defines, final List<PsiElement> parameters) throws InvalidDefineException
+    {
+        JSExpression[] arguments = existingImportBlock.getArguments();
+
+        DefineStatement items = getDefineStatementItemsFromArguments(arguments);
+        if(items == null)
+        {
+            throw new InvalidDefineException();
+        }
+
+        // get the first argument which should be an array literal
+        JSArrayLiteralExpression literalExpressions = items.getArguments();
+        for(JSExpression expression : literalExpressions.getExpressions())
+        {
+            if(expression instanceof JSLiteralExpression)
+            {
+                JSLiteralExpression literal = (JSLiteralExpression) expression;
+                defines.add(literal);
+            }
+        }
+
+        // get the second argument which should be a function
+        JSFunctionExpression function = items.getFunction();
+        for(JSParameter parameter : function.getFunction().getParameters())
+        {
+            parameters.add(parameter);
+        }
+    }
+
     /**
      * @deprecated use gatherDefineAndParameters instead.
      * @param defines
@@ -37,35 +67,19 @@ public class DefineResolver
                 // if the user entered invalid syntax we don't want to account for every case, so just catch and log it
                 try
                 {
-                    JSExpression[] arguments = element.getArguments();
                     if(!element.getMethodExpression().getText().equals("define"))
                     {
                         return;
                     }
 
-                    DefineStatement items = getDefineStatementItemsFromArguments(arguments);
-                    if(items == null)
+                    try
+                    {
+                        addDefinesAndParametersOfImportBlock(element, defines, parameters);
+                    }
+                    catch(InvalidDefineException exc)
                     {
                         super.visitJSCallExpression(element);
                         return;
-                    }
-
-                    // get the first argument which should be an array literal
-                    JSArrayLiteralExpression literalExpressions = items.getArguments();
-                    for(JSExpression expression : literalExpressions.getExpressions())
-                    {
-                        if(expression instanceof JSLiteralExpression)
-                        {
-                            JSLiteralExpression literal = (JSLiteralExpression) expression;
-                            defines.add(literal);
-                        }
-                    }
-
-                    // get the second argument which should be a function
-                    JSFunctionExpression function = items.getFunction();
-                    for(JSParameter parameter : function.getFunction().getParameters())
-                    {
-                        parameters.add(parameter);
                     }
                 }
                 catch(Exception e)
@@ -88,6 +102,8 @@ public class DefineResolver
     {
         return getDefineAndParametersVisitor(defines, parameters, null);
     }
+
+
 
     public void gatherDefineAndParameters(PsiFile psiFile, final List<PsiElement> defines, final List<PsiElement> parameters)
     {

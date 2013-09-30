@@ -65,7 +65,7 @@ public class UnusedImportsInspection extends LocalInspectionTool
 
         resolver.gatherDefineAndParameters(file, defines, parameters);
         UnusedImportsRemover detector = new UnusedImportsRemover();
-        detector.filterUnusedModules(file, parameters, defines, ServiceManager.getService(file.getProject(), DojoSettings.class).getRuiImportExceptions());
+        detector.filterUsedModules(file, parameters, defines, ServiceManager.getService(file.getProject(), DojoSettings.class).getRuiImportExceptions());
 
         LocalQuickFix fix = null;
         for(int i=0;i<parameters.size();i++)

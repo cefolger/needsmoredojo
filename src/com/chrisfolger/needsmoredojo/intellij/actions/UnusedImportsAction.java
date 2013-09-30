@@ -35,7 +35,7 @@ public class UnusedImportsAction extends JavaScriptAction {
         resolver.gatherDefineAndParameters(psiFile, defines, parameters);
 
         final UnusedImportsRemover detector = new UnusedImportsRemover();
-        detector.filterUnusedModules(psiFile, parameters, defines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
+        detector.filterUsedModules(psiFile, parameters, defines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
 
         if(this.deleteMode)
         {
