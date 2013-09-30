@@ -5,8 +5,10 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
@@ -177,7 +179,7 @@ public class ImportResolver
         PsiFile[] filesWithUnderscore = null;
         PsiFile[] filesWithHyphenatedVersion = new PsiFile[0];
 
-        try
+     /*   try
         {
             files = FilenameIndex.getFilesByName(project, actualModuleName + ".js", GlobalSearchScope.projectScope(project));
             // this will let us search for _TemplatedMixin and friends
@@ -194,11 +196,21 @@ public class ImportResolver
             return null;
         }
 
+*/
         Set<PsiFile> allFiles = new HashSet<PsiFile>();
+
+        for(VirtualFile file : FilenameIndex.getAllFilesByExt(project, "js", GlobalSearchScope.projectScope(project)))
+        {
+            if(file.getName().equalsIgnoreCase(actualModuleName + ".js") || file.getName().equalsIgnoreCase("_" + actualModuleName + ".js"))
+            {
+                allFiles.add(PsiManager.getInstance(project).findFile(file));
+            }
+        }
+/*
         for(PsiFile file : files) allFiles.add(file);
         for(PsiFile file : filesWithUnderscore) allFiles.add(file);
         for(PsiFile file : filesWithHyphenatedVersion) allFiles.add(file);
-
+*/
         PsiFile[] filesArray = allFiles.toArray(new PsiFile[0]);
 
         return filesArray;
