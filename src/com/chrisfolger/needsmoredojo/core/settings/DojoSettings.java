@@ -26,6 +26,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private boolean dojoSourcesShareProjectSourcesRoot;
     private boolean needsMoreDojoEnabled;
     private boolean addModuleIfThereAreNoneDefined;
+    private boolean allowCaseInsensitiveSearch;
 
     public DojoSettings()
     {
@@ -41,6 +42,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         dojoSourcesShareProjectSourcesRoot = false;
         needsMoreDojoEnabled = true;
         addModuleIfThereAreNoneDefined = false;
+        allowCaseInsensitiveSearch = true;
     }
 
     public @NotNull LinkedHashMap<String, String> getExceptionsMap()
@@ -62,6 +64,14 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public LinkedHashMap<String, String> getAmdImportNamingExceptions() {
         return amdImportNamingExceptions;
+    }
+
+    public boolean isAllowCaseInsensitiveSearch() {
+        return allowCaseInsensitiveSearch;
+    }
+
+    public void setAllowCaseInsensitiveSearch(boolean allowCaseInsensitiveSearch) {
+        this.allowCaseInsensitiveSearch = allowCaseInsensitiveSearch;
     }
 
     public void setAmdImportNamingExceptions(LinkedHashMap<String, String> amdImportNamingExceptions) {

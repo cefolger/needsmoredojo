@@ -49,6 +49,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JCheckBox dojoSourcesIsTheSame;
     private JCheckBox pluginEnabled;
     private JCheckBox addModulesIfThereAreNoneDetected;
+    private JCheckBox allowCaseInsensitiveSearch;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -139,7 +140,8 @@ public class DojoSettingsConfigurable implements Configurable {
                 preferRelativePathsWhenCheckBox.isSelected() != settingsService.isPreferRelativeImports() ||
                 dojoSourcesIsTheSame.isSelected() != settingsService.isDojoSourcesShareProjectSourcesRoot() ||
                 pluginEnabled.isSelected() != settingsService.isNeedsMoreDojoEnabled() ||
-                addModulesIfThereAreNoneDetected.isSelected() != settingsService.isAddModuleIfThereAreNoneDefined();
+                addModulesIfThereAreNoneDetected.isSelected() != settingsService.isAddModuleIfThereAreNoneDefined() ||
+                allowCaseInsensitiveSearch.isSelected() != settingsService.isAllowCaseInsensitiveSearch();
 
     }
 
@@ -220,6 +222,12 @@ public class DojoSettingsConfigurable implements Configurable {
         projectSourcesText.getTextField().addKeyListener(new TextChangedListener());
 
         addModulesIfThereAreNoneDetected.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updateModifiedState();
+            }
+        });
+        allowCaseInsensitiveSearch.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 updateModifiedState();
@@ -321,6 +329,7 @@ public class DojoSettingsConfigurable implements Configurable {
         settingsService.setDojoSourcesShareProjectSourcesRoot(dojoSourcesIsTheSame.isSelected());
         settingsService.setNeedsMoreDojoEnabled(pluginEnabled.isSelected());
         settingsService.setAddModuleIfThereAreNoneDefined(addModulesIfThereAreNoneDetected.isSelected());
+        settingsService.setAllowCaseInsensitiveSearch(allowCaseInsensitiveSearch.isSelected());
 
         modified = false;
     }
@@ -346,6 +355,7 @@ public class DojoSettingsConfigurable implements Configurable {
 
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
         addModulesIfThereAreNoneDetected.setSelected(settingsService.isAddModuleIfThereAreNoneDefined());
+        allowCaseInsensitiveSearch.setSelected(settingsService.isAllowCaseInsensitiveSearch());
 
         modified = false;
     }
