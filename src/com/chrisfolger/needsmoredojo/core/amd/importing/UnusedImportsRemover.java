@@ -1,12 +1,11 @@
 package com.chrisfolger.needsmoredojo.core.amd.importing;
 
+import com.chrisfolger.needsmoredojo.core.amd.importing.visitors.UnusedImportsRemovalVisitor;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
-import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
-import com.intellij.lang.javascript.psi.JSNewExpression;
-import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
-import com.intellij.lang.javascript.psi.JSReferenceExpression;
+import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 
 import java.util.*;
@@ -118,7 +117,7 @@ public class UnusedImportsRemover
      *  under any circumstance. Used for legacy dojo modules
      * @return the visitor
      */
-    public JSRecursiveElementVisitor getVisitorToRemoveUsedModulesFromLists(final List<PsiElement> parameters, final List<PsiElement> defines, LinkedHashMap<String, String> exceptions)
+    public void filterUnusedModules(PsiFile file, final List<PsiElement> parameters, final List<PsiElement> defines, final LinkedHashMap<String, String> exceptions)
     {
         final Collection<String> parameterExceptions = exceptions.values();
 
@@ -139,79 +138,8 @@ public class UnusedImportsRemover
             }
         }
 
-        JSRecursiveElementVisitor visitor = new JSRecursiveElementVisitor() {
-            @Override
-            public void visitJSReferenceExpression(JSReferenceExpression node)
-            {
-                for(int i=0;i<parameters.size();i++)
-                {
-                    if(parameterExceptions.contains(parameters.get(i).getText()))
-                    {
-                        parameters.remove(i);
-                        if(i < defines.size())
-                        {
-                            defines.remove(i);
-                        }
-                        i--;
-                        continue;
-                    }
+        JSRecursiveElementVisitor visitor = new UnusedImportsRemovalVisitor(defines, parameters, parameterExceptions);
 
-                    if(node.getText().equals(parameters.get(i).getText()))
-                    {
-                        parameters.remove(i);
-
-                        if(i < defines.size())
-                        {
-                            defines.remove(i);
-                        }
-                        i--;
-                    }
-                }
-
-                super.visitJSReferenceExpression(node);
-            }
-
-            @Override
-            public void visitJSNewExpression(JSNewExpression node)
-            {
-                for(int i=0;i<parameters.size();i++)
-                {
-                    if(parameterExceptions.contains(parameters.get(i).getText()))
-                    {
-                        parameters.remove(i);
-                        if(i < defines.size())
-                        {
-                            defines.remove(i);
-                        }
-                        i--;
-                        continue;
-                    }
-
-                    boolean used = false;
-                    if(node.getMethodExpression() != null && node.getMethodExpression().getText().equals(parameters.get(i).getText()))
-                    {
-                        used = true;
-                    }
-                    else if( node.getMethodExpression() == null && node.getText().startsWith("new " + parameters.get(i).getText()))
-                    {
-                        used = true;
-                    }
-
-                    if(used)
-                    {
-                        parameters.remove(i);
-                        if(i < defines.size())
-                        {
-                            defines.remove(i);
-                        }
-                        i--;
-                    }
-                }
-
-                super.visitJSNewExpression(node);
-            }
-        };
-
-        return visitor;
+        file.accept(visitor);
     }
 }

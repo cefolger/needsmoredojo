@@ -6,7 +6,6 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
-import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -106,7 +105,7 @@ public class CyclicDependencyDetector
         unusedParameters.addAll(parameters);
 
         UnusedImportsRemover detector = new UnusedImportsRemover();
-        psiFile.accept(detector.getVisitorToRemoveUsedModulesFromLists(unusedParameters, unusedDefines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions()));
+        detector.filterUnusedModules(psiFile, unusedParameters, unusedDefines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
 
         for(PsiElement element : defines)
         {
