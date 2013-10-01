@@ -139,7 +139,15 @@ public class NearestAMDImportLocator
     public @Nullable
     AMDImport findNearestImport(PsiElement elementAtCaretPosition, PsiFile file)
     {
-        DefineStatement defineStatement = new DefineResolver().getDefineStatementItems(file);
+        DefineResolver resolver = new DefineResolver();
+        DefineStatement defineStatement = null;
+
+        defineStatement = resolver.getNearestImportBlock(elementAtCaretPosition);
+
+        if(defineStatement == null)
+        {
+            defineStatement = new DefineResolver().getDefineStatementItems(file);
+        }
 
         JSElement defineLiteral = getDefineLiteral(elementAtCaretPosition, defineStatement);
         JSElement parameter = getParameter(elementAtCaretPosition, defineStatement);

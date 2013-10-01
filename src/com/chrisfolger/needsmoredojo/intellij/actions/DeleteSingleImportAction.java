@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.NearestAMDImportLocator;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
+import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -12,11 +13,17 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
 public class DeleteSingleImportAction extends JavaScriptAction
 {
+    @Override
+    protected boolean supportsFileType(FileType type) {
+        return super.supportsFileType(type) || type instanceof HtmlFileType;
+    }
+
     @Override
     public void actionPerformed(AnActionEvent e)
     {
