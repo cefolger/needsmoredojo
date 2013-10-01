@@ -1,4 +1,4 @@
-package com.chrisfolger.needsmoredojo.core.amd.define.organizer;
+package com.chrisfolger.needsmoredojo.core.amd.importing;
 
 public class InvalidDefineException extends Exception
 {

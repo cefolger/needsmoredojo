@@ -1,7 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
-import com.chrisfolger.needsmoredojo.core.amd.define.organizer.InvalidDefineException;
+import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;

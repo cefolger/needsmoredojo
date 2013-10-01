@@ -1,8 +1,11 @@
 package com.chrisfolger.needsmoredojo.core.amd.importing;
 
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.importing.visitors.UnusedImportsRemovalVisitor;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
-import com.intellij.lang.javascript.psi.*;
+import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
+import com.intellij.lang.javascript.psi.JSCallExpression;
+import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -111,35 +114,69 @@ public class UnusedImportsRemover
      * returns a visitor that will remove amd import literals and function parameters from their corresponding
      * lists if they are used in the code
      *
-     * @param parameters the list of function parameters in a define statement
-     * @param defines the list of literals in a define statement
      * @param exceptions a map of module : parameter representing exceptions. These modules will not be flagged as unused
      *  under any circumstance. Used for legacy dojo modules
      * @return the visitor
      */
-    public void filterUnusedModules(PsiFile file, final List<PsiElement> parameters, final List<PsiElement> defines, final LinkedHashMap<String, String> exceptions)
+    public List<UnusedImportBlockEntry> filterUsedModules(PsiFile file, final LinkedHashMap<String, String> exceptions)
     {
+        Set<PsiElement> visitedElements = new HashSet<PsiElement>();
         final Collection<String> parameterExceptions = exceptions.values();
 
-        Set<String> terminators = new HashSet<String>();
-        terminators.add(",");
-        for(int i=0;i<defines.size();i++)
-        {
-            PsiElement element = defines.get(i);
-            PsiElement ignoreComment = AMDPsiUtil.getNextElementOfType(element, PsiComment.class, terminators, new HashSet<String>());
-            if(ignoreComment != null && ignoreComment.getText().equals(IGNORE_COMMENT))
+        final Set<JSCallExpression> listOfDefinesOrRequiresToVisit = new LinkedHashSet<JSCallExpression>();
+        JSRecursiveElementVisitor defineOrRequireVisitor = new JSRecursiveElementVisitor() {
+            @Override
+            public void visitJSCallExpression(JSCallExpression expression)
             {
-                defines.remove(i);
-                if(i < parameters.size())
+                if(expression.getMethodExpression().getText().contains("define") || expression.getMethodExpression().getText().contains("require"))
                 {
-                    parameters.remove(i);
+                    listOfDefinesOrRequiresToVisit.add(expression);
                 }
-                i--;
+                super.visitJSCallExpression(expression);
             }
+        };
+
+
+        //JSRecursiveElementVisitor visitor = new UnusedImportsRemovalVisitor(visitedElements, defines, parameters, parameterExceptions);
+        file.accept(defineOrRequireVisitor);
+
+        List<UnusedImportBlockEntry> results = new ArrayList<UnusedImportBlockEntry>();
+
+        JSCallExpression[] expressions = listOfDefinesOrRequiresToVisit.toArray(new JSCallExpression[listOfDefinesOrRequiresToVisit.size()]);
+        for (int i = expressions.length - 1; i >= 0; i--)
+        {
+            List<PsiElement> blockDefines = new ArrayList<PsiElement>();
+            List<PsiElement> blockParameters = new ArrayList<PsiElement>();
+
+            try {
+                new DefineResolver().addDefinesAndParametersOfImportBlock(expressions[i], blockDefines, blockParameters);
+            } catch (InvalidDefineException e) {
+
+            }
+
+            Set<String> terminators = new HashSet<String>();
+            terminators.add(",");
+            for(int x=0;x<blockDefines.size();x++)
+            {
+                PsiElement element = blockDefines.get(x);
+                PsiElement ignoreComment = AMDPsiUtil.getNextElementOfType(element, PsiComment.class, terminators, new HashSet<String>());
+                if(ignoreComment != null && ignoreComment.getText().equals(IGNORE_COMMENT))
+                {
+                    blockDefines.remove(x);
+                    if(x < blockParameters.size())
+                    {
+                        blockParameters.remove(x);
+                    }
+                    x--;
+                }
+            }
+
+            JSRecursiveElementVisitor visitor = new UnusedImportsRemovalVisitor(visitedElements, blockDefines, blockParameters, parameterExceptions);
+            expressions[i].accept(visitor);
+
+            results.add(new UnusedImportBlockEntry(expressions[i].getMethodExpression().getText().equals("define"), expressions[i], blockDefines, blockParameters));
         }
 
-        JSRecursiveElementVisitor visitor = new UnusedImportsRemovalVisitor(defines, parameters, parameterExceptions);
-
-        file.accept(visitor);
+        return results;
     }
 }

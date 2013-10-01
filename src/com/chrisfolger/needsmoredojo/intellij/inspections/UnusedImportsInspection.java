@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportBlockEntry;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.codeInspection.*;
@@ -59,40 +60,45 @@ public class UnusedImportsInspection extends LocalInspectionTool
     public ProblemDescriptor[] checkFile(@NotNull PsiFile file, @NotNull final InspectionManager manager, boolean isOnTheFly)
     {
         DefineResolver resolver = new DefineResolver();
-        List<PsiElement> parameters = new ArrayList<PsiElement>();
-        List<PsiElement> defines = new ArrayList<PsiElement>();
         final List<ProblemDescriptor> descriptors = new ArrayList<ProblemDescriptor>();
 
-        resolver.gatherDefineAndParameters(file, defines, parameters);
         UnusedImportsRemover detector = new UnusedImportsRemover();
-        detector.filterUsedModules(file, parameters, defines, ServiceManager.getService(file.getProject(), DojoSettings.class).getRuiImportExceptions());
+        List<UnusedImportBlockEntry> results = detector.filterUsedModules(file, ServiceManager.getService(file.getProject(), DojoSettings.class).getRuiImportExceptions());
 
-        LocalQuickFix fix = null;
-        for(int i=0;i<parameters.size();i++)
+
+        for(UnusedImportBlockEntry result : results)
         {
-            PsiElement define =  null;
+            List<PsiElement> defines = result.getDefines();
+            List<PsiElement> parameters = result.getParameters();
 
-            if(i < defines.size())
+            LocalQuickFix fix = null;
+            for(int i=0;i<parameters.size();i++)
             {
-                define = defines.get(i);
-            }
+                PsiElement define =  null;
 
-            PsiElement parameter = null;
-            if(i < parameters.size())
-            {
-                parameter = parameters.get(i);
-            }
+                if(i < defines.size())
+                {
+                    define = defines.get(i);
+                }
 
-            if (parameter != null)
-            {
-                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Unused AMD import: %s", parameter.getText()), fix, ProblemHighlightType.LIKE_DEPRECATED, true));
-            }
+                PsiElement parameter = null;
+                if(i < parameters.size())
+                {
+                    parameter = parameters.get(i);
+                }
 
-            if (define != null)
-            {
-                descriptors.add(manager.createProblemDescriptor(define, String.format("Unused AMD import: %s", define.getText()), fix, ProblemHighlightType.LIKE_DEPRECATED, true));
+                if (parameter != null)
+                {
+                    descriptors.add(manager.createProblemDescriptor(parameter, String.format("Unused AMD import: %s", parameter.getText()), fix, ProblemHighlightType.LIKE_DEPRECATED, true));
+                }
+
+                if (define != null)
+                {
+                    descriptors.add(manager.createProblemDescriptor(define, String.format("Unused AMD import: %s", define.getText()), fix, ProblemHighlightType.LIKE_DEPRECATED, true));
+                }
             }
         }
+
 
         return descriptors.toArray(new ProblemDescriptor[0]);
     }

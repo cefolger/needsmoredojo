@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportBlockEntry;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
@@ -29,13 +30,8 @@ public class UnusedImportsAction extends JavaScriptAction {
     {
         final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
 
-        DefineResolver resolver = new DefineResolver();
-        final List<PsiElement> parameters = new ArrayList<PsiElement>();
-        final List<PsiElement> defines = new ArrayList<PsiElement>();
-        resolver.gatherDefineAndParameters(psiFile, defines, parameters);
-
         final UnusedImportsRemover detector = new UnusedImportsRemover();
-        detector.filterUsedModules(psiFile, parameters, defines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
+        final List<UnusedImportBlockEntry> results = detector.filterUsedModules(psiFile, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
 
         if(this.deleteMode)
         {
@@ -45,20 +41,25 @@ public class UnusedImportsAction extends JavaScriptAction {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
                         @Override
                         public void run() {
-                            if(defines.size() == 0)
+                            int numDeleted = 0;
+
+                            for(UnusedImportBlockEntry entry : results)
                             {
-                                Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Unused Imports", "No unused imports were detected to delete", NotificationType.INFORMATION));
-                                return;
+                                if(entry.getDefines() == null || entry.getParameters() == null || entry.getDefines().size() == 0 || entry.getParameters().size() == 0)
+                                {
+                                    continue;
+                                }
+
+                                UnusedImportsRemover.RemovalResult result = detector.removeUnusedParameters(entry.getParameters(), entry.getDefines());
+                                numDeleted += result.getElementsToDelete().size();
+
+                                if(result.getElementsToDelete().size() > 0)
+                                {
+                                    Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Unused Imports", result.getDeletedElementNames(), NotificationType.INFORMATION));
+                                }
                             }
 
-                            UnusedImportsRemover.RemovalResult result = detector.removeUnusedParameters(parameters, defines);
-                            Set<PsiElement> elementsToDelete = result.getElementsToDelete();
-
-                            if(elementsToDelete.size() > 0)
-                            {
-                                Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Unused Imports", result.getDeletedElementNames(), NotificationType.INFORMATION));
-                            }
-                            else
+                            if(numDeleted == 0)
                             {
                                 Notifications.Bus.notify(new Notification("needsmoredojo", "Remove Unused Imports", "No unused imports were detected to delete", NotificationType.INFORMATION));
                             }

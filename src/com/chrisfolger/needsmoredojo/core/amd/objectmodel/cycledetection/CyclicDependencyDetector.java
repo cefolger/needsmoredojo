@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.amd.objectmodel.cycledetection;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
+import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportBlockEntry;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
@@ -91,7 +92,6 @@ public class CyclicDependencyDetector
         DefineResolver resolver = new DefineResolver();
         final List<PsiElement> parameters = new ArrayList<PsiElement>();
         final List<PsiElement> defines = new ArrayList<PsiElement>();
-
         resolver.gatherDefineAndParameters(psiFile, defines, parameters);
 
         /*
@@ -99,13 +99,19 @@ public class CyclicDependencyDetector
 
             this way we can note if a module dependency is unused when the path is displayed
         */
-        List<PsiElement> unusedDefines = new ArrayList<PsiElement>();
-        List<PsiElement> unusedParameters = new ArrayList<PsiElement>();
-        unusedDefines.addAll(defines);
-        unusedParameters.addAll(parameters);
 
         UnusedImportsRemover detector = new UnusedImportsRemover();
-        detector.filterUsedModules(psiFile, unusedParameters, unusedDefines, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
+        List<UnusedImportBlockEntry> results = detector.filterUsedModules(psiFile, ServiceManager.getService(psiFile.getProject(), DojoSettings.class).getRuiImportExceptions());
+
+        UnusedImportBlockEntry entry = UnusedImportBlockEntry.getDefine(results);
+        List<PsiElement> unusedDefines = new ArrayList<PsiElement>();
+        List<PsiElement> unusedParameters = new ArrayList<PsiElement>();
+
+        if(entry != null)
+        {
+            unusedDefines = entry.getDefines();
+            unusedParameters = entry.getParameters();
+        }
 
         for(PsiElement element : defines)
         {
