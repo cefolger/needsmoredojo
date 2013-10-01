@@ -75,24 +75,15 @@ public class ImportCreator
      * @param module the name of the module the user wants to add
      * @return true if the module was added, false otherwise
      */
-    public boolean addImport(PsiFile file, final String module)
+    public boolean addImport(final PsiFile file, final String module)
     {
-        final boolean[] visited = {false};
+        boolean visited = false;
 
-        JSRecursiveElementVisitor visitor = new DefineResolver().getDefineVisitor(new CompletionCallback() {
-            @Override
-            public void run(Object[] result) {
-                JSCallExpression callExpression = (JSCallExpression) result[0];
-                JSFunction function = (JSFunction) result[1];
+        visited = true;
+        DefineStatement items = new DefineResolver().getDefineStatementItems(file);
+        createImport(module, items.getArguments(), items.getFunction().getParameterList());
 
-                visited[0] = true;
-                DefineStatement items = new DefineResolver().getDefineStatementItemsFromArguments(callExpression.getArguments());
-                createImport(module, items.getArguments(), function.getParameterList());
-            }
-        });
-
-        file.acceptChildren(visitor);
-        return visited[0];
+        return visited;
     }
 
     /**
