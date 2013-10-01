@@ -1,15 +1,21 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.define.organizer.AMDImportOrganizer;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.organizer.SortingResult;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
+import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
+import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
@@ -30,7 +36,29 @@ public class OrganizeAMDImportsAction extends JavaScriptAction
         final List<PsiElement> parameters = new ArrayList<PsiElement>();
         final List<PsiElement> defines = new ArrayList<PsiElement>();
 
-        resolver.gatherDefineAndParameters(psiFile, defines, parameters);
+        boolean alreadyImported = false;
+        Editor editor = e.getData(PlatformDataKeys.EDITOR);
+        if(editor != null)
+        {
+            PsiElement element = psiFile.findElementAt(editor.getCaretModel().getOffset());
+            DefineStatement statement = resolver.getNearestImportBlock(element);
+
+            if(statement != null)
+            {
+                JSCallExpression callExpression = statement.getCallExpression();
+                try {
+                    resolver.addDefinesAndParametersOfImportBlock(callExpression, defines, parameters);
+                    alreadyImported = true;
+                } catch (InvalidDefineException e1) {
+                    // it's not important that we handle this
+                }
+            }
+        }
+
+        if(!alreadyImported)
+        {
+            resolver.gatherDefineAndParameters(psiFile, defines, parameters);
+        }
 
         final AMDImportOrganizer organizer = new AMDImportOrganizer();
 

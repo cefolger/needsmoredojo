@@ -23,7 +23,7 @@ public class TestNearestAMDImportLocator
 
         literal = new MockJSArrayLiteralExpression(new String[] { "a/b/a", "a/b/b", "a/b/c"});
         function = new MockJSFunctionExpression(new String[] { "a", "b", "c"});
-        defineStatement = new DefineStatement(literal, function, "irrelevant");
+        defineStatement = new DefineStatement(literal, function, "irrelevant", null);
     }
 
     @Test

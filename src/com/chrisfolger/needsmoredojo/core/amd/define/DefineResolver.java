@@ -26,7 +26,7 @@ public class DefineResolver
     {
         JSExpression[] arguments = existingImportBlock.getArguments();
 
-        DefineStatement items = getDefineStatementItemsFromArguments(arguments);
+        DefineStatement items = getDefineStatementItemsFromArguments(arguments, existingImportBlock);
         if(items == null)
         {
             throw new InvalidDefineException();
@@ -131,7 +131,7 @@ public class DefineResolver
                 }
 
                 // get the function
-                DefineStatement items = getDefineStatementItemsFromArguments(element.getArguments());
+                DefineStatement items = getDefineStatementItemsFromArguments(element.getArguments(), element);
                 if(items == null)
                 {
                     onDefineFound.run(null);
@@ -164,7 +164,7 @@ public class DefineResolver
                 }
 
                 JSCallExpression callExpression = (JSCallExpression) result[0];
-                items[0] = getDefineStatementItemsFromArguments(callExpression.getArguments());
+                items[0] = getDefineStatementItemsFromArguments(callExpression.getArguments(), callExpression);
             }
         }));
 
@@ -193,7 +193,7 @@ public class DefineResolver
                 if(statement.getMethodExpression() != null && (statement.getMethodExpression().getText().equals("define")
                         || statement.getMethodExpression().getText().equals("require")))
                 {
-                    return getDefineStatementItemsFromArguments(statement.getArguments());
+                    return getDefineStatementItemsFromArguments(statement.getArguments(), statement);
                 }
             }
 
@@ -203,7 +203,7 @@ public class DefineResolver
         return null;
     }
 
-    public DefineStatement getDefineStatementItemsFromArguments(JSExpression[] arguments)
+    public DefineStatement getDefineStatementItemsFromArguments(JSExpression[] arguments, JSCallExpression original)
     {
         // account for when we get this (even though this is defined as legacy) :
         /**
@@ -228,6 +228,6 @@ public class DefineResolver
         // get the second argument which should be a function
         JSFunctionExpression function = (JSFunctionExpression) arguments[1 + argumentOffset];
 
-        return new DefineStatement(literalExpressions, function, className);
+        return new DefineStatement(literalExpressions, function, className, original);
     }
 }

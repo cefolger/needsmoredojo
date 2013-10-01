@@ -100,7 +100,7 @@ public class ImportReorderer
 
         // get the parameter element
         JSArgumentList list = (JSArgumentList) defines[0].getParent().getParent();
-        DefineStatement items = new DefineResolver().getDefineStatementItemsFromArguments(list.getArguments());
+        DefineStatement items = new DefineResolver().getDefineStatementItemsFromArguments(list.getArguments(), null);
 
         int sourceIndex = PsiUtil.getIndexInParent(defines[0]);
         int destinationIndex = PsiUtil.getIndexInParent(defines[1]);
