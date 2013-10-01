@@ -95,14 +95,22 @@ public class ImportResolver
                 {
                     originalModulePath = originalModule.getContainingDirectory().getVirtualFile().getCanonicalPath();
                     SourceLibrary originalModuleLibrary = locator.getFirstLibraryThatIncludesFile(originalModulePath, libraries);
-                    originalModulePath = originalModuleLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(originalModuleLibrary.getPath()) + originalModuleLibrary.getPath().length());
 
-                    String relativePath = FileUtil.convertToRelativePath(originalModulePath, result);
-                    relativePath = NameResolver.convertRelativePathToDojoPath(relativePath);
+                    try {
+                        originalModulePath = originalModuleLibrary.getName() + originalModulePath.substring(originalModulePath.indexOf(originalModuleLibrary.getPath()) + originalModuleLibrary.getPath().length());
 
-                    if(relativePath != null)
+                        String relativePath = FileUtil.convertToRelativePath(originalModulePath, result);
+                        relativePath = NameResolver.convertRelativePathToDojoPath(relativePath);
+
+                        if(relativePath != null)
+                        {
+                            relativePathOption = relativePath;
+                        }
+                    }
+                    catch(IndexOutOfBoundsException exc)
                     {
-                        relativePathOption = relativePath;
+                        // for this case, it's not fatal, it just means we can't use relative paths.
+                        Logger.getLogger(ImportResolver.class).info(originalModulePath + " could not be used in a relative path import", exc);
                     }
                 }
 

@@ -5,6 +5,7 @@ import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportBlockEntry;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
+import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -12,6 +13,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +27,11 @@ import java.util.Set;
  */
 public class UnusedImportsAction extends JavaScriptAction {
     protected boolean deleteMode = false;
+
+    @Override
+    protected boolean supportsFileType(FileType type) {
+        return super.supportsFileType(type) || type instanceof HtmlFileType;
+    }
 
     public void actionPerformed(@NotNull final AnActionEvent e)
     {

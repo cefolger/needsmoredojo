@@ -6,6 +6,7 @@ import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
+import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -15,6 +16,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -24,6 +26,11 @@ import com.intellij.psi.PsiFile;
  */
 public class AddNewImportAction extends JavaScriptAction
 {
+    @Override
+    protected boolean supportsFileType(FileType type) {
+        return super.supportsFileType(type) || type instanceof HtmlFileType;
+    }
+
     @Override
     public void actionPerformed(AnActionEvent e)
     {
