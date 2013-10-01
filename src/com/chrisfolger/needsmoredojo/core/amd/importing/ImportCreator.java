@@ -77,14 +77,21 @@ public class ImportCreator
      */
     public boolean addImport(final PsiFile file, final String module)
     {
-        boolean visited = false;
-
-        visited = true;
         DefineStatement items = new DefineResolver().getDefineStatementItems(file);
-        createImport(module, items.getArguments(), items.getFunction().getParameterList());
 
-        return visited;
+        if(items == null)
+        {
+            return false;
+        }
+        return addImport(file, module, items);
     }
+
+    public boolean addImport(final PsiFile file, final String module, DefineStatement statementToAddTo)
+    {
+        createImport(module, statementToAddTo.getArguments(), statementToAddTo.getFunction().getParameterList());
+        return true;
+    }
+
 
     /**
      * when the user adds a new import, this code searches for the nearest possible element

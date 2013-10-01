@@ -150,8 +150,7 @@ public class DefineResolver
      * @param file the PsiFile to retrieve the define statement from
      * @return the define statement and its items
      */
-    public @Nullable
-    DefineStatement getDefineStatementItems(PsiFile file)
+    public @Nullable DefineStatement getDefineStatementItems(PsiFile file)
     {
         final DefineStatement[] items = new DefineStatement[1];
 
@@ -175,6 +174,33 @@ public class DefineResolver
         }
 
         return items[0];
+    }
+
+    /**
+     * Searches for the nearest require/define block assuming the given element is a child of it.
+     *
+     * @param element
+     * @return
+     */
+    public @Nullable DefineStatement getNearestImportBlock(PsiElement element)
+    {
+        PsiElement parent = element.getParent();
+        while(parent != null)
+        {
+            if(parent instanceof JSCallExpression)
+            {
+                JSCallExpression statement = (JSCallExpression) parent;
+                if(statement.getMethodExpression() != null && (statement.getMethodExpression().getText().equals("define")
+                        || statement.getMethodExpression().getText().equals("require")))
+                {
+                    return getDefineStatementItemsFromArguments(statement.getArguments());
+                }
+            }
+
+            parent = parent.getParent();
+        }
+
+        return null;
     }
 
     public DefineStatement getDefineStatementItemsFromArguments(JSExpression[] arguments)

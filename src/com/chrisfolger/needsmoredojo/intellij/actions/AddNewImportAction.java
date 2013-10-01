@@ -1,5 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
@@ -29,10 +31,11 @@ public class AddNewImportAction extends JavaScriptAction
 
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
         String initialChoice = "";
+        PsiElement element = null;
 
         if(editor != null)
         {
-            PsiElement element = psiFile.findElementAt(editor.getCaretModel().getOffset());
+            element = psiFile.findElementAt(editor.getCaretModel().getOffset());
             initialChoice = new ImportCreator().getSuggestedImport(element);
         }
 
@@ -81,13 +84,30 @@ public class AddNewImportAction extends JavaScriptAction
             return;
         }
 
+        // determine if there is a nearest define/require to add to
+        DefineStatement statementToAddTo = null;
+        if(element != null)
+        {
+            statementToAddTo = new DefineResolver().getNearestImportBlock(element);
+        }
+
+        final DefineStatement finalStatementToAddTo = statementToAddTo;
         CommandProcessor.getInstance().executeCommand(psiFile.getProject(), new Runnable() {
             @Override
             public void run() {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        boolean result = new ImportCreator().addImport(psiFile, importedModule);
+
+                        boolean result;
+                        if(finalStatementToAddTo != null)
+                        {
+                            result = new ImportCreator().addImport(psiFile, importedModule, finalStatementToAddTo);
+                        }
+                        else
+                        {
+                            result = new ImportCreator().addImport(psiFile, importedModule);
+                        }
                         if(!result)
                         {
                             new Notification("needsmoredojo", "Add new Import", "A define statement was not found", NotificationType.WARNING).notify(psiFile.getProject());

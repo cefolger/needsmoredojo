@@ -6,10 +6,16 @@ import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiFile;
 
 public abstract class JavaScriptAction extends AnAction
 {
+    protected boolean supportsFileType(FileType type)
+    {
+        return type instanceof JavaScriptFileType;
+    }
+
     @Override
     public void update(AnActionEvent e)
     {
@@ -36,7 +42,7 @@ public abstract class JavaScriptAction extends AnAction
             return;
         }
 
-        if(!(psiFile.getFileType() instanceof JavaScriptFileType))
+        if(!supportsFileType(psiFile.getFileType()))
         {
             e.getPresentation().setEnabled(false);
             return;

@@ -40,6 +40,7 @@
   <change-notes><![CDATA[
             <b>0.6</b>
             <ul>
+                <li>Add AMD Import can be used in a require block </li>
                 <li>Nested require blocks supported for unused imports inspection </li>
                 <li>Add AMD import is now case-insensitive. Can be case-sensitive if you have a very large project </li>
                 <li>Add option to disable adding an import entry when no module is detected </li>
