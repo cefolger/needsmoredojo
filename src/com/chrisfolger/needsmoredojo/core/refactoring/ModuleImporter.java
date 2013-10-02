@@ -219,6 +219,8 @@ public class ModuleImporter
      */
     public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule, String pluginPostfix, boolean updateReferences, PsiFile pluginResourceFile)
     {
+        // FIXME take the source import block as an argument
+
         DefineStatement defineStatement = new DefineResolver().getDefineStatementItems(currentModule);
 
         String newModuleName = newModule.getName().substring(0, newModule.getName().indexOf('.'));
@@ -257,6 +259,7 @@ public class ModuleImporter
      */
     public List<MatchResult> findFilesThatModuleReferences(PsiFile module)
     {
+        // FIXME need to get modules from require blocks as well
         DefineResolver resolver = new DefineResolver();
         DefineStatement statement = resolver.getDefineStatementItems(module);
         List<MatchResult> matches = new ArrayList<MatchResult>();
@@ -359,6 +362,7 @@ public class ModuleImporter
                     continue;
                 }
 
+                // FIXME need to get all modules in all statements
                 DefineStatement defineStatement = resolver.getDefineStatementItems(psiFile);
 
                 // possible that the file passed the smoke test but is not a real module
