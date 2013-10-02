@@ -10,7 +10,9 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  Parse the AMD imports in a dojo module according to this syntax:
@@ -229,5 +231,31 @@ public class DefineResolver
         JSFunctionExpression function = (JSFunctionExpression) arguments[1 + argumentOffset];
 
         return new DefineStatement(literalExpressions, function, className, original);
+    }
+
+    /**
+     * gets a set of all define and require blocks from a given file.
+     *
+     * @param file
+     * @return
+     */
+    public Set<JSCallExpression> getAllImportBlocks(PsiFile file)
+    {
+        final Set<JSCallExpression> listOfDefinesOrRequiresToVisit = new LinkedHashSet<JSCallExpression>();
+        JSRecursiveElementVisitor defineOrRequireVisitor = new JSRecursiveElementVisitor() {
+            @Override
+            public void visitJSCallExpression(JSCallExpression expression)
+            {
+                if(expression.getMethodExpression().getText().contains("define") || expression.getMethodExpression().getText().contains("require"))
+                {
+                    listOfDefinesOrRequiresToVisit.add(expression);
+                }
+                super.visitJSCallExpression(expression);
+            }
+        };
+
+        file.accept(defineOrRequireVisitor);
+
+        return listOfDefinesOrRequiresToVisit;
     }
 }

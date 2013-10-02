@@ -123,23 +123,7 @@ public class UnusedImportsRemover
         Set<PsiElement> visitedElements = new HashSet<PsiElement>();
         final Collection<String> parameterExceptions = exceptions.values();
 
-        final Set<JSCallExpression> listOfDefinesOrRequiresToVisit = new LinkedHashSet<JSCallExpression>();
-        JSRecursiveElementVisitor defineOrRequireVisitor = new JSRecursiveElementVisitor() {
-            @Override
-            public void visitJSCallExpression(JSCallExpression expression)
-            {
-                if(expression.getMethodExpression().getText().contains("define") || expression.getMethodExpression().getText().contains("require"))
-                {
-                    listOfDefinesOrRequiresToVisit.add(expression);
-                }
-                super.visitJSCallExpression(expression);
-            }
-        };
-
-
-        //JSRecursiveElementVisitor visitor = new UnusedImportsRemovalVisitor(visitedElements, defines, parameters, parameterExceptions);
-        file.accept(defineOrRequireVisitor);
-
+        final Set<JSCallExpression> listOfDefinesOrRequiresToVisit = new DefineResolver().getAllImportBlocks(file);
         List<UnusedImportBlockEntry> results = new ArrayList<UnusedImportBlockEntry>();
 
         JSCallExpression[] expressions = listOfDefinesOrRequiresToVisit.toArray(new JSCallExpression[listOfDefinesOrRequiresToVisit.size()]);
