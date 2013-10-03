@@ -40,6 +40,7 @@
   <change-notes><![CDATA[
             <b>0.6</b>
             <ul>
+                <li>Goto declaration is now supported for AMD module references</li>
                 <li>Require blocks and mixed HTML/JS files now supported for all AMD management functionality</li>
                 <li>Add AMD import is now case-insensitive. Can be case-sensitive if you have a very large project </li>
                 <li>Add option to disable adding an import entry when no module is detected </li>
@@ -165,6 +166,7 @@
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.CyclicDependencyProvider"/>
 
         <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.AttachPointGotoDeclarationHandler"/>
+        <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.ImportGotoDeclarationHandler"/>
 
         <projectConfigurable implementation="com.chrisfolger.needsmoredojo.intellij.configurable.DojoSettingsConfigurable"></projectConfigurable>
 
