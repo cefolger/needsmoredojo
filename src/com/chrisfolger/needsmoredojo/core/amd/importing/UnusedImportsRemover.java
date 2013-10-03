@@ -120,7 +120,6 @@ public class UnusedImportsRemover
      */
     public List<UnusedImportBlockEntry> filterUsedModules(PsiFile file, final LinkedHashMap<String, String> exceptions)
     {
-        Set<PsiElement> visitedElements = new HashSet<PsiElement>();
         final Collection<String> parameterExceptions = exceptions.values();
 
         final Set<JSCallExpression> listOfDefinesOrRequiresToVisit = new DefineResolver().getAllImportBlocks(file);
@@ -155,7 +154,7 @@ public class UnusedImportsRemover
                 }
             }
 
-            JSRecursiveElementVisitor visitor = new UnusedImportsRemovalVisitor(visitedElements, blockDefines, blockParameters, parameterExceptions);
+            JSRecursiveElementVisitor visitor = new UnusedImportsRemovalVisitor(blockDefines, blockParameters, parameterExceptions, expressions[i]);
             expressions[i].accept(visitor);
 
             results.add(new UnusedImportBlockEntry(expressions[i].getMethodExpression().getText().equals("define"), expressions[i], blockDefines, blockParameters));
