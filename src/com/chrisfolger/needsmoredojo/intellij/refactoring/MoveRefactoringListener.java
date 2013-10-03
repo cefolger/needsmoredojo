@@ -60,7 +60,7 @@ public class MoveRefactoringListener implements RefactoringElementListener
 
         for(MatchResult result : moduleReferences)
         {
-            renamer.reimportModule(result.getIndex(), file, result.getQuote(), result.getPath(), result.getModule(), result.getPluginResourceId(), false, result.getPluginResourceFile());
+            renamer.reimportModule(result.getIndex(), file, result.getQuote(), result.getPath(), result.getModule(), result.getPluginResourceId(), false, result.getPluginResourceFile(), result.getCallExpression());
         }
     }
 

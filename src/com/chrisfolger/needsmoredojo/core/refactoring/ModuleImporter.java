@@ -8,6 +8,7 @@ import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
+import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
@@ -110,7 +111,7 @@ public class ModuleImporter
             return null;
         }
 
-        return new MatchResult(targetFile, matchIndex, matchedString, quote, matchedPostfix, null);
+        return new MatchResult(targetFile, matchIndex, matchedString, quote, matchedPostfix, null, statement.getCallExpression());
     }
 
     /**
@@ -217,11 +218,9 @@ public class ModuleImporter
      * @param path the new module's path
      * @param newModule the new module
      */
-    public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule, String pluginPostfix, boolean updateReferences, PsiFile pluginResourceFile)
+    public void reimportModule(int index, PsiFile currentModule, char quote, String path, PsiFile newModule, String pluginPostfix, boolean updateReferences, PsiFile pluginResourceFile, JSCallExpression callExpression)
     {
-        // FIXME take the source import block as an argument
-
-        DefineStatement defineStatement = new DefineResolver().getDefineStatementItems(currentModule);
+        DefineStatement defineStatement = new DefineResolver().getDefineStatementItemsFromArguments(callExpression.getArguments(), callExpression);
 
         String newModuleName = newModule.getName().substring(0, newModule.getName().indexOf('.'));
         LinkedHashMap<String, PsiFile> results = new ImportResolver().getChoicesFromFiles(new PsiFile[] { newModule }, libraries, newModuleName, currentModule, false, true);
@@ -235,7 +234,7 @@ public class ModuleImporter
         PsiElement defineLiteral = defineStatement.getArguments().getExpressions()[index];
         PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), quote + chosenImport + pluginPostfix + quote);
 
-        MatchResult match = new MatchResult(currentModule, index, path, quote, pluginPostfix, pluginResourceFile);
+        MatchResult match = new MatchResult(currentModule, index, path, quote, pluginPostfix, pluginResourceFile, callExpression);
         updateModuleReference(currentModule, match, defineStatement, newImport, updateReferences);
     }
 
@@ -248,7 +247,7 @@ public class ModuleImporter
      */
     public void reimportModule(MatchResult matchResult, PsiFile newModule)
     {
-        reimportModule(matchResult.getIndex(), matchResult.getModule(), matchResult.getQuote(), matchResult.getPath(), newModule, matchResult.getPluginResourceId(), true, matchResult.getPluginResourceFile());
+        reimportModule(matchResult.getIndex(), matchResult.getModule(), matchResult.getQuote(), matchResult.getPath(), newModule, matchResult.getPluginResourceId(), true, matchResult.getPluginResourceFile(), matchResult.getCallExpression());
     }
 
     /**
@@ -259,61 +258,69 @@ public class ModuleImporter
      */
     public List<MatchResult> findFilesThatModuleReferences(PsiFile module)
     {
-        // FIXME need to get modules from require blocks as well
         DefineResolver resolver = new DefineResolver();
-        DefineStatement statement = resolver.getDefineStatementItems(module);
+        Set<JSCallExpression> callExpressions = resolver.getAllImportBlocks(module);
         List<MatchResult> matches = new ArrayList<MatchResult>();
 
-        if(statement == null)
+        for(JSCallExpression callExpression : callExpressions)
         {
-            // define statement wasn't valid
-            return matches;
-        }
-
-        for(int i=0;i<statement.getArguments().getExpressions().length;i++)
-        {
-            JSExpression expression = statement.getArguments().getExpressions()[i];
-
-            char quote = '"';
-            if(expression.getText().contains("'"))
+            if(callExpression == null)
             {
-                quote = '\'';
+                continue;
             }
 
-            // figure out which module it is
-            String importModule = expression.getText().replaceAll("'", "").replaceAll("\"", "");
-
-            // get the module name
-            String moduleName = NameResolver.getModuleName(importModule);
-            String pluginResourceId = NameResolver.getAMDPluginResourceIfPossible(importModule, true);
-            String modulePath = NameResolver.getModulePath(importModule);
-
-            PsiFile pluginResourceFile = null;
-            if(pluginResourceId.startsWith("!") && pluginResourceId.length() > 2 && pluginResourceId.charAt(1) == '.')
+            DefineStatement statement = resolver.getDefineStatementItemsFromArguments(callExpression.getArguments(), callExpression);
+            if(statement == null)
             {
-                PsiReference[] fileReferences = expression.getReferences();
+                // define statement wasn't valid
+                return matches;
+            }
 
-                if(fileReferences.length > 0)
+            for(int i=0;i<statement.getArguments().getExpressions().length;i++)
+            {
+                JSExpression expression = statement.getArguments().getExpressions()[i];
+
+                char quote = '"';
+                if(expression.getText().contains("'"))
                 {
-                    PsiReference potentialReference = fileReferences[fileReferences.length-1];
-                    pluginResourceFile = (PsiFile) potentialReference.resolve();
+                    quote = '\'';
                 }
-            }
-            else if (pluginResourceId.startsWith("!") && pluginResourceId.length() > 2)
-            {
-                // this is an absolute reference
-            }
 
-            // get the list of possible strings/PsiFiles that would match it
-            PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(module.getProject(), moduleName, true, false);
+                // figure out which module it is
+                String importModule = expression.getText().replaceAll("'", "").replaceAll("\"", "");
 
-            // get the files that are being imported
-            // TODO performance optimization
-            LinkedHashMap<String, PsiFile> results = new ImportResolver().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
-            if(results.containsKey(modulePath + moduleName))
-            {
-                MatchResult match = new MatchResult(results.get(modulePath + moduleName), i, modulePath + moduleName, quote, pluginResourceId, pluginResourceFile);
-                matches.add(match);
+                // get the module name
+                String moduleName = NameResolver.getModuleName(importModule);
+                String pluginResourceId = NameResolver.getAMDPluginResourceIfPossible(importModule, true);
+                String modulePath = NameResolver.getModulePath(importModule);
+
+                PsiFile pluginResourceFile = null;
+                if(pluginResourceId.startsWith("!") && pluginResourceId.length() > 2 && pluginResourceId.charAt(1) == '.')
+                {
+                    PsiReference[] fileReferences = expression.getReferences();
+
+                    if(fileReferences.length > 0)
+                    {
+                        PsiReference potentialReference = fileReferences[fileReferences.length-1];
+                        pluginResourceFile = (PsiFile) potentialReference.resolve();
+                    }
+                }
+                else if (pluginResourceId.startsWith("!") && pluginResourceId.length() > 2)
+                {
+                    // this is an absolute reference
+                }
+
+                // get the list of possible strings/PsiFiles that would match it
+                PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(module.getProject(), moduleName, true, false);
+
+                // get the files that are being imported
+                // TODO performance optimization
+                LinkedHashMap<String, PsiFile> results = new ImportResolver().getChoicesFromFiles(files, libraries, moduleName, module.getContainingFile(), false, true);
+                if(results.containsKey(modulePath + moduleName))
+                {
+                    MatchResult match = new MatchResult(results.get(modulePath + moduleName), i, modulePath + moduleName, quote, pluginResourceId, pluginResourceFile, callExpression);
+                    matches.add(match);
+                }
             }
         }
 
@@ -357,29 +364,32 @@ public class ModuleImporter
                 if(!isInProjectDirectory) continue;
 
                 PsiFile psiFile = psiManager.findFile(file);
-                if(!psiFile.getText().contains("define("))
+                if(!psiFile.getText().contains("define(") && !psiFile.getText().contains("require"))
                 {
                     continue;
                 }
 
-                // FIXME need to get all modules in all statements
-                DefineStatement defineStatement = resolver.getDefineStatementItems(psiFile);
-
-                // possible that the file passed the smoke test but is not a real module
-                if(defineStatement == null)
+                Set<JSCallExpression> importBlocks = resolver.getAllImportBlocks(psiFile);
+                for(JSCallExpression expression : importBlocks)
                 {
-                    continue;
-                }
+                    DefineStatement defineStatement = resolver.getDefineStatementItemsFromArguments(expression.getArguments(), expression);
 
-                MatchResult match = getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), defineStatement, psiFile);
-
-                if(match != null)
-                {
-                    matches.add(match);
-
-                    if(update)
+                    // possible that the file passed the smoke test but is not a real module
+                    if(defineStatement == null)
                     {
-                        updateModuleReference(psiFile, match, defineStatement, true);
+                        continue;
+                    }
+
+                    MatchResult match = getMatch(moduleFile.getName().substring(0, moduleFile.getName().indexOf('.')), defineStatement, psiFile);
+
+                    if(match != null)
+                    {
+                        matches.add(match);
+
+                        if(update)
+                        {
+                            updateModuleReference(psiFile, match, defineStatement, true);
+                        }
                     }
                 }
             }
