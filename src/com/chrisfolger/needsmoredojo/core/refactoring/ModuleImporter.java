@@ -5,12 +5,12 @@ import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportUpdater;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -20,8 +20,6 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.refactoring.RefactoringFactory;
-import com.intellij.refactoring.RenameRefactoring;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +36,7 @@ public class ModuleImporter
     private Project project;
     private String moduleName;
     private Map<String, String> moduleNamingExceptionMap;
+    private ImportUpdater importUpdater;
 
     public ModuleImporter(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, Map<String, String> exceptionsMap)
     {
@@ -47,6 +46,7 @@ public class ModuleImporter
         this.libraries = libraries;
         this.possibleFiles = possibleImportFiles;
         this.moduleNamingExceptionMap = exceptionsMap;
+        importUpdater = new ImportUpdater(exceptionsMap);
     }
 
     /**
@@ -114,60 +114,7 @@ public class ModuleImporter
         return new MatchResult(targetFile, matchIndex, matchedString, quote, matchedPostfix, null, statement.getCallExpression());
     }
 
-    /**
-     * Updates a module's import reference with a new location
-     *
-     * @param targetFile the module to update
-     * @param match the match that holds the location of the import to update
-     * @param statement the module's parsed define statement
-     * @param replacementExpression an expression that will replace the old import statement
-     */
-    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement, final PsiElement replacementExpression, final boolean updateReferences)
-    {
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
-                defineLiteral.replace(replacementExpression);
 
-                if(!updateReferences)
-                {
-                    return;
-                }
-
-                // sometimes the lengths of the imports don't match up due to plugins etc.
-                if(!(match.getIndex() >= statement.getFunction().getParameters().length))
-                {
-                    // for performance reasons we should only rename a parameter if the name has actually changed
-                    String parameterText = statement.getFunction().getParameters()[match.getIndex()].getText();
-                    String newParameterName = NameResolver.defineToParameter(match.getPath(), moduleNamingExceptionMap);
-
-                    if(parameterText.equals(newParameterName))
-                    {
-                        return;
-                    }
-
-                    RenameRefactoring refactoring = RefactoringFactory.getInstance(targetFile.getProject())
-                            .createRename(statement.getFunction().getParameters()[match.getIndex()], newParameterName, false, false);
-
-                    refactoring.doRefactoring(refactoring.findUsages());
-                }
-            }
-        });
-    }
-
-    /**
-     * Updates a module's import reference with a new location
-     *
-     * @param targetFile the module to update
-     * @param match the match that holds the location of the import to update
-     * @param statement the module's parsed define statement
-     */
-    protected void updateModuleReference(final PsiFile targetFile, final MatchResult match, final DefineStatement statement, boolean updateReferences)
-    {
-        PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
-        updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getPluginResourceId() + match.getQuote()), updateReferences);
-    }
 
     private String chooseImportToReplaceAnImport(String original, String[] choices)
     {
@@ -235,7 +182,7 @@ public class ModuleImporter
         PsiElement newImport = JSUtil.createExpression(defineLiteral.getParent(), quote + chosenImport + pluginPostfix + quote);
 
         MatchResult match = new MatchResult(currentModule, index, path, quote, pluginPostfix, pluginResourceFile, callExpression);
-        updateModuleReference(currentModule, match, defineStatement, newImport, updateReferences);
+        importUpdater.updateModuleReference(currentModule, match, defineStatement, newImport, updateReferences);
     }
 
     /**
@@ -388,7 +335,7 @@ public class ModuleImporter
 
                         if(update)
                         {
-                            updateModuleReference(psiFile, match, defineStatement, true);
+                            importUpdater.updateModuleReference(psiFile, match, defineStatement, true);
                         }
                     }
                 }
