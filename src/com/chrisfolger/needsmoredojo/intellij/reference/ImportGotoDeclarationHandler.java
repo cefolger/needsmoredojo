@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.intellij.reference;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
@@ -29,28 +30,6 @@ import java.util.LinkedHashMap;
  */
 public class ImportGotoDeclarationHandler implements GotoDeclarationHandler
 {
-    private PsiFile resolveReferencedFile(Project project, PsiElement define)
-    {
-        ImportResolver resolver = new ImportResolver();
-        String text = define.getText().replaceAll("'|\"", "");
-        PsiFile[] possibleFiles = resolver.getPossibleDojoImportFiles(project, NameResolver.getModuleName(text), false, false);
-
-        LinkedHashMap<String, PsiFile> possibleImportedFiles = resolver.getChoicesFromFiles(possibleFiles,
-                new SourcesLocator().getSourceLibraries(project).toArray(new SourceLibrary[0]),
-                NameResolver.getModuleName(text),
-                define.getContainingFile(), false, true);
-
-        for(String importString : possibleImportedFiles.keySet())
-        {
-            if(importString.equals(text))
-            {
-                return possibleImportedFiles.get(importString);
-            }
-        }
-
-        return null;
-    }
-
     private PsiElement resolveReferencedDefine(PsiElement psiElement)
     {
         boolean isReference = psiElement instanceof JSReferenceExpression || (psiElement.getParent() != null && psiElement.getParent() instanceof JSReferenceExpression);
@@ -93,7 +72,7 @@ public class ImportGotoDeclarationHandler implements GotoDeclarationHandler
             return new PsiElement[0];
         }
 
-        PsiFile referencedFile = resolveReferencedFile(psiElement.getProject(), referencedDefine);
+        PsiFile referencedFile = new DojoModuleFileResolver().resolveReferencedFile(psiElement.getProject(), referencedDefine);
 
         if(referencedFile == null)
         {

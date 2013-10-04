@@ -1,5 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd.filesystem;
 
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
@@ -7,10 +9,7 @@ import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.XmlRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.xml.XmlAttribute;
@@ -147,6 +146,28 @@ public class DojoModuleFileResolver
         });
 
         return modules;
+    }
+
+    public PsiFile resolveReferencedFile(Project project, PsiElement define)
+    {
+        ImportResolver resolver = new ImportResolver();
+        String text = define.getText().replaceAll("'|\"", "");
+        PsiFile[] possibleFiles = resolver.getPossibleDojoImportFiles(project, NameResolver.getModuleName(text), false, false);
+
+        LinkedHashMap<String, PsiFile> possibleImportedFiles = resolver.getChoicesFromFiles(possibleFiles,
+                new SourcesLocator().getSourceLibraries(project).toArray(new SourceLibrary[0]),
+                NameResolver.getModuleName(text),
+                define.getContainingFile(), false, true);
+
+        for(String importString : possibleImportedFiles.keySet())
+        {
+            if(importString.equals(text))
+            {
+                return possibleImportedFiles.get(importString);
+            }
+        }
+
+        return null;
     }
 
     public Set<String> getDirectoriesForDojoModules(Project project, Set<String> modules)
