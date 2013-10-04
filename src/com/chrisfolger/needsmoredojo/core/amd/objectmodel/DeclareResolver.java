@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.psi.PsiFile;
 
 public class DeclareResolver
 {
@@ -53,10 +54,26 @@ public class DeclareResolver
         };
     }
 
+    public DeclareStatementItems getDeclareObject(PsiFile file)
+    {
+        final DeclareStatementItems[] items = new DeclareStatementItems[] { null };
+
+        JSRecursiveElementVisitor visitor = getDefineVisitorToRetrieveDeclareObject(new CompletionCallback() {
+            @Override
+            public void run(Object[] result) {
+                items[0] = getDeclareStatementFromParsedStatement(result);
+            }
+        });
+        file.acceptChildren(visitor);
+
+        return items[0];
+    }
+
     /**
      * this returns a visitor that will search for a define statement, and on finding it will then
      * search for the declare statement in a dojo module
      *
+     * @deprecated use getDeclareObject instead
      * @param onDeclareFound this is the callback that will be executed when the declare statement is found
      * @return the visitor
      */
@@ -138,8 +155,15 @@ public class DeclareResolver
         }
 
         // now we need to get the object literal with all of the function names
+        // unless it was passed as null
+        JSProperty[] methodsToConvert = null;
+        if(expression.getArguments()[objectLiteralIndex] instanceof JSLiteralExpression)
+        {
+            objectLiteralIndex += 1;
+        }
+
         JSObjectLiteralExpression literal = (JSObjectLiteralExpression) expression.getArguments()[objectLiteralIndex];
-        JSProperty[] methodsToConvert = literal.getProperties();
+        methodsToConvert = literal.getProperties();
 
         return new DeclareStatementItems(className, expressionsToMixin, methodsToConvert, (JSElement) result[1]);
     }

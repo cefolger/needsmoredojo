@@ -7,6 +7,7 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler;
 import com.intellij.lang.Language;
 import com.intellij.lang.javascript.psi.JSExpression;
@@ -30,33 +31,6 @@ import java.util.LinkedHashMap;
  */
 public class ImportGotoDeclarationHandler implements GotoDeclarationHandler
 {
-    private PsiElement resolveReferencedDefine(PsiElement psiElement)
-    {
-        boolean isReference = psiElement instanceof JSReferenceExpression || (psiElement.getParent() != null && psiElement.getParent() instanceof JSReferenceExpression);
-        boolean isNew = psiElement instanceof JSNewExpression || (psiElement.getParent() != null && psiElement.getParent() instanceof JSNewExpression);
-
-        // support for reference or new expression
-        if(!(isReference || isNew))
-        {
-            return null;
-        }
-
-        DefineResolver resolver = new DefineResolver();
-        DefineStatement defineStatement = resolver.getNearestImportBlock(psiElement);
-        for (int x = 0; x < defineStatement.getFunction().getParameters().length; x++)
-        {
-            JSParameter parameter = defineStatement.getFunction().getParameters()[x];
-            JSExpression define = defineStatement.getArguments().getExpressions()[x];
-
-            if(parameter.getText().equals(psiElement.getText()))
-            {
-                return define;
-            }
-        }
-
-        return null;
-    }
-
     @Nullable
     @Override
     public PsiElement[] getGotoDeclarationTargets(PsiElement psiElement, int i, Editor editor)
@@ -66,7 +40,7 @@ public class ImportGotoDeclarationHandler implements GotoDeclarationHandler
             return new PsiElement[0];
         }
 
-        PsiElement referencedDefine = resolveReferencedDefine(psiElement);
+        PsiElement referencedDefine = AMDPsiUtil.resolveReferencedDefine(psiElement);
         if(referencedDefine == null)
         {
             return new PsiElement[0];

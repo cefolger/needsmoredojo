@@ -167,6 +167,7 @@
 
         <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.AttachPointGotoDeclarationHandler"/>
         <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.ImportGotoDeclarationHandler"/>
+        <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.ThisInheritedGotoDeclarationHandler"/>
 
         <projectConfigurable implementation="com.chrisfolger.needsmoredojo.intellij.configurable.DojoSettingsConfigurable"></projectConfigurable>
 

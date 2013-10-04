@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestDeclareResolver
 {
@@ -22,7 +23,7 @@ public class TestDeclareResolver
     }
 
     @Test
-    public void testTheBasicHappyBath()
+    public void testTheBasicHappyPath()
     {
         Map<String, String> propertyMap = new HashMap<String, String>();
         propertyMap.put("property 1", "value");
@@ -96,5 +97,24 @@ public class TestDeclareResolver
         DeclareStatementItems result = resolver.getDeclareStatementFromParsedStatement(statements);
         assertEquals(2, result.getExpressionsToMixin().length);
         assertEquals(1, result.getMethodsToConvert().length);
+    }
+
+    @Test
+    public void testWhenMixinArrayIsNull()
+    {
+        Map<String, String> propertyMap = new HashMap<String, String>();
+        propertyMap.put("property 1", "value");
+
+        JSExpression[] arguments = new JSExpression[] {
+                new MockJSLiteralExpression("test class"),
+                new MockJSLiteralExpression("null"),
+                new MockJSObjectLiteralExpression(propertyMap)
+        };
+
+        JSCallExpression callExpression = new MockJSCallExpression(arguments);
+        Object[] statements = new Object[] {callExpression, null};
+
+        DeclareStatementItems result = resolver.getDeclareStatementFromParsedStatement(statements);
+        assertNotNull(result);
     }
 }

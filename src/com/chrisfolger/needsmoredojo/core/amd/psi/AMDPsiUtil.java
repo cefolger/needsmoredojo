@@ -2,10 +2,9 @@ package com.chrisfolger.needsmoredojo.core.amd.psi;
 
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
-import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
-import com.intellij.lang.javascript.psi.JSLiteralExpression;
-import com.intellij.lang.javascript.psi.JSParameter;
+import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -308,5 +307,32 @@ public class AMDPsiUtil
         }
 
         AMDPsiUtil.removeTrailingCommas(elementsToDelete, literal, function);
+    }
+
+    public static PsiElement resolveReferencedDefine(PsiElement psiElement)
+    {
+        boolean isReference = psiElement instanceof JSReferenceExpression || (psiElement.getParent() != null && psiElement.getParent() instanceof JSReferenceExpression);
+        boolean isNew = psiElement instanceof JSNewExpression || (psiElement.getParent() != null && psiElement.getParent() instanceof JSNewExpression);
+
+        // support for reference or new expression
+        if(!(isReference || isNew))
+        {
+            return null;
+        }
+
+        DefineResolver resolver = new DefineResolver();
+        DefineStatement defineStatement = resolver.getNearestImportBlock(psiElement);
+        for (int x = 0; x < defineStatement.getFunction().getParameters().length; x++)
+        {
+            JSParameter parameter = defineStatement.getFunction().getParameters()[x];
+            JSExpression define = defineStatement.getArguments().getExpressions()[x];
+
+            if(parameter.getText().equals(psiElement.getText()))
+            {
+                return define;
+            }
+        }
+
+        return null;
     }
 }
