@@ -42,6 +42,7 @@
             <ul>
                 <li>Jump to attach point will attempt to resolve absolute file references for templates </li>
                 <li>Fix high priority bug with goto declaration using absolute file paths in templated widgets (#123) </li>
+                <li>Minor bug fixes (#127)</li>
             </ul>
 
             <b>0.5.1</b>
