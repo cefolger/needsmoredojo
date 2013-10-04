@@ -11,6 +11,7 @@ import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +42,6 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
 
         // get the modules that this module inherits
         DeclareResolver declareResolver = new DeclareResolver();
-        DeclareStatementItems declareObject = declareResolver.getDeclareObject(psiElement.getContainingFile());
 
         // get the enclosing function of the psiElement
         PsiElement parent = psiElement.getParent();
@@ -57,6 +57,19 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             parent = parent.getParent();
         }
 
+        PsiElement resolvedMethod = resolveInheritedMethod(psiElement.getContainingFile(), psiElement.getProject(), owningFunction.getName());
+        if(resolvedMethod != null)
+        {
+            return new PsiElement[] { resolvedMethod };
+        }
+
+        return new PsiElement[0];
+    }
+
+    private PsiElement resolveInheritedMethod(PsiFile file, Project project, String methodName)
+    {
+        DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
+
         // FIXME: go all the way up the dependency graph!
         DojoModuleFileResolver resolver = new DojoModuleFileResolver();
         // search each inherited module starting from the last one for an equivalent property that matches.
@@ -67,13 +80,13 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             PsiElement resolvedDefine = AMDPsiUtil.resolveReferencedDefine(expression);
             if(resolvedDefine == null) continue;
 
-            PsiFile resolvedFile = resolver.resolveReferencedFile(psiElement.getProject(), resolvedDefine);
+            PsiFile resolvedFile = resolver.resolveReferencedFile(project, resolvedDefine);
             if(resolvedFile == null) continue;
 
-            JSProperty method = fileHasMethod(resolvedFile, owningFunction.getName());
+            JSProperty method = fileHasMethod(resolvedFile, methodName);
             if(method != null)
             {
-                return new PsiElement[] { method };
+                return method;
             }
             else
             {
@@ -81,7 +94,7 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             }
         }
 
-        return new PsiElement[0];
+        return null;
     }
 
     private @Nullable JSProperty fileHasMethod(PsiFile file, String methodName)
