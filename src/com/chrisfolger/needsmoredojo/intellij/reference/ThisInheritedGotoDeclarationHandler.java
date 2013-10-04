@@ -70,7 +70,7 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
     {
         DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
 
-        // FIXME: go all the way up the dependency graph!
+        // FIXME graph limit?
         DojoModuleFileResolver resolver = new DojoModuleFileResolver();
         // search each inherited module starting from the last one for an equivalent property that matches.
         for (int x = declareObject.getExpressionsToMixin().length - 1; x >= 0; x--)
@@ -90,7 +90,11 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             }
             else
             {
-                // attempt to recursively search the dependency graph
+                PsiElement inheritedMethod = resolveInheritedMethod(resolvedFile, project, methodName);
+                if(inheritedMethod != null)
+                {
+                    return inheritedMethod;
+                }
             }
         }
 
