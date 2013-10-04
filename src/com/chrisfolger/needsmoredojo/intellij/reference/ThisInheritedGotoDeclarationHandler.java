@@ -14,13 +14,22 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+/**
+ * Normally, IntelliJ will resolve this.inherited and look up all of the references to this.inherited in other
+ * modules. This GotoDeclarationHandler will attempt to resolve this.inherited calls by the enclosing method name,
+ * and will search the dependency graph for references.
+ */
 public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandler
 {
+    private int DEPTH_LIMIT = 10;
+
     @Nullable
     @Override
     public PsiElement[] getGotoDeclarationTargets(PsiElement psiElement, int i, Editor editor)
@@ -57,20 +66,15 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             parent = parent.getParent();
         }
 
-        PsiElement resolvedMethod = resolveInheritedMethod(psiElement.getContainingFile(), psiElement.getProject(), owningFunction.getName());
-        if(resolvedMethod != null)
-        {
-            return new PsiElement[] { resolvedMethod };
-        }
-
-        return new PsiElement[0];
+        Set<PsiElement> resolvedMethods = resolveInheritedMethod(psiElement.getContainingFile(), psiElement.getProject(), owningFunction.getName(), 0);
+        return resolvedMethods.toArray(new PsiElement[resolvedMethods.size()]);
     }
 
-    private PsiElement resolveInheritedMethod(PsiFile file, Project project, String methodName)
+    private @NotNull Set<PsiElement> resolveInheritedMethod(PsiFile file, Project project, String methodName, int currentDepth)
     {
+        Set<PsiElement> resolvedMethods = new LinkedHashSet<PsiElement>();
         DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
 
-        // FIXME graph limit?
         DojoModuleFileResolver resolver = new DojoModuleFileResolver();
         // search each inherited module starting from the last one for an equivalent property that matches.
         for (int x = declareObject.getExpressionsToMixin().length - 1; x >= 0; x--)
@@ -86,25 +90,33 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             JSProperty method = fileHasMethod(resolvedFile, methodName);
             if(method != null)
             {
-                return method;
+                resolvedMethods.add(method);
             }
             else
             {
-                PsiElement inheritedMethod = resolveInheritedMethod(resolvedFile, project, methodName);
-                if(inheritedMethod != null)
+                Set<PsiElement> inheritedMethod = resolveInheritedMethod(resolvedFile, project, methodName, currentDepth+1);
+                if(inheritedMethod != null && currentDepth < DEPTH_LIMIT)
                 {
-                    return inheritedMethod;
+                    for(PsiElement element : inheritedMethod)
+                    {
+                        resolvedMethods.add(element);
+                    }
                 }
             }
         }
 
-        return null;
+        Logger.getLogger(ThisInheritedGotoDeclarationHandler.class).trace("depth for " + methodName + " in " + file.getVirtualFile().getCanonicalPath() + ": " + currentDepth);
+        return resolvedMethods;
     }
 
     private @Nullable JSProperty fileHasMethod(PsiFile file, String methodName)
     {
-        // FIXME null checks
         DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
+
+        if(declareObject == null || declareObject.getMethodsToConvert() == null)
+        {
+            return null;
+        }
 
         for(JSProperty property : declareObject.getMethodsToConvert())
         {
