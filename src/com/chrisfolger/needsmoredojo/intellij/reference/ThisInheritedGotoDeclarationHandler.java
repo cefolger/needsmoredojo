@@ -49,9 +49,6 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             return new PsiElement[0];
         }
 
-        // get the modules that this module inherits
-        DeclareResolver declareResolver = new DeclareResolver();
-
         // get the enclosing function of the psiElement
         PsiElement parent = psiElement.getParent();
         JSProperty owningFunction = null;
