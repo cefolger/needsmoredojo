@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class CyclicDependencyInspection extends LocalInspectionTool
+public class CyclicDependencyInspection extends DojoInspection
 {
     private CyclicDependencyDetector detector;
 
@@ -64,6 +64,11 @@ public class CyclicDependencyInspection extends LocalInspectionTool
     @Override
     public ProblemDescriptor[] checkFile(@NotNull PsiFile file, @NotNull final InspectionManager manager, boolean isOnTheFly)
     {
+        if(!isEnabled(file.getProject()))
+        {
+            return new ProblemDescriptor[0];
+        }
+
         if(detector == null || isOnTheFly)
         {
             detector = new CyclicDependencyDetector();

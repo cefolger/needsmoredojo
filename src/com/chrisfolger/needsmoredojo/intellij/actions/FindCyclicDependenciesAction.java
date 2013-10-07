@@ -51,8 +51,7 @@ public class FindCyclicDependenciesAction extends AnAction
     }
 
     @Override
-    public void actionPerformed(final AnActionEvent e)
-    {
+    public void update(AnActionEvent e) {
         if(e.getProject() == null)
         {
             e.getPresentation().setEnabled(false);
@@ -67,6 +66,15 @@ public class FindCyclicDependenciesAction extends AnAction
         else
         {
             e.getPresentation().setEnabled(true);
+        }
+    }
+
+    @Override
+    public void actionPerformed(final AnActionEvent e)
+    {
+        if(e.getProject() == null)
+        {
+            return;
         }
 
         final ProgressManager instance = ProgressManager.getInstance();

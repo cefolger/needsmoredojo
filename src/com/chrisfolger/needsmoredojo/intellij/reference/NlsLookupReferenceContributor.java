@@ -1,7 +1,9 @@
 package com.chrisfolger.needsmoredojo.intellij.reference;
 
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.javascript.JavaScriptReferenceContributor;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
@@ -20,6 +22,13 @@ public class NlsLookupReferenceContributor extends JavaScriptReferenceContributo
             @Override
             public PsiReference[] getReferencesByElement(@NotNull PsiElement psiElement, @NotNull ProcessingContext processingContext) {
                 PsiElement parent = psiElement.getParent();
+
+                DojoSettings settings = ServiceManager.getService(psiElement.getProject(), DojoSettings.class);
+                if(!settings.isNeedsMoreDojoEnabled())
+                {
+                    return new PsiReference[0];
+                }
+
                 if(parent instanceof JSIndexedPropertyAccessExpression) {
                     JSIndexedPropertyAccessExpression accessor = (JSIndexedPropertyAccessExpression) parent;
                     PsiElement qualifier = accessor.getQualifier();
