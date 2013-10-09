@@ -242,10 +242,11 @@ public class ImportResolver
 
             String baseFilename = actualModuleName + ".js";
             String underscoreName = "_" + actualModuleName + ".js";
+            String hyphenatedName = NameResolver.getPossibleHyphenatedModule(module) + ".js";
 
             for(VirtualFile file : results)
             {
-                if(file.getName().equalsIgnoreCase(baseFilename) || file.getName().equalsIgnoreCase(underscoreName))
+                if(file.getName().equalsIgnoreCase(baseFilename) || file.getName().equalsIgnoreCase(underscoreName) || file.getName().equalsIgnoreCase(hyphenatedName))
                 {
                     allFiles.add(PsiManager.getInstance(project).findFile(file));
                 }
