@@ -110,7 +110,12 @@ public class ImportResolver
                     catch(IndexOutOfBoundsException exc)
                     {
                         // for this case, it's not fatal, it just means we can't use relative paths.
-                        Logger.getLogger(ImportResolver.class).info(originalModulePath + " could not be used in a relative path import", exc);
+                        Logger.getLogger(ImportResolver.class).info(originalModulePath + " could not be used in a relative path import");
+                    }
+                    catch(NullPointerException exc)
+                    {
+                        // for this case, it's not fatal, it just means we can't use relative paths.
+                        Logger.getLogger(ImportResolver.class).info(originalModulePath + " could not be used in a relative path import");
                     }
                 }
 
