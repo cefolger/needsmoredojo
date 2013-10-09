@@ -76,7 +76,8 @@ public class NameResolver
     {
         if(module.indexOf('!') > 0 && module.indexOf('/') != 0)
         {
-            return module.substring(module.lastIndexOf('/') + 1, module.lastIndexOf('!'));
+            String moduleName = getModuleName(module);
+            return moduleName;
         }
         else if(module.indexOf('!') > 0)
         {

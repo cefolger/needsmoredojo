@@ -172,4 +172,10 @@ public class TestAMDValidator
 
         assertTrue(validator.defineMatchesParameter("dojo/_base/lang", "dLang", exceptions));
     }
+
+    @Test
+    public void testMatchOnCustomPlugin()
+    {
+        assertTrue(validator.defineMatchesParameter("dojo/foo!bar", "foo", exceptions));
+    }
 }
