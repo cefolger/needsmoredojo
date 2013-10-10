@@ -5,6 +5,9 @@ import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
@@ -20,6 +23,12 @@ public class UtilToClassConverter implements CompletionCallback
     public void run(Object[] result)
     {
         final DeclareStatementItems item = new DeclareResolver().getDeclareStatementFromParsedStatement(result);
+
+        if(item == null)
+        {
+            Notifications.Bus.notify(new Notification("needsmoredojo", "Convert util module to class module", "Valid declare block was not found", NotificationType.WARNING));
+            return;
+        }
 
         final List<JSExpressionStatement> methods = (List<JSExpressionStatement>) result[2];
         final JSVarStatement declarationVariable = (JSVarStatement) result[3];

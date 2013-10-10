@@ -291,6 +291,13 @@ public class AMDPsiUtil
 
         Set<PsiElement> elementsToDelete = new LinkedHashSet<PsiElement>();
 
+        // if there is an /*NMD:Ignore*/ comment, delete it as well.
+        PsiElement ignoreComment = getIgnoreCommentAfterLiteral(amdImport.getLiteral());
+        if(ignoreComment != null)
+        {
+            elementsToDelete.add(ignoreComment);
+        }
+
         removeParameter(amdImport.getParameter(), elementsToDelete);
         AMDPsiUtil.removeDefineLiteral(amdImport.getLiteral(), elementsToDelete);
 

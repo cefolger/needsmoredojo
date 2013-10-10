@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.AMDValidator;
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.HighlightingUtil;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.TemplatedWidgetUtil;
 import com.intellij.lang.javascript.JavaScriptFileType;
@@ -10,6 +11,7 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -107,6 +109,16 @@ public class JumpToAttachPointAction extends JavaScriptAction
         {
             e.getPresentation().setEnabled(false);
             return;
+        }
+
+        if(!ServiceManager.getService(file.getProject(), DojoSettings.class).isNeedsMoreDojoEnabled())
+        {
+            e.getPresentation().setEnabled(false);
+            return;
+        }
+        else
+        {
+            e.getPresentation().setEnabled(true);
         }
 
         e.getPresentation().setEnabled(true);

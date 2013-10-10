@@ -1,15 +1,18 @@
 package com.chrisfolger.needsmoredojo.core.amd.filesystem;
 
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +44,30 @@ public class SourcesLocator
                 {
                     result = sourceFileParentDirectory.getVirtualFile().findFileByRelativePath(parsedPath);
                 }
+
+                if(result == null)
+                {
+                    try
+                    {
+                        PsiFile[] matches = FilenameIndex.getFilesByName(project, NameResolver.getModuleName(modulePath), GlobalSearchScope.projectScope(project));
+                        for(PsiFile match : matches)
+                        {
+                            boolean inProjectSources = VfsUtil.isAncestor(source, match.getVirtualFile(), true);
+                            boolean matchesModulePath = match.getVirtualFile().getCanonicalPath().contains(modulePath.replaceAll("('|\")", ""));
+
+                            if(inProjectSources && matchesModulePath)
+                            {
+                                result = match.getVirtualFile();
+                            }
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        // really this search is a last resort and could fail for any reason, so just ignore it and keep going.
+                        Logger.getLogger(SourcesLocator.class).info("failed to resolve " + modulePath, e);
+                    }
+                }
+
             }
             else
             {

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MismatchedImportsInspection extends LocalInspectionTool
+public class MismatchedImportsInspection extends DojoInspection
 {
     @Override
     public String getDisplayName()
@@ -59,6 +59,11 @@ public class MismatchedImportsInspection extends LocalInspectionTool
     @Override
     public ProblemDescriptor[] checkFile(@NotNull PsiFile file, @NotNull final InspectionManager manager, boolean isOnTheFly)
     {
+        if(!isEnabled(file.getProject()))
+        {
+            return new ProblemDescriptor[0];
+        }
+
         DefineResolver resolver = new DefineResolver();
         List<PsiElement> parameters = new ArrayList<PsiElement>();
         List<PsiElement> defines = new ArrayList<PsiElement>();

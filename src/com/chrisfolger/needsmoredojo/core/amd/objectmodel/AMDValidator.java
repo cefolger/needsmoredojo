@@ -139,7 +139,7 @@ public class AMDValidator
                 resourceId = resourceId.substring(0, resourceId.indexOf('.'));
             }
 
-            return resourceId.equals(parameterComparison) || parameterComparison.equals(pluginId);
+            return resourceId.equals(parameterComparison) || parameterComparison.equals(pluginId) || parameterComparison.equals(NameResolver.getModuleName(pluginId));
         }
 
         return false;

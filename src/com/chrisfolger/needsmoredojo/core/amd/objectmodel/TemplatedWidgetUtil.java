@@ -25,6 +25,7 @@ public class TemplatedWidgetUtil {
         this.file = file;
     }
 
+    @Nullable
     public PsiFile findTemplatePath()
     {
         final DeclareStatementItems[] utilItem = new DeclareStatementItems[1];
@@ -40,6 +41,7 @@ public class TemplatedWidgetUtil {
         return findTemplateFromDeclare(utilItem[0]);
     }
 
+    @Nullable
     public PsiFile findTemplateFromDeclare(@Nullable DeclareStatementItems statement)
     {
         if(statement == null)
@@ -78,6 +80,12 @@ public class TemplatedWidgetUtil {
                     String templatePath = relevantDefine.getText().substring(relevantDefine.getText().lastIndexOf('!') + 1);
                     // now open the file and find the reference in it
                     VirtualFile htmlFile = SourcesLocator.getAMDImportFile(relevantDefine.getProject(), templatePath, relevantDefine.getContainingFile().getContainingDirectory());
+
+                    // if we can't resolve it return null for now TODO
+                    if(htmlFile == null)
+                    {
+                        return null;
+                    }
 
                     PsiFile templateFile = PsiManager.getInstance(file.getProject()).findFile(htmlFile);
                     return templateFile;

@@ -94,4 +94,16 @@ public class TestNameResolver
     {
         assertEquals("Foo", NameResolver.defineToParameter("\"Foo\"", exceptions));
     }
+
+    @Test
+    public void testPluginNameWithSlash()
+    {
+        assertEquals("text", NameResolver.getAMDPluginNameIfPossible("dojo/text!./foo"));
+    }
+
+    @Test
+    public void testCustomPluginConversion()
+    {
+        assertEquals("foo", NameResolver.defineToParameter("dojo/foo!bar", exceptions));
+    }
 }
