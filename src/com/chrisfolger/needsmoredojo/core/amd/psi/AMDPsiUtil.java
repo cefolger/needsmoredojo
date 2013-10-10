@@ -320,15 +320,22 @@ public class AMDPsiUtil
     {
         boolean isReference = psiElement instanceof JSReferenceExpression || (psiElement.getParent() != null && psiElement.getParent() instanceof JSReferenceExpression);
         boolean isNew = psiElement instanceof JSNewExpression || (psiElement.getParent() != null && psiElement.getParent() instanceof JSNewExpression);
+        boolean isParameter = psiElement instanceof JSParameter || (psiElement.getParent() != null && psiElement.getParent() instanceof JSParameter);
 
         // support for reference or new expression
-        if(!(isReference || isNew))
+        if(!(isReference || isNew || isParameter))
         {
             return null;
         }
 
         DefineResolver resolver = new DefineResolver();
         DefineStatement defineStatement = resolver.getNearestImportBlock(psiElement);
+
+        if(defineStatement == null)
+        {
+            return null;
+        }
+
         for (int x = 0; x < defineStatement.getFunction().getParameters().length; x++)
         {
             JSParameter parameter = defineStatement.getFunction().getParameters()[x];
