@@ -5,6 +5,9 @@ import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiElement;
@@ -20,6 +23,12 @@ public class ClassToUtilConverter implements CompletionCallback
         DeclareResolver util = new DeclareResolver();
 
         final DeclareStatementItems utilItem = util.getDeclareStatementFromParsedStatement(result);
+        if(utilItem == null)
+        {
+            Notifications.Bus.notify(new Notification("needsmoredojo", "Convert class module to util module", "Valid declare block was not found", NotificationType.WARNING));
+            return;
+        }
+
         CommandProcessor.getInstance().executeCommand(utilItem.getDeclareContainingStatement().getProject(), new Runnable() {
             @Override
             public void run() {

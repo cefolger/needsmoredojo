@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.intellij.lang.javascript.psi.*;
+import org.apache.log4j.Logger;
 
 public class DeclareResolver
 {
@@ -88,10 +89,18 @@ public class DeclareResolver
 
     public DeclareStatementItems getDeclareStatementFromParsedStatement(Object[] result)
     {
-        return getDeclareStatementFromParsedStatement(result, true);
+        try {
+            return getDeclareStatementFromParsedStatement(result, true);
+        }
+        catch(Exception e)
+        {
+            // if there is a problem parsing the declare block, it's best to just return null and log the exception
+            Logger.getLogger(DeclareResolver.class).info("error parsing declare", e);
+            return null;
+        }
     }
 
-    public DeclareStatementItems getDeclareStatementFromParsedStatement(Object[] result, boolean parseMethodsFromObjectLiteral)
+    private DeclareStatementItems getDeclareStatementFromParsedStatement(Object[] result, boolean parseMethodsFromObjectLiteral)
     {
         JSCallExpression expression = (JSCallExpression) result[0];
 
