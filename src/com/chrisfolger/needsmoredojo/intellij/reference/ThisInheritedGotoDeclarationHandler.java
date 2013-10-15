@@ -84,7 +84,7 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             PsiFile resolvedFile = resolver.resolveReferencedFile(project, resolvedDefine);
             if(resolvedFile == null) continue;
 
-            JSProperty method = fileHasMethod(resolvedFile, methodName);
+            JSProperty method = AMDPsiUtil.fileHasMethod(resolvedFile, methodName);
             if(method != null)
             {
                 resolvedMethods.add(method);
@@ -104,26 +104,6 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
 
         Logger.getLogger(ThisInheritedGotoDeclarationHandler.class).trace("depth for " + methodName + " in " + file.getVirtualFile().getCanonicalPath() + ": " + currentDepth);
         return resolvedMethods;
-    }
-
-    private @Nullable JSProperty fileHasMethod(PsiFile file, String methodName)
-    {
-        DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
-
-        if(declareObject == null || declareObject.getMethodsToConvert() == null)
-        {
-            return null;
-        }
-
-        for(JSProperty property : declareObject.getMethodsToConvert())
-        {
-            if(property.getName().equals(methodName))
-            {
-                return property;
-            }
-        }
-
-        return null;
     }
 
     @Nullable

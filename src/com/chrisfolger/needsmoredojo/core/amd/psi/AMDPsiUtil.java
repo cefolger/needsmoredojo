@@ -4,6 +4,8 @@ import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
+import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
@@ -344,6 +346,26 @@ public class AMDPsiUtil
             if(parameter.getText().equals(psiElement.getText()))
             {
                 return define;
+            }
+        }
+
+        return null;
+    }
+
+    public static @Nullable JSProperty fileHasMethod(PsiFile file, String methodName)
+    {
+        DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
+
+        if(declareObject == null || declareObject.getMethodsToConvert() == null)
+        {
+            return null;
+        }
+
+        for(JSProperty property : declareObject.getMethodsToConvert())
+        {
+            if(property.getName().equals(methodName))
+            {
+                return property;
             }
         }
 
