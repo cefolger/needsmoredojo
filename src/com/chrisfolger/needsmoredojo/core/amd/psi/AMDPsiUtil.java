@@ -352,7 +352,7 @@ public class AMDPsiUtil
         return null;
     }
 
-    public static @Nullable JSProperty fileHasMethod(PsiFile file, String methodName, boolean useApproximatingVisitor)
+    public static @Nullable PsiElement fileHasMethod(PsiFile file, String methodName, boolean useApproximatingVisitor)
     {
         DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
 
@@ -360,19 +360,23 @@ public class AMDPsiUtil
         {
             return null;
         }
-        else if (declareObject == null || declareObject.getMethodsToConvert() == null)
+
+        if(declareObject != null && declareObject.getMethodsToConvert() != null)
+        {
+            for(JSProperty property : declareObject.getMethodsToConvert())
+            {
+                if(property.getName().equals(methodName))
+                {
+                    return property;
+                }
+            }
+        }
+
+        if(useApproximatingVisitor)
         {
             JSMethodLookupVisitor visitor = new JSMethodLookupVisitor(methodName);
             file.acceptChildren(visitor);
-            return visitor.getFoundProperty();
-        }
-
-        for(JSProperty property : declareObject.getMethodsToConvert())
-        {
-            if(property.getName().equals(methodName))
-            {
-                return property;
-            }
+            return visitor.getFoundElement();
         }
 
         return null;

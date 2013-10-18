@@ -1,14 +1,13 @@
 package com.chrisfolger.needsmoredojo.core.amd.psi;
 
-import com.intellij.lang.javascript.psi.JSFunctionExpression;
-import com.intellij.lang.javascript.psi.JSProperty;
-import com.intellij.lang.javascript.psi.JSRecursiveElementVisitor;
+import com.intellij.lang.javascript.psi.*;
+import com.intellij.psi.PsiElement;
 
 public class JSMethodLookupVisitor extends JSRecursiveElementVisitor
 {
     private String methodName;
     private boolean methodWasFound;
-    private JSProperty foundProperty;
+    private PsiElement foundElement;
 
     public JSMethodLookupVisitor(String methodName)
     {
@@ -35,18 +34,51 @@ public class JSMethodLookupVisitor extends JSRecursiveElementVisitor
         if(node.getValue() instanceof JSFunctionExpression)
         {
             methodWasFound = true;
-            foundProperty = node;
+            foundElement = node;
             return;
         }
 
         super.visitJSProperty(node);
     }
 
+    @Override
+    /**
+     * the next case is a little fuzzier BUT a good approximation
+     *
+     * when you do this:
+     *
+     * module.method = ...
+     * return module;
+     *
+     * We can be reasonably sure that "module" is the one you are referring to when you import the file, and "method"
+     * is the name of the method. This structure that we need to check for is:
+     *
+     * JSDefinitionExpression
+     *      JSReferenceExpression
+     */
+    public void visitJSReferenceExpression(JSReferenceExpression node)
+    {
+        if(node.getChildren().length != 1 || !(node.getChildren()[0] instanceof JSReferenceExpression))
+        {
+            super.visitJSReferenceExpression(node);
+            return;
+        }
+
+        if(methodName.equals(node.getReferencedName()) && node.getParent() != null && node.getParent() instanceof JSDefinitionExpression)
+        {
+            methodWasFound = true;
+            foundElement = node.getReferenceNameElement();
+            return;
+        }
+
+        super.visitJSReferenceExpression(node);
+    }
+
     public boolean isMethodWasFound() {
         return methodWasFound;
     }
 
-    public JSProperty getFoundProperty() {
-        return foundProperty;
+    public PsiElement getFoundElement() {
+        return foundElement;
     }
 }
