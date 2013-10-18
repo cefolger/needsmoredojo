@@ -84,7 +84,7 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
             PsiFile resolvedFile = resolver.resolveReferencedFile(project, resolvedDefine);
             if(resolvedFile == null) continue;
 
-            JSProperty method = AMDPsiUtil.fileHasMethod(resolvedFile, methodName);
+            JSProperty method = AMDPsiUtil.fileHasMethod(resolvedFile, methodName, false);
             if(method != null)
             {
                 resolvedMethods.add(method);

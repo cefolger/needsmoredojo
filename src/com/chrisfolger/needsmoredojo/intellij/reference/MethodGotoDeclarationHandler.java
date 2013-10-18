@@ -54,7 +54,7 @@ public class MethodGotoDeclarationHandler implements GotoDeclarationHandler
         }
 
         String methodName = psiElement.getText();
-        JSProperty method = AMDPsiUtil.fileHasMethod(resolvedFile, methodName);
+        JSProperty method = AMDPsiUtil.fileHasMethod(resolvedFile, methodName, true);
         if(method != null)
         {
             // found it!
