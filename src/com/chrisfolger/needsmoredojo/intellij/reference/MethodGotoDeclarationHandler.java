@@ -46,6 +46,8 @@ public class MethodGotoDeclarationHandler implements GotoDeclarationHandler
         }
 
         // FIXME account for new StandbyWrapper({}).foo();
+        // FIXME support jsp, php files.
+        // FIXME organize imports and toggle amd import path syntax need to be enabled
         DojoModuleFileResolver resolver = new DojoModuleFileResolver();
         PsiFile resolvedFile = resolver.resolveReferencedFile(psiElement.getProject(), resolvedDefine);
         if(resolvedFile == null)
