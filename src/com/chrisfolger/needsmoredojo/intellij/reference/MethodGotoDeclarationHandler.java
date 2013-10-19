@@ -12,6 +12,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * This class looks up methods of off dojo modules. If you have domConstruct.empty for example, it will determine
+ * that domConstruct references dojo/dom-construct and search for an "empty" method in that file to create a
+ * reference for it.
+ */
 public class MethodGotoDeclarationHandler implements GotoDeclarationHandler
 {
     @Nullable
@@ -45,9 +50,7 @@ public class MethodGotoDeclarationHandler implements GotoDeclarationHandler
             return new PsiElement[0];
         }
 
-        // FIXME account for new StandbyWrapper({}).foo();
         // FIXME support jsp, php files.
-        // FIXME organize imports and toggle amd import path syntax need to be enabled
         DojoModuleFileResolver resolver = new DojoModuleFileResolver();
         PsiFile resolvedFile = resolver.resolveReferencedFile(psiElement.getProject(), resolvedDefine);
         if(resolvedFile == null)

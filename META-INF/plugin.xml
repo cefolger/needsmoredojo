@@ -40,13 +40,14 @@
   <change-notes><![CDATA[
             <b>0.6</b>
             <ul>
+                <li>Goto declaration is supported for methods that reference AMD modules directly</li>
                 <li>Goto declaration is supported for this.inherited() references (see doc for details)</li>
                 <li>Goto declaration is now supported for AMD module references</li>
                 <li>Require blocks and mixed HTML/JS files now supported for all AMD management functionality</li>
                 <li>Add AMD import is now case-insensitive. Can be case-sensitive if you have a very large project </li>
                 <li>Add option to disable adding an import entry when no module is detected </li>
                 <li>Add quickfix for swapping two mismatched imports </li>
-                <li>Minor bug fixes (#119)</li>
+                <li>Minor bug fixes (#119, #122, #136)</li>
             </ul>
   
             <b>0.5.2</b>

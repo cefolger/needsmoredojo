@@ -318,6 +318,13 @@ public class AMDPsiUtil
         AMDPsiUtil.removeTrailingCommas(elementsToDelete, literal, function);
     }
 
+    /**
+     * Given an element that is really a reference to an imported module, find the nearest define or require import
+     * that matches.
+     *
+     * @param psiElement
+     * @return an element representing the define's string literal (like 'dojo/dom-construct')
+     */
     public static PsiElement resolveReferencedDefine(PsiElement psiElement)
     {
         boolean isReference = psiElement instanceof JSReferenceExpression || (psiElement.getParent() != null && psiElement.getParent() instanceof JSReferenceExpression);
@@ -352,6 +359,14 @@ public class AMDPsiUtil
         return null;
     }
 
+    /**
+     * Determines if a file has the method in question
+     * @param file
+     * @param methodName
+     * @param useApproximatingVisitor some dojo modules are not straight-forward. So for this case, pass true for this
+     *                                and it will search a file for a property or a reference to the method name in question
+     * @return
+     */
     public static @Nullable PsiElement fileHasMethod(PsiFile file, String methodName, boolean useApproximatingVisitor)
     {
         DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
