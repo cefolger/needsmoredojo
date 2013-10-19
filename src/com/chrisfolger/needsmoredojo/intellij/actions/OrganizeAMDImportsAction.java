@@ -1,21 +1,19 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
-import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
-import com.chrisfolger.needsmoredojo.core.amd.define.organizer.AMDImportOrganizer;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.define.organizer.AMDImportOrganizer;
 import com.chrisfolger.needsmoredojo.core.amd.define.organizer.SortingResult;
-import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
+import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
@@ -52,6 +50,11 @@ public class OrganizeAMDImportsAction extends JavaScriptAction
                             try {
                                 resolver.addDefinesAndParametersOfImportBlock(expression, blockDefines, blockParameters);
                             } catch (InvalidDefineException e1) {}
+
+                            if(blockDefines.size() == 0 || blockParameters.size() == 0)
+                            {
+                                continue;
+                            }
 
                             SortingResult result = organizer.sortDefinesAndParameters(blockDefines, blockParameters);
                             totalSize += blockDefines.size();
