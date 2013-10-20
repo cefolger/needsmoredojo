@@ -4,7 +4,6 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler;
 import com.intellij.lang.Language;
-import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Editor;
@@ -17,13 +16,18 @@ import org.jetbrains.annotations.Nullable;
  * that domConstruct references dojo/dom-construct and search for an "empty" method in that file to create a
  * reference for it.
  */
-public class MethodGotoDeclarationHandler implements GotoDeclarationHandler
+public class MethodGotoDeclarationHandler extends DojoDeclarationHandler implements GotoDeclarationHandler
 {
     @Nullable
     @Override
     public PsiElement[] getGotoDeclarationTargets(PsiElement psiElement, int i, Editor editor)
     {
         if(psiElement == null || !psiElement.getLanguage().equals(Language.findLanguageByID("JavaScript")))
+        {
+            return new PsiElement[0];
+        }
+
+        if(!isEnabled(psiElement.getProject()))
         {
             return new PsiElement[0];
         }

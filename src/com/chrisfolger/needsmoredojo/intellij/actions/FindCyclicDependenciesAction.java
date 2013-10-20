@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class FindCyclicDependenciesAction extends AnAction
+public class FindCyclicDependenciesAction extends JavaScriptAction
 {
     private Logger logger = Logger.getLogger(FindCyclicDependenciesAction.class);
 
@@ -48,6 +48,12 @@ public class FindCyclicDependenciesAction extends AnAction
                 new FindCyclicDependenciesToolWindow().createContent(project, window, incriminatingModules, finalCount);
             }
         });
+    }
+
+    @Override
+    protected boolean fileAgnostic()
+    {
+        return true;
     }
 
     @Override

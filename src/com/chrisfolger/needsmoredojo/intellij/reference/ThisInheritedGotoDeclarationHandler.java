@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
+import com.chrisfolger.needsmoredojo.intellij.inspections.DojoInspection;
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler;
 import com.intellij.lang.Language;
 import com.intellij.lang.javascript.psi.JSExpression;
@@ -26,7 +27,7 @@ import java.util.Set;
  * modules. This GotoDeclarationHandler will attempt to resolve this.inherited calls by the enclosing method name,
  * and will search the dependency graph for references.
  */
-public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandler
+public class ThisInheritedGotoDeclarationHandler extends DojoDeclarationHandler implements GotoDeclarationHandler
 {
     private int DEPTH_LIMIT = 10;
 
@@ -35,6 +36,11 @@ public class ThisInheritedGotoDeclarationHandler implements GotoDeclarationHandl
     public PsiElement[] getGotoDeclarationTargets(PsiElement psiElement, int i, Editor editor)
     {
         if(psiElement == null || !psiElement.getLanguage().equals(Language.findLanguageByID("JavaScript")))
+        {
+            return new PsiElement[0];
+        }
+
+        if(!isEnabled(psiElement.getProject()))
         {
             return new PsiElement[0];
         }

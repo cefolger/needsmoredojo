@@ -8,6 +8,7 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
+import com.chrisfolger.needsmoredojo.intellij.inspections.DojoInspection;
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler;
 import com.intellij.lang.Language;
 import com.intellij.lang.javascript.psi.JSExpression;
@@ -29,13 +30,18 @@ import java.util.LinkedHashMap;
  * There's some logic in here that I could have separated out, but since it is not reusable I just kept
  * it in here for the moment. In the future it can be separated out if necessary.
  */
-public class ImportGotoDeclarationHandler implements GotoDeclarationHandler
+public class ImportGotoDeclarationHandler extends DojoDeclarationHandler implements GotoDeclarationHandler
 {
     @Nullable
     @Override
     public PsiElement[] getGotoDeclarationTargets(PsiElement psiElement, int i, Editor editor)
     {
         if(psiElement == null || !psiElement.getLanguage().equals(Language.findLanguageByID("JavaScript")))
+        {
+            return new PsiElement[0];
+        }
+
+        if(!isEnabled(psiElement.getProject()))
         {
             return new PsiElement[0];
         }

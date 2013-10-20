@@ -1,5 +1,7 @@
 package com.chrisfolger.needsmoredojo.intellij.refactoring;
 
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.refactoring.listeners.RefactoringElementListener;
@@ -17,6 +19,11 @@ public class RenameRefactoringProvider implements RefactoringElementListenerProv
 
         PsiFile file = (PsiFile) psiElement;
         String extension = file.getVirtualFile().getExtension();
+
+        if(!ServiceManager.getService(file.getProject(), DojoSettings.class).isNeedsMoreDojoEnabled())
+        {
+            return null; // don't want to refactor if we've disabled Needs More Dojo.
+        }
 
         if(!extension.equals("js"))
         {

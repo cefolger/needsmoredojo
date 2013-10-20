@@ -11,6 +11,11 @@ import com.intellij.psi.PsiFile;
 
 public abstract class JavaScriptAction extends AnAction
 {
+    protected boolean fileAgnostic()
+    {
+        return false;
+    }
+
     protected boolean supportsFileType(FileType type)
     {
         return type instanceof JavaScriptFileType;
@@ -33,6 +38,12 @@ public abstract class JavaScriptAction extends AnAction
         else
         {
             e.getPresentation().setEnabled(true);
+        }
+
+        if(fileAgnostic())
+        {
+            e.getPresentation().setEnabled(true);
+            return;
         }
 
         final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
