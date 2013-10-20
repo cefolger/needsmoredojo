@@ -16,9 +16,24 @@ public abstract class JavaScriptAction extends AnAction
         return false;
     }
 
-    protected boolean supportsFileType(FileType type)
+    protected boolean supportsFileType(PsiFile file)
     {
-        return type instanceof JavaScriptFileType;
+        if(file == null || file.getProject() == null)
+        {
+            return false;
+        }
+
+        DojoSettings settings = ServiceManager.getService(file.getProject(), DojoSettings.class);
+        String[] fileTypes = settings.getSupportedFileTypes().split(",");
+        for(String type : fileTypes)
+        {
+            if(type.trim().equals(file.getVirtualFile().getExtension()))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -53,7 +68,7 @@ public abstract class JavaScriptAction extends AnAction
             return;
         }
 
-        if(!supportsFileType(psiFile.getFileType()))
+        if(!supportsFileType(psiFile))
         {
             e.getPresentation().setEnabled(false);
             return;

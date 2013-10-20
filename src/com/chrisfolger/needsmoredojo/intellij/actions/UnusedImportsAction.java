@@ -28,11 +28,6 @@ import java.util.Set;
 public class UnusedImportsAction extends JavaScriptAction {
     protected boolean deleteMode = false;
 
-    @Override
-    protected boolean supportsFileType(FileType type) {
-        return super.supportsFileType(type) || type instanceof HtmlFileType;
-    }
-
     public void actionPerformed(@NotNull final AnActionEvent e)
     {
         final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());

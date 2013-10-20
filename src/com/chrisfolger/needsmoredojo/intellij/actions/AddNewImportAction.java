@@ -27,11 +27,6 @@ import com.intellij.psi.PsiFile;
 public class AddNewImportAction extends JavaScriptAction
 {
     @Override
-    protected boolean supportsFileType(FileType type) {
-        return super.supportsFileType(type) || type instanceof HtmlFileType;
-    }
-
-    @Override
     public void actionPerformed(AnActionEvent e)
     {
         final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
