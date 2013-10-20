@@ -50,6 +50,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JCheckBox pluginEnabled;
     private JCheckBox addModulesIfThereAreNoneDetected;
     private JCheckBox allowCaseInsensitiveSearch;
+    private JTextField supportedFileTypes;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -141,7 +142,8 @@ public class DojoSettingsConfigurable implements Configurable {
                 dojoSourcesIsTheSame.isSelected() != settingsService.isDojoSourcesShareProjectSourcesRoot() ||
                 pluginEnabled.isSelected() != settingsService.isNeedsMoreDojoEnabled() ||
                 addModulesIfThereAreNoneDetected.isSelected() != settingsService.isAddModuleIfThereAreNoneDefined() ||
-                allowCaseInsensitiveSearch.isSelected() != settingsService.isAllowCaseInsensitiveSearch();
+                allowCaseInsensitiveSearch.isSelected() != settingsService.isAllowCaseInsensitiveSearch() ||
+                !supportedFileTypes.getText().equals(settingsService.getSupportedFileTypes());
 
     }
 
@@ -241,6 +243,8 @@ public class DojoSettingsConfigurable implements Configurable {
             }
         });
 
+        supportedFileTypes.addKeyListener(new TextChangedListener());
+
         pluginEnabled.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -330,6 +334,7 @@ public class DojoSettingsConfigurable implements Configurable {
         settingsService.setNeedsMoreDojoEnabled(pluginEnabled.isSelected());
         settingsService.setAddModuleIfThereAreNoneDefined(addModulesIfThereAreNoneDetected.isSelected());
         settingsService.setAllowCaseInsensitiveSearch(allowCaseInsensitiveSearch.isSelected());
+        settingsService.setSupportedFileTypes(supportedFileTypes.getText());
 
         modified = false;
     }
@@ -356,6 +361,7 @@ public class DojoSettingsConfigurable implements Configurable {
         preferRelativePathsWhenCheckBox.setSelected(settingsService.isPreferRelativeImports());
         addModulesIfThereAreNoneDetected.setSelected(settingsService.isAddModuleIfThereAreNoneDefined());
         allowCaseInsensitiveSearch.setSelected(settingsService.isAllowCaseInsensitiveSearch());
+        supportedFileTypes.setText(settingsService.getSupportedFileTypes());
 
         modified = false;
     }

@@ -27,6 +27,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private boolean needsMoreDojoEnabled;
     private boolean addModuleIfThereAreNoneDefined;
     private boolean allowCaseInsensitiveSearch;
+    private String supportedFileTypes;
 
     public DojoSettings()
     {
@@ -43,6 +44,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         needsMoreDojoEnabled = true;
         addModuleIfThereAreNoneDefined = false;
         allowCaseInsensitiveSearch = true;
+        supportedFileTypes = "jsp,js,php,html";
     }
 
     public @NotNull LinkedHashMap<String, String> getExceptionsMap()
@@ -124,6 +126,14 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public void setDojoSourcesShareProjectSourcesRoot(boolean dojoSourcesShareProjectSourcesRoot) {
         this.dojoSourcesShareProjectSourcesRoot = dojoSourcesShareProjectSourcesRoot;
+    }
+
+    public String getSupportedFileTypes() {
+        return supportedFileTypes;
+    }
+
+    public void setSupportedFileTypes(String supportedFileTypes) {
+        this.supportedFileTypes = supportedFileTypes;
     }
 
     @Nullable
