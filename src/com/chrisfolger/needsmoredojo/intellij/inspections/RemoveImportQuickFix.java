@@ -1,20 +1,21 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
-import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
+import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
+import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
+import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
-public class IgnoreImportQuickFix implements LocalQuickFix {
+public class RemoveImportQuickFix implements LocalQuickFix {
     private PsiElement define;
     private PsiElement parameter;
 
-    public IgnoreImportQuickFix(PsiElement define, PsiElement parameter) {
+    public RemoveImportQuickFix(PsiElement define, PsiElement parameter) {
         this.define = define;
         this.parameter = parameter;
     }
@@ -22,19 +23,13 @@ public class IgnoreImportQuickFix implements LocalQuickFix {
     @NotNull
     @Override
     public String getName() {
-        return "Don't flag " + define.getText() + " as unused";
+        return "Delete " + define.getText() + " and its parameter";
     }
 
     @NotNull
     @Override
     public String getFamilyName() {
         return "Needs More Dojo";
-    }
-
-    private void addIgnoreStatement()
-    {
-        PsiElement element = JSChangeUtil.createJSTreeFromText(define.getProject(), UnusedImportsRemover.IGNORE_COMMENT).getPsi();
-        define.getParent().addAfter(element, define);
     }
 
     @Override
@@ -46,12 +41,12 @@ public class IgnoreImportQuickFix implements LocalQuickFix {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        addIgnoreStatement();
+                        AMDPsiUtil.removeSingleImport(new AMDImport((JSElement)define, (JSElement) parameter));
                     }
                 });
             }
         },
-        "Ignore unused import",
-        "Ignore unused import");
+            "Remove unused import",
+            "Remove unused import");
     }
 }

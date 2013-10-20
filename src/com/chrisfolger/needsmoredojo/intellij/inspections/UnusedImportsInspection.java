@@ -1,10 +1,12 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
-import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportBlockEntry;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
-import com.intellij.codeInspection.*;
+import com.intellij.codeInspection.InspectionManager;
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -74,7 +76,7 @@ public class UnusedImportsInspection extends DojoInspection
             List<PsiElement> defines = result.getDefines();
             List<PsiElement> parameters = result.getParameters();
 
-            LocalQuickFix fix = null;
+            LocalQuickFix[] fixes = new LocalQuickFix[0];
             for(int i=0;i<parameters.size();i++)
             {
                 PsiElement define =  null;
@@ -92,21 +94,21 @@ public class UnusedImportsInspection extends DojoInspection
 
                 if(parameter != null && define != null)
                 {
-                    fix = new IgnoreImportQuickFix(define, parameter);
+                    fixes = new LocalQuickFix[] { new RemoveImportQuickFix(define, parameter), new IgnoreImportQuickFix(define, parameter), new RemoveUnusedImportsQuickFix(define, parameter)};
                 }
                 else
                 {
-                    fix = null;
+                    fixes = new LocalQuickFix[0];
                 }
 
                 if (parameter != null)
                 {
-                    descriptors.add(manager.createProblemDescriptor(parameter, String.format("Unused AMD import: %s", parameter.getText()), fix, ProblemHighlightType.LIKE_DEPRECATED, true));
+                    descriptors.add(manager.createProblemDescriptor(parameter, String.format("Unused AMD import: %s", parameter.getText()), fixes, ProblemHighlightType.LIKE_DEPRECATED, true, false));
                 }
 
                 if (define != null)
                 {
-                    descriptors.add(manager.createProblemDescriptor(define, String.format("Unused AMD import: %s", define.getText()), fix, ProblemHighlightType.LIKE_DEPRECATED, true));
+                    descriptors.add(manager.createProblemDescriptor(define, String.format("Unused AMD import: %s", define.getText()), fixes, ProblemHighlightType.LIKE_DEPRECATED, true, false));
                 }
             }
         }
