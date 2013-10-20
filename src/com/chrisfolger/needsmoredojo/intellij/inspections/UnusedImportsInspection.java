@@ -64,12 +64,10 @@ public class UnusedImportsInspection extends DojoInspection
             return new ProblemDescriptor[0];
         }
 
-        DefineResolver resolver = new DefineResolver();
         final List<ProblemDescriptor> descriptors = new ArrayList<ProblemDescriptor>();
 
         UnusedImportsRemover detector = new UnusedImportsRemover();
         List<UnusedImportBlockEntry> results = detector.filterUsedModules(file, ServiceManager.getService(file.getProject(), DojoSettings.class).getRuiImportExceptions());
-
 
         for(UnusedImportBlockEntry result : results)
         {
@@ -90,6 +88,15 @@ public class UnusedImportsInspection extends DojoInspection
                 if(i < parameters.size())
                 {
                     parameter = parameters.get(i);
+                }
+
+                if(parameter != null && define != null)
+                {
+                    fix = new IgnoreImportQuickFix(define, parameter);
+                }
+                else
+                {
+                    fix = null;
                 }
 
                 if (parameter != null)
