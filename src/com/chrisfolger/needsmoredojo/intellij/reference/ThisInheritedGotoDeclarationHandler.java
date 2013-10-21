@@ -78,6 +78,11 @@ public class ThisInheritedGotoDeclarationHandler extends DojoDeclarationHandler 
         Set<PsiElement> resolvedMethods = new LinkedHashSet<PsiElement>();
         DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
 
+        if(declareObject == null || declareObject.getExpressionsToMixin() == null)
+        {
+            return resolvedMethods;
+        }
+
         DojoModuleFileResolver resolver = new DojoModuleFileResolver();
         // search each inherited module starting from the last one for an equivalent property that matches.
         for (int x = declareObject.getExpressionsToMixin().length - 1; x >= 0; x--)

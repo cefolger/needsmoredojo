@@ -345,15 +345,23 @@ public class AMDPsiUtil
             return null;
         }
 
-        for (int x = 0; x < defineStatement.getFunction().getParameters().length; x++)
+        try
         {
-            JSParameter parameter = defineStatement.getFunction().getParameters()[x];
-            JSExpression define = defineStatement.getArguments().getExpressions()[x];
-
-            if(parameter.getText().equals(psiElement.getText()))
+            for (int x = 0; x < defineStatement.getFunction().getParameters().length; x++)
             {
-                return define;
+                JSParameter parameter = defineStatement.getFunction().getParameters()[x];
+                JSExpression define = defineStatement.getArguments().getExpressions()[x];
+
+                if(parameter.getText().equals(psiElement.getText()))
+                {
+                    return define;
+                }
             }
+        }
+        catch(ArrayIndexOutOfBoundsException exc)
+        {
+            // this probably means there was a mismatch between the length of the define literals and parameters
+            // it's alright to ignore
         }
 
         return null;

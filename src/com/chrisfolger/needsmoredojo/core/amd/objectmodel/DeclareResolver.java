@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.PsiFile;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 public class DeclareResolver
 {
@@ -55,7 +56,7 @@ public class DeclareResolver
         };
     }
 
-    public DeclareStatementItems getDeclareObject(PsiFile file)
+    public @Nullable DeclareStatementItems getDeclareObject(PsiFile file)
     {
         final DeclareStatementItems[] items = new DeclareStatementItems[] { null };
 

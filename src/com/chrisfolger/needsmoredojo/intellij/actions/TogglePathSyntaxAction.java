@@ -31,8 +31,15 @@ public class TogglePathSyntaxAction extends JavaScriptAction
         }
 
         ImportReorderer reorderer = new ImportReorderer();
-        final PsiElement define = reorderer.getSourceAndDestination(element, AMDPsiUtil.Direction.NONE)[0];
+        PsiElement[] results = reorderer.getSourceAndDestination(element, AMDPsiUtil.Direction.NONE);
 
+        if(results.length == 0)
+        {
+            new Notification("needsmoredojo", "Toggle AMD Import Path Syntax", "No valid import found", NotificationType.WARNING).notify(file.getProject());
+            return;
+        }
+
+        final PsiElement define = results[0];
         final PsiElement replacement = reorderer.getOppositePathSyntaxFromImport(define, file);
         if(replacement != null)
         {
