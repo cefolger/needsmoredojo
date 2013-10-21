@@ -1,9 +1,14 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
+import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetector;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
-import com.intellij.codeInspection.*;
+import com.intellij.codeInspection.InspectionManager;
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -13,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 public class MismatchedImportsInspection extends DojoInspection
@@ -56,23 +62,19 @@ public class MismatchedImportsInspection extends DojoInspection
         return new String[] { "JavaScript", "Needs More Dojo "};
     }
 
-    @Override
-    public ProblemDescriptor[] checkFile(@NotNull PsiFile file, @NotNull final InspectionManager manager, boolean isOnTheFly)
+    private void addProblemsForBlock(JSCallExpression expression, List<ProblemDescriptor> descriptors, PsiFile file, InspectionManager manager)
     {
-        if(!isEnabled(file.getProject()))
-        {
-            return new ProblemDescriptor[0];
+        List<PsiElement> blockDefines = new ArrayList<PsiElement>();
+        List<PsiElement> blockParameters = new ArrayList<PsiElement>();
+
+        try {
+            new DefineResolver().addDefinesAndParametersOfImportBlock(expression, blockDefines, blockParameters);
+        } catch (InvalidDefineException e) {
+
         }
 
-        DefineResolver resolver = new DefineResolver();
-        List<PsiElement> parameters = new ArrayList<PsiElement>();
-        List<PsiElement> defines = new ArrayList<PsiElement>();
-        final List<ProblemDescriptor> descriptors = new ArrayList<ProblemDescriptor>();
-
-        resolver.gatherDefineAndParameters(file, defines, parameters);
         LocalQuickFix noFix = null;
-
-        List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(defines.toArray(new PsiElement[0]), parameters.toArray(new PsiElement[0]), ServiceManager.getService(file.getProject(), DojoSettings.class).getExceptionsMap());
+        List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(blockDefines.toArray(new PsiElement[0]), blockParameters.toArray(new PsiElement[0]), ServiceManager.getService(file.getProject(), DojoSettings.class).getExceptionsMap());
         for(int i=0;i<mismatches.size();i++)
         {
             MismatchedImportsDetector.Mismatch mismatch = mismatches.get(i);
@@ -137,6 +139,24 @@ public class MismatchedImportsInspection extends DojoInspection
                 descriptors.add(addQuickFixToOtherMismatch(mismatch, mismatches.get(i-1), importFix, manager));
                 descriptors.add(addQuickFixToOtherMismatch(mismatches.get(i-1), mismatch, importFix, manager));
             }
+        }
+    }
+
+    @Override
+    public ProblemDescriptor[] checkFile(@NotNull PsiFile file, @NotNull final InspectionManager manager, boolean isOnTheFly)
+    {
+        if(!isEnabled(file.getProject()))
+        {
+            return new ProblemDescriptor[0];
+        }
+
+        DefineResolver resolver = new DefineResolver();
+        final List<ProblemDescriptor> descriptors = new ArrayList<ProblemDescriptor>();
+
+        Set<JSCallExpression> expressions = resolver.getAllImportBlocks(file);
+        for(JSCallExpression expression : expressions)
+        {
+            addProblemsForBlock(expression, descriptors, file, manager);
         }
 
         return descriptors.toArray(new ProblemDescriptor[0]);
