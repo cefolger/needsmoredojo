@@ -3,14 +3,17 @@ package com.chrisfolger.needsmoredojo.core.amd.psi;
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.importing.UnusedImportsRemover;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareResolver;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.DeclareStatementItems;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +21,8 @@ import java.util.*;
 
 public class AMDPsiUtil
 {
+    private static final int DEPTH_LIMIT = 10;
+
     public enum Direction
     {
         UP,
@@ -365,6 +370,50 @@ public class AMDPsiUtil
         }
 
         return null;
+    }
+
+    public static @NotNull Set<PsiElement> resolveInheritedMethod(PsiFile file, Project project, String methodName, int currentDepth)
+    {
+        Set<PsiElement> resolvedMethods = new LinkedHashSet<PsiElement>();
+        DeclareStatementItems declareObject = new DeclareResolver().getDeclareObject(file);
+
+        if(declareObject == null || declareObject.getExpressionsToMixin() == null)
+        {
+            return resolvedMethods;
+        }
+
+        DojoModuleFileResolver resolver = new DojoModuleFileResolver();
+        // search each inherited module starting from the last one for an equivalent property that matches.
+        for (int x = declareObject.getExpressionsToMixin().length - 1; x >= 0; x--)
+        {
+            JSExpression expression = declareObject.getExpressionsToMixin()[x];
+
+            PsiElement resolvedDefine = AMDPsiUtil.resolveReferencedDefine(expression);
+            if(resolvedDefine == null) continue;
+
+            PsiFile resolvedFile = resolver.resolveReferencedFile(project, resolvedDefine);
+            if(resolvedFile == null) continue;
+
+            PsiElement method = AMDPsiUtil.fileHasMethod(resolvedFile, methodName, false);
+            if(method != null)
+            {
+                resolvedMethods.add(method);
+            }
+            else
+            {
+                Set<PsiElement> inheritedMethod = resolveInheritedMethod(resolvedFile, project, methodName, currentDepth+1);
+                if(inheritedMethod != null && currentDepth < DEPTH_LIMIT)
+                {
+                    for(PsiElement element : inheritedMethod)
+                    {
+                        resolvedMethods.add(element);
+                    }
+                }
+            }
+        }
+
+        Logger.getLogger(AMDPsiUtil.class).trace("depth for " + methodName + " in " + file.getVirtualFile().getCanonicalPath() + ": " + currentDepth);
+        return resolvedMethods;
     }
 
     /**

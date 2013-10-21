@@ -41,7 +41,7 @@
             <b>0.6</b>
             <ul>
                 <li>Goto declaration is supported for methods that reference AMD modules directly</li>
-                <li>Goto declaration is supported for this.inherited() references (see doc for details)</li>
+                <li>Goto declaration is supported for this.inherited() references and method references off of this(see doc for details)</li>
                 <li>Goto declaration is now supported for AMD module references</li>
                 <li>Require blocks and mixed HTML/JS files now supported for all AMD management functionality</li>
                 <li>Add AMD import is now case-insensitive. Can be case-sensitive if you have a very large project </li>
