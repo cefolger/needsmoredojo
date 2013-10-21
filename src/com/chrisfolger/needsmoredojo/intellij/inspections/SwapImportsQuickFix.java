@@ -44,7 +44,6 @@ public class SwapImportsQuickFix implements LocalQuickFix {
                         ImportReorderer reorderer = new ImportReorderer();
 
                         reorderer.reorder(first.getDefine(), second.getDefine());
-                        reorderer.reorder(first.getParameter(), second.getParameter());
                     }
                 });
             }
