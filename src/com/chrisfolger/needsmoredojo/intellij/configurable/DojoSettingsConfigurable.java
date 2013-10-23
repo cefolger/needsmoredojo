@@ -51,6 +51,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JCheckBox addModulesIfThereAreNoneDetected;
     private JCheckBox allowCaseInsensitiveSearch;
     private JTextField supportedFileTypes;
+    private JCheckBox displayWarningIfSourcesCheckBox;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -143,7 +144,9 @@ public class DojoSettingsConfigurable implements Configurable {
                 pluginEnabled.isSelected() != settingsService.isNeedsMoreDojoEnabled() ||
                 addModulesIfThereAreNoneDetected.isSelected() != settingsService.isAddModuleIfThereAreNoneDefined() ||
                 allowCaseInsensitiveSearch.isSelected() != settingsService.isAllowCaseInsensitiveSearch() ||
-                !supportedFileTypes.getText().equals(settingsService.getSupportedFileTypes());
+                !supportedFileTypes.getText().equals(settingsService.getSupportedFileTypes()) ||
+                // this flag is true if it's unchecked
+                displayWarningIfSourcesCheckBox.isSelected() == settingsService.isSetupWarningDisabled();
 
     }
 
@@ -231,6 +234,11 @@ public class DojoSettingsConfigurable implements Configurable {
         });
         allowCaseInsensitiveSearch.addChangeListener(new ChangeListener() {
             @Override
+            public void stateChanged(ChangeEvent e) {
+                updateModifiedState();
+            }
+        });
+        displayWarningIfSourcesCheckBox.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 updateModifiedState();
             }
@@ -335,6 +343,7 @@ public class DojoSettingsConfigurable implements Configurable {
         settingsService.setAddModuleIfThereAreNoneDefined(addModulesIfThereAreNoneDetected.isSelected());
         settingsService.setAllowCaseInsensitiveSearch(allowCaseInsensitiveSearch.isSelected());
         settingsService.setSupportedFileTypes(supportedFileTypes.getText());
+        settingsService.setSetupWarningDisabled(!displayWarningIfSourcesCheckBox.isSelected());
 
         modified = false;
     }
@@ -362,6 +371,7 @@ public class DojoSettingsConfigurable implements Configurable {
         addModulesIfThereAreNoneDetected.setSelected(settingsService.isAddModuleIfThereAreNoneDefined());
         allowCaseInsensitiveSearch.setSelected(settingsService.isAllowCaseInsensitiveSearch());
         supportedFileTypes.setText(settingsService.getSupportedFileTypes());
+        displayWarningIfSourcesCheckBox.setSelected(!settingsService.isSetupWarningDisabled());
 
         modified = false;
     }

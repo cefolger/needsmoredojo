@@ -35,6 +35,16 @@ public class DojoSettingsDetectionComponent implements ProjectComponent {
                         "Needs More Dojo has been disabled. To re-enable it, open the Needs More Dojo settings",
                         NotificationType.WARNING, new SetupNotification()).notify(project);
             }
+            else if(hyperlinkEvent.getDescription().equals("turnoff"))
+            {
+                ServiceManager.getService(project, DojoSettings.class).setSetupWarningDisabled(true);
+                notification.hideBalloon();
+
+                new Notification("needsmoredojo",
+                        "Needs More Dojo: Setup Sources",
+                        "You will no longer be asked to set up your sources for this project. You can re-enable the warning in the Needs More Dojo settings.",
+                        NotificationType.WARNING, new SetupNotification()).notify(project);
+            }
             else
             {
                 ShowSettingsUtil.getInstance().showSettingsDialog(project, "Needs More Dojo");
@@ -62,6 +72,11 @@ public class DojoSettingsDetectionComponent implements ProjectComponent {
         DojoSettings settingsService = ServiceManager.getService(project, DojoSettings.class);
 
         if(!settingsService.isNeedsMoreDojoEnabled())
+        {
+            return false;
+        }
+
+        if(settingsService.isSetupWarningDisabled())
         {
             return false;
         }
@@ -116,7 +131,7 @@ public class DojoSettingsDetectionComponent implements ProjectComponent {
         // called when project is opened
         new Notification("needsmoredojo",
                 "Needs More Dojo: Setup Sources",
-                "It looks like you haven't set up " + problem + " sources, which might make some features of Needs More Dojo work incorrectly. <a href=\"setup\">Set them up</a> now or <a href=\"disable\">disable for this project</a>",
+                "It looks like you haven't set up " + problem + " sources, which might make some features of Needs More Dojo work incorrectly. <a href=\"setup\">Set them up</a> now, <a href=\"disable\">disable for this project</a>, or just <a href=\"turnoff\">stop warning for this project</a>",
                 NotificationType.WARNING, new SetupNotification()).notify(project);
     }
 

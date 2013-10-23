@@ -27,10 +27,12 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private boolean needsMoreDojoEnabled;
     private boolean addModuleIfThereAreNoneDefined;
     private boolean allowCaseInsensitiveSearch;
+    private boolean setupWarningDisabled;
     private String supportedFileTypes;
 
     public DojoSettings()
     {
+        setupWarningDisabled = false;
         ruiImportExceptions = new LinkedHashMap<String, String>();
         ruiImportExceptions.put("dojox/form/Uploader/IFrame", "IFrame");
         ruiImportExceptions.put("dojox/form/Uploader/Flash", "Flash");
@@ -153,5 +155,13 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public void setNeedsMoreDojoEnabled(boolean needsMoreDojoEnabled) {
         this.needsMoreDojoEnabled = needsMoreDojoEnabled;
+    }
+
+    public boolean isSetupWarningDisabled() {
+        return setupWarningDisabled;
+    }
+
+    public void setSetupWarningDisabled(boolean setupWarningDisabled) {
+        this.setupWarningDisabled = setupWarningDisabled;
     }
 }
