@@ -4,10 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +73,12 @@ public class NlsLookupReference extends PsiReferenceBase<JSLiteralExpression> {
         String defineText = correctDefine.getText();
         defineText = defineText.substring(defineText.lastIndexOf("!") + 1).replaceAll("'", "");
 
-        VirtualFile i18nFile = SourcesLocator.getAMDImportFile(correctDefine.getProject(), defineText + ".js", correctDefine.getContainingFile().getContainingDirectory());
+        PsiDirectory containingDirectory = correctDefine.getContainingFile().getParent();
+        if(containingDirectory == null && correctDefine.getContainingFile().getOriginalFile() != null)
+        {
+            containingDirectory = correctDefine.getContainingFile().getOriginalFile().getContainingDirectory();
+        }
+        VirtualFile i18nFile = SourcesLocator.getAMDImportFile(correctDefine.getProject(), defineText + ".js", containingDirectory);
 
         if(i18nFile == null)
         {
