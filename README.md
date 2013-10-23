@@ -12,6 +12,7 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 
 #### Usage
 1. [Issues and Feature Requests] (#issues-and-feature-requests)
+2. [Quick Start](#quick-start)
 2. [Configuration](#initial-configuration)
 3. [Organize AMD Imports](#organize-amd-imports)
 4. [Add AMD Import](#add-amd-import)
@@ -31,6 +32,19 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 
 Most of the plugin functionality is based on my own needs. If you experience bugs or would like to see something added,
 don't hesitate to open up an issue right here on github. You can also send me an email with any questions or comments.
+
+##### Quick Start
+
+Listed below are the keyboard shortcuts for the most common operations Needs More Dojo is used for.
+
+| Action        | Default Shortcut |
+| ------------- |:-------------:|
+| Add import      | Ctrl+Shift+O, 2 |
+| Remove import      | Ctrl+Shift+O, 4      |
+| Remove all unused imports | Ctrl+Shift+O, 3      |
+| Organize imports | Ctrl+Shift+O, 1 |
+| Switch between relative and absolute path syntax | Ctrl+Shift+O, S |
+| Move import up\down | Ctrl+Alt+Pg Up/Pg Down |
 
 ##### Initial Configuration
 
