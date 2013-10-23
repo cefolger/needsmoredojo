@@ -8,7 +8,7 @@
         Tools for working with the dojo toolkit
             <br>
             <br>
-            <b>Refactoring</b>
+            <b>Refactoring (must be enabled in settings)</b>
             <ul>
                 <li>Rename dojo AMD modules </li>
                 <li>Move dojo AMD modules </li>
@@ -40,6 +40,7 @@
   <change-notes><![CDATA[
             <b>0.6</b>
             <ul>
+                <li>Move and Rename refactoring is disabled by default</li>
                 <li>Goto declaration is supported for methods that reference AMD modules directly</li>
                 <li>Goto declaration is supported for this.inherited() references and method references off of this(see doc for details)</li>
                 <li>Goto declaration is now supported for AMD module references</li>

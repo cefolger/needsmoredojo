@@ -52,6 +52,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JCheckBox allowCaseInsensitiveSearch;
     private JTextField supportedFileTypes;
     private JCheckBox displayWarningIfSourcesCheckBox;
+    private JCheckBox enableRefactoringSupportForCheckBox;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -145,6 +146,7 @@ public class DojoSettingsConfigurable implements Configurable {
                 addModulesIfThereAreNoneDetected.isSelected() != settingsService.isAddModuleIfThereAreNoneDefined() ||
                 allowCaseInsensitiveSearch.isSelected() != settingsService.isAllowCaseInsensitiveSearch() ||
                 !supportedFileTypes.getText().equals(settingsService.getSupportedFileTypes()) ||
+                enableRefactoringSupportForCheckBox.isSelected() != settingsService.isRefactoringEnabled() ||
                 // this flag is true if it's unchecked
                 displayWarningIfSourcesCheckBox.isSelected() == settingsService.isSetupWarningDisabled();
 
@@ -233,6 +235,12 @@ public class DojoSettingsConfigurable implements Configurable {
             }
         });
         allowCaseInsensitiveSearch.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updateModifiedState();
+            }
+        });
+        enableRefactoringSupportForCheckBox.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 updateModifiedState();
@@ -344,6 +352,7 @@ public class DojoSettingsConfigurable implements Configurable {
         settingsService.setAllowCaseInsensitiveSearch(allowCaseInsensitiveSearch.isSelected());
         settingsService.setSupportedFileTypes(supportedFileTypes.getText());
         settingsService.setSetupWarningDisabled(!displayWarningIfSourcesCheckBox.isSelected());
+        settingsService.setRefactoringEnabled(enableRefactoringSupportForCheckBox.isSelected());
 
         modified = false;
     }
@@ -372,6 +381,7 @@ public class DojoSettingsConfigurable implements Configurable {
         allowCaseInsensitiveSearch.setSelected(settingsService.isAllowCaseInsensitiveSearch());
         supportedFileTypes.setText(settingsService.getSupportedFileTypes());
         displayWarningIfSourcesCheckBox.setSelected(!settingsService.isSetupWarningDisabled());
+        enableRefactoringSupportForCheckBox.setSelected(settingsService.isRefactoringEnabled());
 
         modified = false;
     }

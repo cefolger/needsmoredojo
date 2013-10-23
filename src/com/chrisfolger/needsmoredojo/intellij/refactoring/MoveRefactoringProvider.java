@@ -39,6 +39,11 @@ public class MoveRefactoringProvider implements RefactoringElementListenerProvid
             return null; // don't want to refactor if we've disabled Needs More Dojo.
         }
 
+        if(!ServiceManager.getService(file.getProject(), DojoSettings.class).isRefactoringEnabled())
+        {
+            return null;
+        }
+
         VirtualFile[] sources = SourcesLocator.getProjectSourceDirectories(file.getProject(), true);
         if(sources.length == 0 || sources[0] == null)
         {

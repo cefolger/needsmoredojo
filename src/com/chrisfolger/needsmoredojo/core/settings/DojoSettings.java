@@ -28,7 +28,10 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private boolean addModuleIfThereAreNoneDefined;
     private boolean allowCaseInsensitiveSearch;
     private boolean setupWarningDisabled;
+    private boolean refactoringEnabled;
     private String supportedFileTypes;
+    // this will be used for converting to module specific sources later
+    private String version;
 
     public DojoSettings()
     {
@@ -38,6 +41,8 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         ruiImportExceptions.put("dojox/form/Uploader/Flash", "Flash");
         ruiImportExceptions.put("dojox/form/Uploader", "Uploader");
 
+        version = "0.6";
+        refactoringEnabled = false;
         amdImportNamingExceptions = new LinkedHashMap<String, String>();
         amdImportNamingExceptions.put("dojo/sniff", "has");
         amdImportNamingExceptions.put("doh/main", "doh");
@@ -163,5 +168,21 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public void setSetupWarningDisabled(boolean setupWarningDisabled) {
         this.setupWarningDisabled = setupWarningDisabled;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public boolean isRefactoringEnabled() {
+        return refactoringEnabled;
+    }
+
+    public void setRefactoringEnabled(boolean refactoringEnabled) {
+        this.refactoringEnabled = refactoringEnabled;
     }
 }

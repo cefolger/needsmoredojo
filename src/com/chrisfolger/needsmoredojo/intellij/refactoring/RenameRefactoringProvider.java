@@ -25,6 +25,11 @@ public class RenameRefactoringProvider implements RefactoringElementListenerProv
             return null; // don't want to refactor if we've disabled Needs More Dojo.
         }
 
+        if(!ServiceManager.getService(file.getProject(), DojoSettings.class).isRefactoringEnabled())
+        {
+            return null;
+        }
+
         if(!extension.equals("js"))
         {
             return null;
