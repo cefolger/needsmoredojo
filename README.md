@@ -13,20 +13,22 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 #### Usage
 1. [Issues and Feature Requests] (#issues-and-feature-requests)
 2. [Quick Start](#quick-start)
-2. [Configuration](#initial-configuration)
-3. [Organize AMD Imports](#organize-amd-imports)
-4. [Add AMD Import](#add-amd-import)
-5. [Move AMD Import](#move-amd-import)
-6. [Remove AMD Import](#remove-amd-import)
-7. [Remove Unused Imports](#remove-unused-imports)
-8. [Rename Refactoring](#rename-refactoring)
-9. [Move File Refactoring](#move-file-refactoring)
-10. [Navigate to Attach Point](#navigate-to-attach-point)
-11. [Convert between class style and util style module](#convert-between-class-style-and-util-style-module)
-12. [Mismatched imports inspection](#mismatched-imports-inspection)
-13. [Navigate to Declaration for i18n resource keys](#navigate-to-declaration-for-i18n-resource-keys)
-14. [Toggle between Absolute and Relative AMD Imports](#toggle-between-absolute-and-relative-amd-imports)
-15. [Find Cyclic Dependencies](#find-cyclic-dependencies)
+3. [Configuration](#initial-configuration)
+4. [Supported File Types](#supported-file-types)
+5. [Organize AMD Imports](#organize-amd-imports)
+6. [Add AMD Import](#add-amd-import)
+7. [Move AMD Import](#move-amd-import)
+8. [Remove AMD Import](#remove-amd-import)
+9. [Remove Unused Imports](#remove-unused-imports)
+10. [Rename Refactoring](#rename-refactoring)
+11. [Move File Refactoring](#move-file-refactoring)
+12. [Navigate to Attach Point](#navigate-to-attach-point)
+13. [Convert between class style and util style module](#convert-between-class-style-and-util-style-module)
+14. [Mismatched imports inspection](#mismatched-imports-inspection)
+15. [Navigate to Declaration for i18n resource keys](#navigate-to-declaration-for-i18n-resource-keys)
+16. [Toggle between Absolute and Relative AMD Imports](#toggle-between-absolute-and-relative-amd-imports)
+17. [Find Cyclic Dependencies](#find-cyclic-dependencies)
+18. [Navigation to modules and methods](#navigation-to-modules-and-methods)
 
 ##### Issues and Feature Requests
 
@@ -44,15 +46,19 @@ Listed below are the keyboard shortcuts for the most common operations Needs Mor
 | Remove all unused imports | Ctrl+Shift+O, 3      |
 | Organize imports | Ctrl+Shift+O, 1 |
 | Switch between relative and absolute path syntax | Ctrl+Shift+O, S |
-| Move import up\down | Ctrl+Alt+Pg Up/Pg Down |
+| Move import up/down | Ctrl+Alt+Pg Up/Pg Down |
 
 ##### Initial Configuration
 
-In version 0.4 and later, you can set up your project source location and dojo source location to enable certain features. By default, Needs More Dojo assumes that
-your project sources are on the same level as the dojo sources.
+Many of the Needs More Dojo features use the location of your project sources to determine valid paths to your modules.
+By default, Needs More Dojo assumes that your project sources are on the same level as the dojo sources.
+
+> **Note: You might notice the term "project" sources instead of "module" sources. This is because Needs More Dojo originally
+started based off of my own usage, which was one module per project. In version 0.7 I intend to correct this, however
+for the moment it is a design limitation.**
 
 - If you haven't set up your sources, you will get the following warning each time you load the project:
-![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/projectwarning.png)
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/projectwarning2.png)
 - Open the settings dialog via the File menu or keyboard shortcut
 - Navigate to "Needs More Dojo" under project settings which will look like this:
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/needsmoredojosettings.png)
@@ -70,7 +76,7 @@ in the Needs More Dojo settings.**
 
 Then set your dojo sources folder to "deps"
 
-> **Note: You can now use the "Not included or uses the same root as project sources" option. When checked, the plugin will
+> **Note: You can use the "Not included or uses the same root as project sources" option. When checked, the plugin will
 assume that the dojo sources are either a) not present or b) in the same location as your project sources. If you don't
 reference the dojo sources, the add import feature will not work for dojo modules.**
 
@@ -98,6 +104,17 @@ You can use the auto-detection features to get suggestions on your source locati
 for "dojo.js." For your project, it will scan for JavaScript files that have dojo modules and give you a list of possible choices.
 
 Hit "apply" to make sure your settings are saved.
+
+##### Supported File Types
+
+Needs More Dojo will work in JavaScript code snippets that are embedded in other files. By default, HTML, JSP, PHP, and js files
+are marked as supported. You can add additional file types for your project in the Needs More Dojo Settings. To do this:
+
+- Access the Needs More Dojo settings
+- In the text field for "comma delimited list of supported file types," add any additional file types you want to enable
+Needs More Dojo for
+- Click "Apply" and "Ok" to persist the settings
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/filetypes.png)
 
 ##### Organize AMD Imports
 
@@ -128,6 +145,10 @@ You can also import an AMD plugin by using <module>!<resource id>. For example, 
 i18!path/to/resource/file:
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport3.png)
+
+By default, the add import dialog is not case sensitive. If you find this is causing a performance problem when trying to
+add an import, you can make it case-insensitive (which is much faster) by un-checking "Use case-insensitive searching" in
+the "Add new import options" section under the Needs More Dojo settings.
 
 Finally, you can access this option when your cursor is near a module name, either in a new expression or reference. Press
 Ctrl+Shift+O, 2 in these cases and the dialog will be pre-populated. In the following examples, the _ represents the cursor,
@@ -162,7 +183,8 @@ Then press Ctrl+Shift+O, 4. Both locations will be removed, if possible.
 ##### Remove Unused Imports
 
 This feature can be activated with the shortcut Ctrl+Shift+O, 3. It also runs in the background as an inspection. It will
-scan the code for references to your AMD imports and cross out any that are unused.
+scan the code for references to your AMD imports and cross out any that are unused. You can also use a quick fix when the caret
+is over an unused module. A quick fix will be provided to remove all unused modules or just the module you have selected.
 
 Some AMD modules are not directly referenced. To prevent these from being flagged as unused, use the settings dialog
 to add a new exception. After this, the import will never be flagged as unused.
@@ -182,14 +204,22 @@ define([
 });
 ```
 
-In this example, dijit/layout/ContentPane will not be flagged as unused even if it normally would be.
+In this example, dijit/layout/ContentPane will not be flagged as unused even if it normally would be. You can also have the
+ignore comment inserted automatically by using a quick fix when the caret is over an unused module:
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/ignorequickfix.png)
+
+Simply use the "Don't flag <module> as unused" option.
 
 Finally, in IntelliJ IDEA you can also run this as an inspection in batch mode on your entire project or a subset. To do this, use Analyze ->
 Run Inspection By Name -> Check for unused imports.
 
 ##### Rename Refactoring
 
-In versions 0.5 and later, renaming a module is now supported. When you rename a module, Needs More Dojo will scan
+> **Note: Needs More Dojo disables its refactoring support by default due to performance concerns on large projects. You
+can enable refactoring by checking "Enable refactoring support for move and rename file actions" in the Needs More Dojo settings.**
+
+When you rename a module, Needs More Dojo will scan
 for AMD references to it in other project modules and update them. It supports both relative path and absolute package
 syntax.
 
@@ -203,11 +233,12 @@ To perform a rename:
 
 > **Note: Please make sure you have setup your project sources location so that the AMD update works correctly**
 
-> **Note: At this time, refactoring of the dojo library sources is not supported.**
-
 ##### Move File Refactoring
 
-In versions 0.5 and later, you can now move your dojo AMD modules.
+> **Note: Needs More Dojo disables its refactoring support by default due to performance concerns on large projects. You
+can enable refactoring by checking "Enable refactoring support for move and rename file actions" in the Needs More Dojo settings.**
+
+Needs More Dojo will update module references when you move an AMD module.
 
 To perform a move:
 - Drag the file in the project tree to its new location
@@ -267,9 +298,10 @@ corresponding parameter name.
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/mismatchedimports1.png)
 
 It will also provide a quick fix. The fix will rename the parameter (and update all references to it) to match the
-define literal. If the fix is appropriate, just activate it and the mismatch will be corrected and unflagged.
+define literal. If the fix is appropriate, just activate it and the mismatch will be corrected and unflagged. If you have
+two mismatched imports in a row, you will also get a quick fix to swap the two.
 
-![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/quickfix.png)
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/quickfix2.png)
 
 You can disable the mismatched imports inspection by going in the inspections menu under **JavaScript -> Needs More Dojo** and unchecking it.
 
@@ -344,6 +376,67 @@ put the results in a tool window at the bottom:
 
 If you have many modules that have a cycle in the dependency graph, this output might be helpful when trying to isolate
 the culprit module.
+
+##### Navigation to modules and methods
+
+Needs More Dojo complements the IDE's Navigate ... Declaration feature. You might notice that out of the box, there are
+several places where this does not work for AMD modules and methods in them. This is not the IDE's fault, it simply requires
+knowledge of Dojo's AMD system and object model in order to resolve the references correctly.
+
+Following are some examples of where the out of the box functionality is incorrect and that Needs More Dojo fixes.
+
+###### AMD module references
+```javascript
+define([
+    'dijit/layout/ContentPane'
+], function(ContentPane) {
+    var x = new ContentPane({}); // Ctrl+Click on ContentPane
+});
+```
+
+The IDE will jump to the "ContentPane" parameter instead of going to the ContentPane.js module.
+###### Method references off of AMD modules
+```javascript
+    define([
+        'dojo/dom-style'
+    ], function(domStyle) {
+        test: function() {
+            domStyle.set(node, 'display', 'none'); // Ctrl+Click on set
+        }
+    });
+```
+
+The IDE will present a list of set methods in various other modules instead of jumping to set in dom-style.js
+###### this.inherited references
+```javascript
+    define([
+        'dojo/_base/declare',
+        'dijit/_WidgetBase'
+    ], function(declare, WidgetBase) {
+        return declare([WidgetBase], {
+            startup: function() {
+                this.inherited(arguments); // Ctrl+Click on inherited
+            }
+        });
+    });
+```
+
+The IDE will present a list of startup methods in various other modules instead of jumping to the one in _WidgetBase
+###### references to "super" methods:
+```javascript
+    define([
+        'dojo/_base/declare',
+        'dijit/_WidgetBase'
+    ], function(declare, WidgetBase) {
+        return declare([WidgetBase], {
+            testMethod: function() {
+                this.startup(); // Ctrl+Click on startup
+            }
+        });
+    });
+```
+
+The IDE will present a list of unrelated startup methods in other modules instead of jumping to the one in _WidgetBase
 
 #### License
 
