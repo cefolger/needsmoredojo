@@ -449,4 +449,12 @@ You will need:
 - have access to the JavaScript plugin in plugins/JavaScript
 - [Mockito](https://code.google.com/p/mockito/) for running unit tests
 
-Simply clone the repository from GitHub or fork it for your modifications.
+Clone the repository or fork on GitHub for your modifications. Development occurs on two main branches:
+- master: Latest "stable" code. Features are merged into it when they are complete.
+- dev: Latest and greatest, may not be stable.
+
+The code is organized into two packages under com.chrisfolger.needsmoredojo: "intellij," which contains classes that extend
+IntelliJ actions, inspections, etc. and "core," which contains most of the logic. For tracing a feature's code path, starting
+with classes under the intellij package is a good idea.
+
+If you are interested in modifying or just navigating the code base, don't hesitate to contact me.
