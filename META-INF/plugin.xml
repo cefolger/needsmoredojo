@@ -8,13 +8,6 @@
         Tools for working with the dojo toolkit
             <br>
             <br>
-            <b>Refactoring (must be enabled in settings)</b>
-            <ul>
-                <li>Rename dojo AMD modules </li>
-                <li>Move dojo AMD modules </li>
-                <li>Operations update AMD references and paths according to your project's package structure</li>
-            </ul>
-
             <b>Dojo AMD Module Import Management</b>
             <ul>
                 <li>Cyclic dependency analysis action and on the fly inspection for cyclic dependencies (inspection must be enabled) </li>
@@ -25,6 +18,14 @@
                 <li>Detect inconsistently named imports </li>
                 <li>Convert between absolute and relative path syntax </li>
                 <li>Aware of plugins, modules with resource ids, etc. </li>
+                <li>Supports nested require blocks and snippets of JavaScript in non-js files</li>
+            </ul>
+
+            <b>Refactoring (must be enabled in settings)</b>
+            <ul>
+                <li>Rename dojo AMD modules </li>
+                <li>Move dojo AMD modules </li>
+                <li>Operations update AMD references and paths according to your project's package structure</li>
             </ul>
 
             <b>Other Dojo Specific Features </b>
@@ -32,6 +33,7 @@
                 <li>Ctrl+Click supported for dojo/i18n resource strings</li>
                 <li>Ctrl+Click supported for attach points when modules use _TemplatedMixin. Ctrl+Shift+O, A also does this</li>
                 <li>Convert dojo 'util' style to 'class' style or vice-versa</li>
+                <li>Navigate ... declaration supported for modules, methods, and this.inherited references </li>
             </ul>
 
         Still very much under development. Please contact me with any feedback!
@@ -87,19 +89,6 @@
                 <li>When adding an import, you can use domAttr, domStyle etc. instead of the hyphenated versions </li>
                 <li>Fix problem with naming exceptions not being honored (Issue #99) </li>
                 <li>Minor bug fixes (Issues #92, #93, #95)</li>
-            </ul>
-
-            <b>0.4.1</b>
-            <ul>
-                <li>Added unused import exceptions </li>
-                <li>Fixed index out of bounds when removing 0 imports (Issue #77)</li>
-                <li>Fixed trailing comma when organizing imports with duplicates (Issue #78)</li>
-                <li>No longer need one module already imported when trying to add one (Issue #70)</li>
-                <li>Added ability to move imports up and down with Ctrl+Alt+Page Up/Down</li>
-                <li>Mismatched imports detector takes custom AMD plugins into account (Issue #87)</li>
-                <li>Fixed plugins not being inserted correctly when using add import (Issue #20)</li>
-                <li>Fixed a case that would prevent a module from being flagged as unused (Issue #88)</li>
-                <li>Fix bug when importing modules from another package (Issue #90)</li>
             </ul>
 
             <br><br>

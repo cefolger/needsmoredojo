@@ -1,5 +1,29 @@
 <html>
     <body>
+        <b>0.6</b>
+        <ul>
+            <li>Move and Rename refactoring is disabled by default</li>
+            <li>Goto declaration is supported for methods that reference AMD modules directly</li>
+            <li>Goto declaration is supported for this.inherited() references and method references off of this(see doc for details)</li>
+            <li>Goto declaration is now supported for AMD module references</li>
+            <li>Require blocks and mixed HTML/JS files now supported for all AMD management functionality</li>
+            <li>Add AMD import is now case-insensitive. Can be case-sensitive if you have a very large project </li>
+            <li>Add option to disable adding an import entry when no module is detected </li>
+            <li>Add quickfixes for for swapping two mismatched imports </li>
+            <li>Add quickfix for ignoring an unused import </li>
+            <li>Add quickfix for removing an unused import </li>
+            <li>Add a configurable list of file types to enable Needs More Dojo for</li>
+            <li>Fix NPE when using auto-completion on i18n keys (#141)</li>
+            <li>Minor bug fixes (#119, #122, #136)</li>
+        </ul>
+
+        <b>0.5.2</b>
+        <ul>
+            <li>Jump to attach point will attempt to resolve absolute file references for templates </li>
+            <li>Fix high priority bug with goto declaration using absolute file paths in templated widgets (#123) </li>
+            <li>Minor bug fixes (#127, #132, #135)</li>
+        </ul>
+
         <b>0.5.1</b>
         <ul>
             <li>Add experimental cyclic dependency detection both as an inspection and an action (Ctrl+Alt+O, C). Inspection
