@@ -111,8 +111,8 @@ Needs More Dojo will work in JavaScript code snippets that are embedded in other
 are marked as supported. You can add additional file types for your project in the Needs More Dojo Settings. To do this:
 
 - Access the Needs More Dojo settings
-- In the text field for "comma delimited list of supported file types," add any additional file types you want to enable
-Needs More Dojo for
+- In the text field for "comma delimited list of supported file types," add any additional file types you want Needs More Dojo
+to support
 - Click "Apply" and "Ok" to persist the settings
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/filetypes.png)
 
@@ -209,14 +209,14 @@ ignore comment inserted automatically by using a quick fix when the caret is ove
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/ignorequickfix.png)
 
-Simply use the "Don't flag <module> as unused" option.
+Simply use the "Don't flag as unused" option.
 
 Finally, in IntelliJ IDEA you can also run this as an inspection in batch mode on your entire project or a subset. To do this, use Analyze ->
 Run Inspection By Name -> Check for unused imports.
 
 ##### Rename Refactoring
 
-> **Note: Needs More Dojo disables its refactoring support by default due to performance concerns on large projects. You
+> **Note: Needs More Dojo disables its refactoring support by default due to performance concerns on large projects when doing move/rename actions. You
 can enable refactoring by checking "Enable refactoring support for move and rename file actions" in the Needs More Dojo settings.**
 
 When you rename a module, Needs More Dojo will scan
@@ -235,7 +235,7 @@ To perform a rename:
 
 ##### Move File Refactoring
 
-> **Note: Needs More Dojo disables its refactoring support by default due to performance concerns on large projects. You
+> **Note: Needs More Dojo disables its refactoring support by default due to performance concerns on large projects when doing move/rename actions. You
 can enable refactoring by checking "Enable refactoring support for move and rename file actions" in the Needs More Dojo settings.**
 
 Needs More Dojo will update module references when you move an AMD module.
