@@ -136,8 +136,8 @@ public class MismatchedImportsInspection extends DojoInspection
             if(importsSwapped)
             {
                 SwapImportsQuickFix importFix = new SwapImportsQuickFix(mismatch, mismatches.get(i-1));
-                descriptors.add(addQuickFixToOtherMismatch(mismatch, mismatches.get(i-1), importFix, manager));
-                descriptors.add(addQuickFixToOtherMismatch(mismatches.get(i-1), mismatch, importFix, manager));
+                descriptors.addAll(addQuickFixToOtherMismatch(mismatch, mismatches.get(i - 1), importFix, manager));
+                descriptors.addAll(addQuickFixToOtherMismatch(mismatches.get(i - 1), mismatch, importFix, manager));
             }
         }
     }
@@ -162,18 +162,18 @@ public class MismatchedImportsInspection extends DojoInspection
         return descriptors.toArray(new ProblemDescriptor[0]);
     }
 
-    private ProblemDescriptor addQuickFixToOtherMismatch(MismatchedImportsDetector.Mismatch mismatch, MismatchedImportsDetector.Mismatch secondMismatch,  SwapImportsQuickFix quickFix, InspectionManager manager)
+    private List<ProblemDescriptor> addQuickFixToOtherMismatch(MismatchedImportsDetector.Mismatch mismatch, MismatchedImportsDetector.Mismatch secondMismatch,  SwapImportsQuickFix quickFix, InspectionManager manager)
     {
-        if(mismatch.getDefine() != null)
+        List<ProblemDescriptor> descriptors = new ArrayList<ProblemDescriptor>();
+
+        if(mismatch.getDefine() == null || mismatch.getParameter() == null)
         {
-            return manager.createProblemDescriptor(mismatch.getDefine(), String.format("Potentially swapped imports: %s and %s", mismatch.getDefine().getText(), secondMismatch.getDefine().getText()), true, ProblemHighlightType.ERROR, true, quickFix);
+            return descriptors;
         }
 
-        if(mismatch.getParameter() !=null)
-        {
-            return manager.createProblemDescriptor(mismatch.getParameter(), String.format("Potentially swapped imports: %s and %s", mismatch.getDefine().getText(), secondMismatch.getDefine().getText()), true, ProblemHighlightType.ERROR, true, quickFix);
-        }
+        descriptors.add(manager.createProblemDescriptor(mismatch.getDefine(), String.format("Potentially swapped imports: %s and %s", mismatch.getDefine().getText(), secondMismatch.getDefine().getText()), true, ProblemHighlightType.ERROR, true, quickFix));
+        descriptors.add(manager.createProblemDescriptor(mismatch.getParameter(), String.format("Potentially swapped imports: %s and %s", mismatch.getDefine().getText(), secondMismatch.getDefine().getText()), true, ProblemHighlightType.ERROR, true, quickFix));
 
-        return null;
+        return descriptors;
     }
 }
