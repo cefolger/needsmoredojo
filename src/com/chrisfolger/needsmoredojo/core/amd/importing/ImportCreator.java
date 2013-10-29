@@ -59,12 +59,26 @@ public class ImportCreator
                 JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), String.format("'%s'", module), "");
             }
 
-            JSUtil.addStatementBeforeElement(parameters, parameters.getLastChild(), parameter, "");
+            if(parameters.getChildren().length == 0)
+            {
+                JSUtil.addStatementBeforeElement(parameters, parameters.getLastChild(), parameter, "");
+            }
+            else
+            {
+                JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
+            }
         }
         else
         {
             JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
-            JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
+            if(parameters.getChildren().length > 0)
+            {
+                JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
+            }
+            else
+            {
+                parameters.addAfter(JSUtil.createStatement(parameters, parameter), parameters.getFirstChild());
+            }
         }
     }
 
