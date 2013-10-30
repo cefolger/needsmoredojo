@@ -55,7 +55,7 @@ public class AMDPsiUtil
     public static PsiElement getNearestComma(PsiElement start)
     {
         PsiElement sibling = start.getPrevSibling();
-        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter))
+        while(sibling != null && !(sibling instanceof JSLiteralExpression) && !(sibling instanceof JSParameter) && !(sibling instanceof JSReferenceExpression))
         {
             if(sibling.getText().equals(","))
             {

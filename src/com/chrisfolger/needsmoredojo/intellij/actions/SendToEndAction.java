@@ -8,6 +8,7 @@ import com.chrisfolger.needsmoredojo.core.amd.importing.ImportReorderer;
 import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
 import com.intellij.lang.javascript.psi.JSElement;
+import com.intellij.lang.javascript.psi.JSParameter;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -113,13 +114,16 @@ public class SendToEndAction extends JavaScriptAction
 
     private void moveElementToEnd(PsiElement define, PsiElement parameter, PsiElement lastDefine, PsiElement lastParameter, DefineStatement defineStatement)
     {
-        PsiElement newDefine = define.copy();
-        PsiElement newParameter = parameter.copy();
-
         //AMDPsiUtil.removeSingleImport(new AMDImport((JSElement) define, (JSElement)parameter));
 
+        PsiElement ignoreComment = AMDPsiUtil.getIgnoreCommentAfterLiteral(define);
+        PsiElement newElement = new ImportCreator().placeImport(defineStatement.getArguments(), defineStatement.getFunction().getParameterList(), define.getText(), parameter.getText());
 
-        new ImportCreator().placeImport(defineStatement.getArguments(), defineStatement.getFunction().getParameterList(), define.getText(), parameter.getText());
+        if(ignoreComment != null)
+        {
+            defineStatement.getArguments().addAfter(ignoreComment, newElement);
+        }
 
+        AMDPsiUtil.removeSingleImport(new AMDImport((JSElement) define, (JSElement)parameter));
     }
 }

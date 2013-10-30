@@ -83,7 +83,7 @@ public class ImportCreator
         }
     }
 
-    public void placeImport(JSArrayLiteralExpression imports, JSParameterList parameters, String module, String parameter)
+    public PsiElement placeImport(JSArrayLiteralExpression imports, JSParameterList parameters, String module, String parameter)
     {
         // FIXME move to AMDPsiUtil
         PsiElement lastChild = imports.getChildren()[imports.getChildren().length-1];
@@ -94,6 +94,8 @@ public class ImportCreator
         PsiElement lastParameter = parameters.getChildren()[parameters.getChildren().length-1];
         PsiElement parameterElement = parameters.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), String.format("%s", parameter)).getPsi(), lastParameter);
         parameters.getNode().addLeaf(JSTokenTypes.COMMA, ",", parameterElement.getNode());
+
+        return element;
     }
 
     /**
