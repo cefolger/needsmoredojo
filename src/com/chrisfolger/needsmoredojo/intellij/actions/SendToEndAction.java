@@ -1,10 +1,13 @@
 package com.chrisfolger.needsmoredojo.intellij.actions;
 
+import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportReorderer;
 import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
+import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -53,7 +56,7 @@ public class SendToEndAction extends JavaScriptAction
         List<PsiElement> parameters = new ArrayList<PsiElement>();
 
         DefineResolver resolver = new DefineResolver();
-        DefineStatement importBlock = resolver.getNearestImportBlock(define);
+        final DefineStatement importBlock = resolver.getNearestImportBlock(define);
 
         if(importBlock == null)
         {
@@ -99,7 +102,7 @@ public class SendToEndAction extends JavaScriptAction
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        moveElementToEnd(define, finalParameter, finalLastLiteral, finalLastParameter);
+                        moveElementToEnd(define, finalParameter, finalLastLiteral, finalLastParameter, importBlock);
                     }
                 });
             }
@@ -108,17 +111,15 @@ public class SendToEndAction extends JavaScriptAction
         "Send AMD Import to End");
     }
 
-    private void moveElementToEnd(PsiElement define, PsiElement parameter, PsiElement lastDefine, PsiElement lastParameter)
+    private void moveElementToEnd(PsiElement define, PsiElement parameter, PsiElement lastDefine, PsiElement lastParameter, DefineStatement defineStatement)
     {
         PsiElement newDefine = define.copy();
         PsiElement newParameter = parameter.copy();
 
-        define.delete();
-        parameter.delete();
+        //AMDPsiUtil.removeSingleImport(new AMDImport((JSElement) define, (JSElement)parameter));
 
-        // FIXME ignore comment
-        // FIXME generic "move import" function that takes everything into account
-        lastDefine.getParent().addAfter(newDefine, lastDefine);
-        lastParameter.getParent().addAfter(newParameter, lastParameter);
+
+        new ImportCreator().placeImport(defineStatement.getArguments(), defineStatement.getFunction().getParameterList(), "foo", "foo");
+
     }
 }

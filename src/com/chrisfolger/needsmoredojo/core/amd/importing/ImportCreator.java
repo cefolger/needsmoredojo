@@ -6,13 +6,22 @@ import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
+import com.intellij.lang.javascript.JSElementTypes;
+import com.intellij.lang.javascript.JSTokenTypes;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.editor.Document;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ImportCreator
 {
@@ -70,16 +79,20 @@ public class ImportCreator
         }
         else
         {
-            JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
-            if(parameters.getChildren().length > 0)
-            {
-                JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
-            }
-            else
-            {
-                parameters.addAfter(JSUtil.createStatement(parameters, parameter), parameters.getFirstChild());
-            }
+            placeImport(imports, parameters, module, parameter);
         }
+    }
+
+    public void placeImport(JSArrayLiteralExpression imports, JSParameterList parameters, String module, String parameter)
+    {
+        PsiElement lastChild = imports.getChildren()[imports.getChildren().length-1];
+        PsiElement element = imports.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), "'foo'").getPsi(), lastChild);
+        imports.getNode().addLeaf(JSTokenTypes.COMMA, ",", element.getNode());
+        imports.getNode().addLeaf(JSTokenTypes.WHITE_SPACE, "\n", element.getNode());
+
+        PsiElement lastParameter = parameters.getChildren()[parameters.getChildren().length-1];
+        PsiElement parameterElement = parameters.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), "foodddd").getPsi(), lastParameter);
+        parameters.getNode().addLeaf(JSTokenTypes.COMMA, ",", parameterElement.getNode());
     }
 
     /**

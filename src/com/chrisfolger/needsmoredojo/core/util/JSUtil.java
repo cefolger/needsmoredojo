@@ -1,9 +1,19 @@
 package com.chrisfolger.needsmoredojo.core.util;
 
+import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.javascript.JSTokenTypes;
+import com.intellij.lang.javascript.psi.JSElement;
+import com.intellij.lang.javascript.psi.JSElementFactory;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
+import com.intellij.lang.javascript.psi.impl.JSElementImpl;
+import com.intellij.lang.javascript.psi.impl.JSPsiImplUtils;
 import com.intellij.lang.javascript.psi.util.JSUtils;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.impl.source.tree.LeafElement;
+
+import javax.swing.text.AbstractDocument;
 
 public class JSUtil
 {
@@ -18,6 +28,16 @@ public class JSUtil
         }
 
         return node.getPsi();
+    }
+
+    public static PsiElement addStatementAfterElement(PsiElement parent, PsiElement element, String statement, String whitespace)
+    {
+        if(!whitespace.equals(""))
+        {
+            //parent.addAfter(JSChangeUtil.createExpressionFromText(parent.getProject(), statement).getPsi(), comma);
+        }
+
+        return null;
     }
 
     public static PsiElement addStatementBeforeElement(PsiElement parent, PsiElement element, String statement)
