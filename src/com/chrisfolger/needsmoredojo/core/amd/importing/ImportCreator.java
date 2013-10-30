@@ -85,13 +85,14 @@ public class ImportCreator
 
     public void placeImport(JSArrayLiteralExpression imports, JSParameterList parameters, String module, String parameter)
     {
+        // FIXME move to AMDPsiUtil
         PsiElement lastChild = imports.getChildren()[imports.getChildren().length-1];
-        PsiElement element = imports.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), "'foo'").getPsi(), lastChild);
+        PsiElement element = imports.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), String.format("%s", module)).getPsi(), lastChild);
         imports.getNode().addLeaf(JSTokenTypes.COMMA, ",", element.getNode());
         imports.getNode().addLeaf(JSTokenTypes.WHITE_SPACE, "\n", element.getNode());
 
         PsiElement lastParameter = parameters.getChildren()[parameters.getChildren().length-1];
-        PsiElement parameterElement = parameters.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), "foodddd").getPsi(), lastParameter);
+        PsiElement parameterElement = parameters.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), String.format("%s", parameter)).getPsi(), lastParameter);
         parameters.getNode().addLeaf(JSTokenTypes.COMMA, ",", parameterElement.getNode());
     }
 

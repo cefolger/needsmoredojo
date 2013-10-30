@@ -119,7 +119,7 @@ public class SendToEndAction extends JavaScriptAction
         //AMDPsiUtil.removeSingleImport(new AMDImport((JSElement) define, (JSElement)parameter));
 
 
-        new ImportCreator().placeImport(defineStatement.getArguments(), defineStatement.getFunction().getParameterList(), "foo", "foo");
+        new ImportCreator().placeImport(defineStatement.getArguments(), defineStatement.getFunction().getParameterList(), define.getText(), parameter.getText());
 
     }
 }
