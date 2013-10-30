@@ -27,6 +27,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This action runs a task that scans the dependency graph for your sources. It will list cycles in the graph
+ * in a separate tool window at the bottom of the IDE.
+ */
 public class FindCyclicDependenciesAction extends JavaScriptAction
 {
     private Logger logger = Logger.getLogger(FindCyclicDependenciesAction.class);
