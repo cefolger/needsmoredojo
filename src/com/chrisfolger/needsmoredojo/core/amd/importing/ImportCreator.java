@@ -25,10 +25,8 @@ import java.util.List;
 
 public class ImportCreator
 {
-    protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
+    public void createImport(String module, String parameter, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
-        String parameter = NameResolver.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
-
         for(JSParameter element : parameters.getParameters())
         {
             if(element.getName().equals(parameter))
@@ -89,6 +87,13 @@ public class ImportCreator
                 parameters.addAfter(JSUtil.createStatement(parameters, parameter), parameters.getFirstChild());
             }
         }
+    }
+
+    public void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
+    {
+        String parameter = NameResolver.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
+
+        createImport(module, parameter, imports, parameters);
     }
 
     /**

@@ -165,6 +165,13 @@
                     <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
                 </action>
 
+                <action id="com.chrisfolger.needsmoredojo.actions.sendtobeginning"
+                        class="com.chrisfolger.needsmoredojo.intellij.actions.SendToBeginningAction" text="Send Import to Beginning"
+                        description="Send an AMD import to the beginning of the list">
+                    <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt HOME"/>
+                    <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
+                </action>
+
                 <action id="com.chrisfolger.needsmoredojo.actions.sendtoend"
                         class="com.chrisfolger.needsmoredojo.intellij.actions.SendToEndAction" text="Send Import to End"
                         description="Send an AMD import to the bottom of the list">
