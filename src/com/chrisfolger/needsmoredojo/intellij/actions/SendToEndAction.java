@@ -3,12 +3,14 @@ package com.chrisfolger.needsmoredojo.intellij.actions;
 import com.chrisfolger.needsmoredojo.core.amd.AMDImport;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
-import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportReorderer;
 import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.chrisfolger.needsmoredojo.core.amd.psi.AMDPsiUtil;
+import com.intellij.lang.javascript.JSTokenTypes;
+import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.lang.javascript.psi.JSElement;
-import com.intellij.lang.javascript.psi.JSParameter;
+import com.intellij.lang.javascript.psi.JSParameterList;
+import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -112,12 +114,42 @@ public class SendToEndAction extends JavaScriptAction
         "Send AMD Import to End");
     }
 
+    private PsiElement moveImportToEnd(JSArrayLiteralExpression imports, JSParameterList parameters, String module, String parameter, PsiElement lastDefine, PsiElement lastParameter)
+    {
+        // TODO move to AMDPsiUtil if we need to reuse this in the future
+        PsiElement lastChild = imports.getChildren()[imports.getChildren().length-1];
+
+        if(lastDefine != null)
+        {
+            lastChild = lastDefine;
+        }
+
+        PsiElement element = imports.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), String.format("%s", module)).getPsi(), lastChild);
+        imports.getNode().addLeaf(JSTokenTypes.COMMA, ",", element.getNode());
+        imports.getNode().addLeaf(JSTokenTypes.WHITE_SPACE, "\n", element.getNode());
+
+        PsiElement lastParameterChild = parameters.getChildren()[parameters.getChildren().length-1];
+
+        if(lastParameter != null)
+        {
+            lastParameterChild = lastParameter;
+        }
+
+        PsiElement parameterElement = parameters.addAfter(JSChangeUtil.createExpressionFromText(imports.getProject(), String.format("%s", parameter)).getPsi(), lastParameterChild);
+        parameters.getNode().addLeaf(JSTokenTypes.COMMA, ",", parameterElement.getNode());
+
+        return element;
+    }
+
     private void moveElementToEnd(PsiElement define, PsiElement parameter, PsiElement lastDefine, PsiElement lastParameter, DefineStatement defineStatement)
     {
-        //AMDPsiUtil.removeSingleImport(new AMDImport((JSElement) define, (JSElement)parameter));
+        if(lastDefine.equals(define))
+        {
+            return;
+        }
 
         PsiElement ignoreComment = AMDPsiUtil.getIgnoreCommentAfterLiteral(define);
-        PsiElement newElement = new ImportCreator().placeImport(defineStatement.getArguments(), defineStatement.getFunction().getParameterList(), define.getText(), parameter.getText());
+        PsiElement newElement = moveImportToEnd(defineStatement.getArguments(), defineStatement.getFunction().getParameterList(), define.getText(), parameter.getText(), lastDefine, lastParameter);
 
         if(ignoreComment != null)
         {
