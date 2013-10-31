@@ -22,7 +22,7 @@ import java.util.List;
 public abstract class SendToAction extends JavaScriptAction
 {
     @Override
-    public void actionPerformed(AnActionEvent e)
+    public void actionPerformed(final AnActionEvent e)
     {
         final Editor editor = e.getData(PlatformDataKeys.EDITOR);
         PsiFile file = e.getData(LangDataKeys.PSI_FILE);
@@ -65,6 +65,11 @@ public abstract class SendToAction extends JavaScriptAction
         {
             if(defines.get(i).equals(define))
             {
+                if(i > parameters.size() - 1)
+                {
+                    return;
+                }
+
                 parameter = parameters.get(i);
                 break;
                 // FIXME if parameter is out of index
@@ -78,7 +83,7 @@ public abstract class SendToAction extends JavaScriptAction
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        moveAction(define, finalParameter, defines, parameters, importBlock);
+                        moveAction(e, define, finalParameter, defines, parameters, importBlock);
                     }
                 });
             }
@@ -89,5 +94,5 @@ public abstract class SendToAction extends JavaScriptAction
 
     protected abstract String getName();
 
-    protected abstract void moveAction(PsiElement define, PsiElement parameter, List<PsiElement> defines, List<PsiElement> parameters, DefineStatement defineStatement);
+    protected abstract void moveAction(AnActionEvent e, PsiElement define, PsiElement parameter, List<PsiElement> defines, List<PsiElement> parameters, DefineStatement defineStatement);
 }

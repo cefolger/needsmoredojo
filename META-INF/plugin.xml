@@ -42,7 +42,7 @@
   <change-notes><![CDATA[
             <b>0.7 (major release) </b>
             <ul>
-                <li>Add ability to send an import to the end of of the list</li>
+                <li>Add ability to send an import to the end and beginning of of the list</li>
                 <li>Move most items under the Code menu to a Needs More Dojo submenu </li>
                 <li>Add the "Dojo Toolkit" module type</li>
             </ul>
@@ -168,14 +168,14 @@
                 <action id="com.chrisfolger.needsmoredojo.actions.sendtobeginning"
                         class="com.chrisfolger.needsmoredojo.intellij.actions.SendToBeginningAction" text="Send Import to Beginning"
                         description="Send an AMD import to the beginning of the list">
-                    <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt HOME"/>
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="HOME"/>
                     <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
                 </action>
 
                 <action id="com.chrisfolger.needsmoredojo.actions.sendtoend"
                         class="com.chrisfolger.needsmoredojo.intellij.actions.SendToEndAction" text="Send Import to End"
                         description="Send an AMD import to the bottom of the list">
-                    <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt END"/>
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="END"/>
                     <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
                 </action>
 
