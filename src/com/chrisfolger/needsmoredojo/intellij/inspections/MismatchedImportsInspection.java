@@ -95,9 +95,12 @@ public class MismatchedImportsInspection extends DojoInspection
             }
 
             LocalQuickFix fix = noFix;
+            LocalQuickFix exceptionFix = null;
+
             if(define != null && parameter != null)
             {
                 fix = new MismatchedImportsQuickFix(define, parameter);
+                exceptionFix = new AddExceptionQuickFix(define, parameter);
             }
 
             // check if the previous import was also mismatched. If it was, it's possible that they were flipped by accident.
@@ -125,12 +128,12 @@ public class MismatchedImportsInspection extends DojoInspection
 
             if (parameter != null)
             {
-                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
+                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix, exceptionFix));
             }
 
             if (define != null)
             {
-                descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix));
+                descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix, exceptionFix));
             }
 
             if(importsSwapped)

@@ -42,9 +42,11 @@
   <change-notes><![CDATA[
             <b>0.7 (major release) </b>
             <ul>
+                <li>Quick fix to add a mismatched import exception </li>
                 <li>Add ability to send an import to the end and beginning of of the list</li>
                 <li>Move most items under the Code menu to a Needs More Dojo submenu </li>
                 <li>Add the "Dojo Toolkit" module type</li>
+                <li>Minor bug fixes (#145)</li>
             </ul>
 
             <b>0.6</b>
