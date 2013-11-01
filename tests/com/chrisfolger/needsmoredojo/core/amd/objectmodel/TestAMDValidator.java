@@ -177,8 +177,10 @@ public class TestAMDValidator
     public void testExceptionsWithMixedCase()
     {
         exceptions.put("dojo/_base/lang", "dLang");
+        exceptions.put("dijit/layout/ContentPane", "cPane");
 
         assertTrue(validator.defineMatchesParameter("dojo/_base/lang", "dLang", exceptions));
+        assertTrue(validator.defineMatchesParameter("dijit/layout/ContentPane", "cPane", exceptions));
     }
 
     @Test
