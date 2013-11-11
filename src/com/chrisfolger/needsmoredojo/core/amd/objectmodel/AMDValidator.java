@@ -30,7 +30,7 @@ public class AMDValidator
     {
         // simple case can be taken care of by just matching the stuff after / with the parameter
         // also case insensitive because the programmer can use any casing for the parameter
-        String defineComparison = define.toLowerCase().replaceAll("'|\"", "").replace("\"", "");
+        String defineComparison = define.replaceAll("'|\"", "").replace("\"", "");
         String parameterComparison = parameter.toLowerCase();
 
         // if an exception like dojo/sniff -> has yields a match, then return true. Else, just continue
@@ -39,6 +39,8 @@ public class AMDValidator
         {
             return true;
         }
+
+        defineComparison = defineComparison.toLowerCase();
 
         if(defineComparison.contains("/_base/fx"))
         {

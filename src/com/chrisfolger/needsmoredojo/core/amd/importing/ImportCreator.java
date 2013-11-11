@@ -6,20 +6,27 @@ import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
+import com.intellij.lang.javascript.JSElementTypes;
+import com.intellij.lang.javascript.JSTokenTypes;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.editor.Document;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ImportCreator
 {
-    protected void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
+    public void createImport(String module, String parameter, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
-        String parameter = NameResolver.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
-
         for(JSParameter element : parameters.getParameters())
         {
             if(element.getName().equals(parameter))
@@ -80,6 +87,13 @@ public class ImportCreator
                 parameters.addAfter(JSUtil.createStatement(parameters, parameter), parameters.getFirstChild());
             }
         }
+    }
+
+    public void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
+    {
+        String parameter = NameResolver.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
+
+        createImport(module, parameter, imports, parameters);
     }
 
     /**

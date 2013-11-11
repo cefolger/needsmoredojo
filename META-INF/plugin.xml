@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.6</version>
+  <version>0.7</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -40,6 +40,15 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>0.7 (major release) </b>
+            <ul>
+                <li>Quick fix to add a mismatched import exception </li>
+                <li>Add ability to send an import to the end and beginning of of the list</li>
+                <li>Move most items under the Code menu to a Needs More Dojo submenu </li>
+                <li>Add the "Dojo Toolkit" module type</li>
+                <li>Minor bug fixes (#145)</li>
+            </ul>
+
             <b>0.6</b>
             <ul>
                 <li>Move and Rename refactoring is disabled by default</li>
@@ -77,18 +86,6 @@
                 <li>If you use one line per define literal, line comments after the literal will have their order
                 preserved when reorganizing (Issue #53)</li>
                 <li>Minor bug fixes (#107, #68, #112, #116)</li>
-            </ul>
-
-            <b>0.5</b>
-            <ul>
-                <li>Move refactoring is supported for project AMD modules </li>
-                <li>Rename refactoring is supported for project AMD modules </li>
-                <li>Can now use the project source directory as the dojo source location if they are in the same place </li>
-                <li>Can now delete single imports</li>
-                <li>You are now able to use a jar or zip file for your dojo sources (Issue #91)</li>
-                <li>When adding an import, you can use domAttr, domStyle etc. instead of the hyphenated versions </li>
-                <li>Fix problem with naming exceptions not being honored (Issue #99) </li>
-                <li>Minor bug fixes (Issues #92, #93, #95)</li>
             </ul>
 
             <br><br>
@@ -134,21 +131,7 @@
             <add-to-group group-id="GoToTargetEx"/>
         </action>
 
-        <action id="com.chrisfolger.needsmoredojo.actions.reorderimport.movedown"
-                class="com.chrisfolger.needsmoredojo.intellij.actions.MoveImportDownAction" text="Move Import Down"
-                description="Move an AMD import down in the list">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt PAGE_DOWN"/>
-            <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
-        </action>
-
-        <action id="com.chrisfolger.needsmoredojo.actions.reorderimport.moveup"
-                class="com.chrisfolger.needsmoredojo.intellij.actions.MoveImportUpAction" text="Move Import Up"
-                description="Move an AMD import up in the list">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt PAGE_UP"/>
-            <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
-        </action>
-
-        <group id="com.chrisfolger.needsmoredojo.code">
+        <group id="com.chrisfolger.needsmoredojo.code" popup="true" text="Needs More Dojo">
             <add-to-group group-id="CodeMenu" anchor="first"/>
 
             <group id="com.chrisfolger.needsmoredojo.code.menu.items">
@@ -167,12 +150,43 @@
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.togglepathsyntax" class="com.chrisfolger.needsmoredojo.intellij.actions.TogglePathSyntaxAction" text="Toggle AMD Import Path Syntax" description="Toggles between absolute and relative path syntax">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="S"/>
                 </action>
+
+                <separator/>
+
+                <action id="com.chrisfolger.needsmoredojo.actions.reorderimport.movedown"
+                        class="com.chrisfolger.needsmoredojo.intellij.actions.MoveImportDownAction" text="Move Import Down"
+                        description="Move an AMD import down in the list">
+                    <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt PAGE_DOWN"/>
+                    <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
+                </action>
+
+                <action id="com.chrisfolger.needsmoredojo.actions.reorderimport.moveup"
+                        class="com.chrisfolger.needsmoredojo.intellij.actions.MoveImportUpAction" text="Move Import Up"
+                        description="Move an AMD import up in the list">
+                    <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt PAGE_UP"/>
+                    <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
+                </action>
+
+                <action id="com.chrisfolger.needsmoredojo.actions.sendtobeginning"
+                        class="com.chrisfolger.needsmoredojo.intellij.actions.SendToBeginningAction" text="Send Import to Beginning"
+                        description="Send an AMD import to the beginning of the list">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="HOME"/>
+                    <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
+                </action>
+
+                <action id="com.chrisfolger.needsmoredojo.actions.sendtoend"
+                        class="com.chrisfolger.needsmoredojo.intellij.actions.SendToEndAction" text="Send Import to End"
+                        description="Send an AMD import to the bottom of the list">
+                    <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="END"/>
+                    <add-to-group group-id="CodeMenu" anchor="after" relative-to-action="MoveLineUp"/>
+                </action>
+
+                <separator/>
+
                 <action id="com.chrisfolger.needsmoredojo.refactoring.menu.findcyclicdependencies" class="com.chrisfolger.needsmoredojo.intellij.actions.FindCyclicDependenciesAction" text="Find Cyclic AMD Dependencies" description="Searches for cyclic dependencies in AMD modules">
                     <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O" second-keystroke="C"/>
                 </action>
             </group>
-
-            <separator/>
         </group>
     </actions>
 
@@ -185,6 +199,9 @@
         <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.ImportGotoDeclarationHandler"/>
         <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.ThisInheritedGotoDeclarationHandler"/>
         <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.MethodGotoDeclarationHandler"/>
+
+        <moduleType id="DOJO_TOOLKIT_MODULE" implementationClass="com.chrisfolger.needsmoredojo.intellij.modules.DojoToolkitModuleType" classpathProvider="true"/>
+        <moduleConfigurationEditorProvider implementation="com.chrisfolger.needsmoredojo.intellij.modules.DojoToolkitModuleEditorProvider"/>
 
         <projectConfigurable implementation="com.chrisfolger.needsmoredojo.intellij.configurable.DojoSettingsConfigurable"></projectConfigurable>
 
