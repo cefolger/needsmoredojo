@@ -77,6 +77,13 @@ public class TemplatedWidgetUtil {
                     // find the parameter and define that matches the template parameter
                     PsiElement relevantDefine = AMDPsiUtil.getDefineForVariable(file, template);
 
+                    if(relevantDefine == null)
+                    {
+                        // we couldn't find the module that templateString reference for whatever reason
+                        // (it could be an invalid reference to a module)
+                        return null;
+                    }
+
                     String templatePath = relevantDefine.getText().substring(relevantDefine.getText().lastIndexOf('!') + 1);
                     // now open the file and find the reference in it
                     VirtualFile htmlFile = SourcesLocator.getAMDImportFile(relevantDefine.getProject(), templatePath, relevantDefine.getContainingFile().getContainingDirectory());
