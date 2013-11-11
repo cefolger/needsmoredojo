@@ -141,15 +141,20 @@ public class UnusedImportsRemover
             terminators.add(",");
             for(int x=0;x<blockDefines.size();x++)
             {
+                // it's important to skip a define literal that has no corresponding parameter. This means it doesn't need
+                // one and should not be flagged as unused.
+                if(x >= blockParameters.size())
+                {
+                    blockDefines.remove(x);
+                    x--;
+                    continue;
+                }
+
                 PsiElement element = blockDefines.get(x);
                 PsiElement ignoreComment = AMDPsiUtil.getNextElementOfType(element, PsiComment.class, terminators, new HashSet<String>());
                 if(ignoreComment != null && ignoreComment.getText().equals(IGNORE_COMMENT))
                 {
                     blockDefines.remove(x);
-                    if(x < blockParameters.size())
-                    {
-                        blockParameters.remove(x);
-                    }
                     x--;
                 }
             }

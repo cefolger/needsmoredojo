@@ -47,7 +47,7 @@
                 <li>Move most items under the Code menu to a Needs More Dojo submenu </li>
                 <li>Add the "Dojo Toolkit" module type</li>
                 <li>Fix NPE bug caused by templateString references that couldn't be resolved (#148)</li>
-                <li>Minor bug fixes (#145)</li>
+                <li>Minor bug fixes (#145, #149)</li>
             </ul>
 
             <b>0.6</b>
