@@ -53,6 +53,9 @@ public class DojoSettingsConfigurable implements Configurable {
     private JTextField supportedFileTypes;
     private JCheckBox displayWarningIfSourcesCheckBox;
     private JCheckBox enableRefactoringSupportForCheckBox;
+    private JRadioButton singleQuotesRadioButton;
+    private JRadioButton doubleQuotesRadioButton;
+    private ButtonGroup quotesButtonGroup;
     private Project project;
     private String dojoSourceString;
     private String projectSourceString;
@@ -147,6 +150,7 @@ public class DojoSettingsConfigurable implements Configurable {
                 allowCaseInsensitiveSearch.isSelected() != settingsService.isAllowCaseInsensitiveSearch() ||
                 !supportedFileTypes.getText().equals(settingsService.getSupportedFileTypes()) ||
                 enableRefactoringSupportForCheckBox.isSelected() != settingsService.isRefactoringEnabled() ||
+                singleQuotesRadioButton.isSelected() != settingsService.isSingleQuotedModuleIDs() ||
                 // this flag is true if it's unchecked
                 displayWarningIfSourcesCheckBox.isSelected() == settingsService.isSetupWarningDisabled();
 
@@ -277,6 +281,28 @@ public class DojoSettingsConfigurable implements Configurable {
             }
         });
 
+        quotesButtonGroup = new ButtonGroup();
+        quotesButtonGroup.add(singleQuotesRadioButton);
+        quotesButtonGroup.add(doubleQuotesRadioButton);
+
+        singleQuotesRadioButton.addActionListener( new ActionListener()
+        {
+            @Override
+            public void actionPerformed( ActionEvent e )
+            {
+                updateModifiedState();
+            }
+        } );
+
+        doubleQuotesRadioButton.addActionListener( new ActionListener()
+        {
+            @Override
+            public void actionPerformed( ActionEvent e )
+            {
+                updateModifiedState();
+            }
+        } );
+
         return myComponent;
     }
 
@@ -353,6 +379,7 @@ public class DojoSettingsConfigurable implements Configurable {
         settingsService.setSupportedFileTypes(supportedFileTypes.getText());
         settingsService.setSetupWarningDisabled(!displayWarningIfSourcesCheckBox.isSelected());
         settingsService.setRefactoringEnabled(enableRefactoringSupportForCheckBox.isSelected());
+        settingsService.setSingleQuotedModuleIDs(singleQuotesRadioButton.isSelected());
 
         modified = false;
     }
@@ -382,6 +409,11 @@ public class DojoSettingsConfigurable implements Configurable {
         supportedFileTypes.setText(settingsService.getSupportedFileTypes());
         displayWarningIfSourcesCheckBox.setSelected(!settingsService.isSetupWarningDisabled());
         enableRefactoringSupportForCheckBox.setSelected(settingsService.isRefactoringEnabled());
+        if (settingsService.isSingleQuotedModuleIDs()) {
+            singleQuotesRadioButton.setSelected(true);
+        } else {
+            doubleQuotesRadioButton.setSelected(true);
+        }
 
         modified = false;
     }

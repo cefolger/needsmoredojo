@@ -1,31 +1,23 @@
 package com.chrisfolger.needsmoredojo.core.amd.importing;
 
-import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
-import com.intellij.lang.javascript.JSElementTypes;
-import com.intellij.lang.javascript.JSTokenTypes;
 import com.intellij.lang.javascript.psi.*;
-import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class ImportCreator
 {
-    public void createImport(String module, String parameter, JSArrayLiteralExpression imports, JSParameterList parameters)
+    public void createImport(String module, String quoteCharacter, String parameter, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
         for(JSParameter element : parameters.getParameters())
         {
@@ -53,17 +45,19 @@ public class ImportCreator
                 define([])
              */
             String defineText = imports.getText();
+            String formatString = quoteCharacter + "%s" + quoteCharacter;
+            String moduleID = String.format(formatString, module);
             if(defineText.contains("\n\n"))
             {
-                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), String.format("'%s'", module), "\n");
+                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), moduleID, "\n");
             }
             else if(defineText.contains("\n"))
             {
-                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), String.format("'%s'", module), "\n");
+                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), moduleID, "\n");
             }
             else
             {
-                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), String.format("'%s'", module), "");
+                JSUtil.addStatementBeforeElement(imports, imports.getLastChild(), moduleID, "");
             }
 
             if(parameters.getChildren().length == 0)
@@ -77,7 +71,8 @@ public class ImportCreator
         }
         else
         {
-            JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format("'%s',", module), "\n");
+            String formatString = quoteCharacter + "%s" + quoteCharacter + ",";
+            JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format(formatString, module), "\n");
             if(parameters.getChildren().length > 0)
             {
                 JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
@@ -89,11 +84,10 @@ public class ImportCreator
         }
     }
 
-    public void createImport(String module, JSArrayLiteralExpression imports, JSParameterList parameters)
+    public void createImport(String module, String quoteCharacter, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
         String parameter = NameResolver.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
-
-        createImport(module, parameter, imports, parameters);
+        createImport(module, quoteCharacter, parameter, imports, parameters);
     }
 
     /**
@@ -116,7 +110,9 @@ public class ImportCreator
 
     public boolean addImport(final PsiFile file, final String module, DefineStatement statementToAddTo)
     {
-        createImport(module, statementToAddTo.getArguments(), statementToAddTo.getFunction().getParameterList());
+        DojoSettings settings = ServiceManager.getService( file.getProject(), DojoSettings.class);
+        String quoteCharacter = settings.isSingleQuotedModuleIDs() ? "'" : "\"";
+        createImport(module, quoteCharacter, statementToAddTo.getArguments(), statementToAddTo.getFunction().getParameterList());
         return true;
     }
 

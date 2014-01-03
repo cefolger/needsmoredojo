@@ -30,6 +30,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private boolean setupWarningDisabled;
     private boolean refactoringEnabled;
     private String supportedFileTypes;
+    private boolean singleQuotedModuleIDs;
     // this will be used for converting to module specific sources later
     private String version;
 
@@ -52,6 +53,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         addModuleIfThereAreNoneDefined = false;
         allowCaseInsensitiveSearch = true;
         supportedFileTypes = "jsp,js,php,html";
+        singleQuotedModuleIDs = true;
     }
 
     public @NotNull LinkedHashMap<String, String> getExceptionsMap()
@@ -184,5 +186,13 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public void setRefactoringEnabled(boolean refactoringEnabled) {
         this.refactoringEnabled = refactoringEnabled;
+    }
+
+    public  boolean isSingleQuotedModuleIDs() {
+        return singleQuotedModuleIDs;
+    }
+
+    public void setSingleQuotedModuleIDs(boolean aSingleQuotedModuleIDs) {
+        singleQuotedModuleIDs = aSingleQuotedModuleIDs;
     }
 }

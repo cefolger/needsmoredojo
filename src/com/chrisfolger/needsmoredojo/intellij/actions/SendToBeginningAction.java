@@ -23,12 +23,12 @@ public class SendToBeginningAction extends SendToAction
     @Override
     protected void moveAction(AnActionEvent e, PsiElement define, PsiElement parameter, List<PsiElement> defines, List<PsiElement> parameters, DefineStatement defineStatement)
     {
-        String defineText = define.getText().replaceAll("\"|'", "");
         String parameterText = parameter.getText();
 
         AMDPsiUtil.removeSingleImport(new AMDImport((JSElement) define, (JSElement) parameter));
 
-        new ImportCreator().createImport(defineText, parameterText, defineStatement.getArguments(), defineStatement.getFunction().getParameterList());
+        // define is already quoted, so passing an empty quote character
+        new ImportCreator().createImport(define.getText(), "", parameterText, defineStatement.getArguments(), defineStatement.getFunction().getParameterList());
 
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
         int index = defineStatement.getArguments().getFirstChild().getTextOffset();
