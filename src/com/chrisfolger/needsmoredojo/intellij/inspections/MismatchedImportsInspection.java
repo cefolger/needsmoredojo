@@ -9,6 +9,7 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.lang.javascript.psi.JSCallExpression;
+import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -80,6 +81,13 @@ public class MismatchedImportsInspection extends DojoInspection
             MismatchedImportsDetector.Mismatch mismatch = mismatches.get(i);
             PsiElement define = mismatch.getDefine();
             PsiElement parameter = mismatch.getParameter();
+
+            if(define != null && parameter != null && !(define instanceof JSLiteralExpression))
+            {
+                // this is to account for expressions in the define/require array literal. They are perfectly valid,
+                // so we can't flag them as mismatched
+                continue;
+            }
 
             String defineString = "<no string>";
             String parameterString = "<no string>";
