@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.inspections;
 
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameException;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -14,6 +15,7 @@ import com.intellij.refactoring.RenameRefactoring;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * this quickfix is designed to make a parameter match its corresponding define literal.
@@ -25,14 +27,14 @@ import java.util.LinkedHashMap;
 public class MismatchedImportsQuickFix implements LocalQuickFix {
     private PsiElement define;
     private PsiElement parameter;
-    private LinkedHashMap<String, String> amdImportNamingExceptions = null;
+    private List<NameException> amdImportNamingExceptions = null;
     private String newParameterName = "";
 
     public MismatchedImportsQuickFix(PsiElement define, PsiElement parameter, String absolutePath) {
         this.define = define;
         this.parameter = parameter;
 
-        amdImportNamingExceptions = ServiceManager.getService(define.getProject(), DojoSettings.class).getAmdImportNamingExceptions();
+        amdImportNamingExceptions = ServiceManager.getService(define.getProject(), DojoSettings.class).getNamingExceptionList();
         this.newParameterName = NameResolver.defineToParameter(define.getText(), amdImportNamingExceptions);
 
         if(parameter != null && absolutePath != null)

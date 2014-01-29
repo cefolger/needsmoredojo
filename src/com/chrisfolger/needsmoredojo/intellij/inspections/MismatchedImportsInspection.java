@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.intellij.inspections;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetector;
+import com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetectorCache;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.codeInspection.InspectionManager;
@@ -90,8 +91,9 @@ public class MismatchedImportsInspection extends DojoInspection
         LocalQuickFix noFix = null;
         List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(blockDefines.toArray(new PsiElement[0]),
                 blockParameters.toArray(new PsiElement[0]),
-                ServiceManager.getService(file.getProject(), DojoSettings.class).getExceptionsMap(),
-                ServiceManager.getService(file.getProject(), DojoSettings.class));
+                ServiceManager.getService(file.getProject(), DojoSettings.class).getNamingExceptionList(),
+                ServiceManager.getService(file.getProject(), DojoSettings.class),
+                ServiceManager.getService(file.getProject(), MismatchedImportsDetectorCache.class));
         for(int i=0;i<mismatches.size();i++)
         {
             MismatchedImportsDetector.Mismatch mismatch = mismatches.get(i);
@@ -123,7 +125,7 @@ public class MismatchedImportsInspection extends DojoInspection
 
             if(define != null && parameter != null)
             {
-                String normalName = NameResolver.defineToParameter(define.getText(), ServiceManager.getService(define.getProject(), DojoSettings.class).getAmdImportNamingExceptions());
+                String normalName = NameResolver.defineToParameter(define.getText(), ServiceManager.getService(define.getProject(), DojoSettings.class).getNamingExceptionList());
                 if(parameterOccurrences.containsKey(normalName))
                 {
                     fix = new MismatchedImportsQuickFix(define, parameter, mismatch.getAbsolutePath());

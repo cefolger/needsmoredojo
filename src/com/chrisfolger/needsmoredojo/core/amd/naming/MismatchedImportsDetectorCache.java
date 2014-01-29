@@ -36,6 +36,11 @@ public class MismatchedImportsDetectorCache
 
     public String getAbsolutePath(PsiFile file, String moduleImport)
     {
+        if(file == null)
+        {
+            return null; // can't resolve it
+        }
+
         if(pathReferences.containsKey(file) && pathReferences.get(file).containsKey(moduleImport))
         {
             return pathReferences.get(file).get(moduleImport);
@@ -48,6 +53,11 @@ public class MismatchedImportsDetectorCache
 
     public void put(PsiFile file, String module, String absolutePath)
     {
+        if(file == null)
+        {
+            return;
+        }
+
         pathReferences.putIfAbsent(file, new ConcurrentHashMap<String, String>());
         pathReferences.get(file).putIfAbsent(module, absolutePath);
     }

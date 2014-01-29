@@ -1,9 +1,12 @@
 package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
@@ -12,13 +15,13 @@ import static org.junit.Assert.assertTrue;
 public class TestAMDValidator
 {
     private AMDValidator validator;
-    private Map<String, String> exceptions;
+    private List<NameException> exceptions;
 
     @Before
     public void setup()
     {
         validator = new AMDValidator();
-        exceptions = new HashMap<String, String>();
+        exceptions = new ArrayList<NameException>();
     }
 
     @Test
@@ -130,7 +133,7 @@ public class TestAMDValidator
     public void testException()
     {
         // has is an explicit exception
-        exceptions.put("dojo/sniff", "has");
+        exceptions.add(new NameException("dojo/sniff", "has"));
         assertTrue(validator.defineMatchesParameter("dojo/sniff", "has", exceptions));
     }
 
@@ -144,7 +147,7 @@ public class TestAMDValidator
     public void testStandardConventionStillWorksWithExceptions()
     {
         // has is an explicit exception
-        exceptions.put("dojo/sniff", "has");
+        exceptions.add(new NameException("dojo/sniff", "has"));
         assertTrue(validator.defineMatchesParameter("dojo/sniff", "sniff", exceptions));
     }
 
@@ -176,8 +179,8 @@ public class TestAMDValidator
     @Test
     public void testExceptionsWithMixedCase()
     {
-        exceptions.put("dojo/_base/lang", "dLang");
-        exceptions.put("dijit/layout/ContentPane", "cPane");
+        exceptions.add(new NameException("dojo/_base/lang", "dLang"));
+        exceptions.add(new NameException("dijit/layout/ContentPane", "cPane"));
 
         assertTrue(validator.defineMatchesParameter("dojo/_base/lang", "dLang", exceptions));
         assertTrue(validator.defineMatchesParameter("dijit/layout/ContentPane", "cPane", exceptions));

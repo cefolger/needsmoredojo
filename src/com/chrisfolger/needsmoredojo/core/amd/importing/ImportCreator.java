@@ -2,6 +2,7 @@ package com.chrisfolger.needsmoredojo.core.amd.importing;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameException;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
@@ -13,6 +14,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 public class ImportCreator
@@ -86,7 +88,7 @@ public class ImportCreator
 
     public void createImport(String module, String quoteCharacter, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
-        Map<String, String> exceptionsMap = ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap();
+        List<NameException> exceptionsMap = ServiceManager.getService(parameters.getProject(), DojoSettings.class).getNamingExceptionList();
         String parameter = NameResolver.defineToParameter(module, exceptionsMap);
 
         // if the parameter would cause a duplicate, then assume it is a module with a different path but the same name

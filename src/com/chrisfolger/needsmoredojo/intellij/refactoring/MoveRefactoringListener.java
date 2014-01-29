@@ -33,7 +33,7 @@ public class MoveRefactoringListener implements RefactoringElementListener
                 originalPsiFile,
                 new SourcesLocator().getSourceLibraries(originalPsiFile.getProject()).toArray(new SourceLibrary[0]),
                 ServiceManager.getService(originalPsiFile.getProject(),
-                        DojoSettings.class).getExceptionsMap());
+                        DojoSettings.class).getNamingExceptionList());
 
 
         moduleReferences = renamer.findFilesThatModuleReferences(originalPsiFile);

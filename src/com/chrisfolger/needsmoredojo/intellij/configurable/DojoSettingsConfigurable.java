@@ -180,7 +180,7 @@ public class DojoSettingsConfigurable implements Configurable {
         projectSourceString =settingsService.getProjectSourcesDirectory();
         projectSourcesText.setText(projectSourceString);
 
-        final ExceptionsTableBuilder builder = new ExceptionsTableBuilder(moduleExceptionsTable, project, settingsService.getExceptionsMap());
+        final ExceptionsListTableBuilder builder = new ExceptionsListTableBuilder(moduleExceptionsTable, project, settingsService.getAmdImportNamingExceptionsList());
         final ExceptionsTableBuilder ruiBuilder = new ExceptionsTableBuilder(removeUnusedImportExceptionsTable, project, settingsService.getRuiImportExceptions());
 
         addMapping.addActionListener(new ActionListener() {

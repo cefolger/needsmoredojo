@@ -95,6 +95,17 @@ public class DojoSettingsDetectionComponent implements ProjectComponent {
     }
 
     public void projectOpened() {
+        DojoSettings settingsService = ServiceManager.getService(project, DojoSettings.class);
+
+        String upgraded = settingsService.upgrade();
+        if(upgraded != null)
+        {
+            new Notification("needsmoredojo",
+                    "Needs More Dojo: Upgrade Settings",
+                    upgraded,
+                    NotificationType.INFORMATION, new SetupNotification()).notify(project);
+        }
+
         if(!needsSetup())
         {
             return;
@@ -103,7 +114,6 @@ public class DojoSettingsDetectionComponent implements ProjectComponent {
         boolean needsProject = false;
         boolean needsDojo = false;
 
-        DojoSettings settingsService = ServiceManager.getService(project, DojoSettings.class);
         if( (settingsService.getDojoSourcesDirectory() == null || settingsService.getDojoSourcesDirectory().equals("")) && !settingsService.isDojoSourcesShareProjectSourcesRoot())
         {
             needsDojo = true;

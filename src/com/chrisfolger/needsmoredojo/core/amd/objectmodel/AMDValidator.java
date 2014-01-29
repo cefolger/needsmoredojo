@@ -1,10 +1,12 @@
 package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameException;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.psi.PsiElement;
 
+import java.util.List;
 import java.util.Map;
 
 public class AMDValidator
@@ -26,7 +28,7 @@ public class AMDValidator
      * insufficient
      * @return whether or not the define and parameter are consistently named
      */
-    public boolean defineMatchesParameter(String define, String parameter, Map<String, String> exceptions)
+    public boolean defineMatchesParameter(String define, String parameter, List<NameException> exceptions)
     {
         // simple case can be taken care of by just matching the stuff after / with the parameter
         // also case insensitive because the programmer can use any casing for the parameter
@@ -35,9 +37,12 @@ public class AMDValidator
 
         // if an exception like dojo/sniff -> has yields a match, then return true. Else, just continue
         // because they could also use a more standard convention like dojo/sniff -> sniff
-        if(exceptions.containsKey(defineComparison) && parameterComparison.equals(exceptions.get(defineComparison).toLowerCase()))
+        for(NameException exception : exceptions)
         {
-            return true;
+            if(exception.getLiteral().equals(defineComparison) && parameterComparison.equals(exception.getParameter().toLowerCase()))
+            {
+                return true;
+            }
         }
 
         defineComparison = defineComparison.toLowerCase();

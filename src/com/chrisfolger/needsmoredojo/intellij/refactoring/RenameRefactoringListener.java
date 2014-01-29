@@ -44,7 +44,7 @@ public class RenameRefactoringListener implements RefactoringElementListener {
                         (PsiFile) psiElement,
                         new SourcesLocator().getSourceLibraries(psiElement.getProject()).toArray(new SourceLibrary[0]),
                         ServiceManager.getService(psiElement.getProject(),
-                                DojoSettings.class).getExceptionsMap())
+                                DojoSettings.class).getNamingExceptionList())
                         .findFilesThatReferenceModule(SourcesLocator.getProjectSourceDirectories(psiElement.getProject(), true), true);
             }
         },

@@ -3,19 +3,19 @@ package com.chrisfolger.needsmoredojo.core.amd.naming;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class TestNameResolver
 {
-    private Map<String, String> exceptions;
+    private List<NameException> exceptions;
 
     @Before
     public void setup()
     {
-        exceptions = new HashMap<String, String>();
+        exceptions = new ArrayList<NameException>();
     }
 
     @Test
@@ -58,7 +58,7 @@ public class TestNameResolver
     public void testException()
     {
         // has is an explicit exception
-        exceptions.put("dojo/sniff", "has");
+        exceptions.add(new NameException("dojo/sniff", "has"));
         assertEquals("has", NameResolver.defineToParameter("dojo/sniff", exceptions));
     }
 
@@ -117,7 +117,7 @@ public class TestNameResolver
     @Test
     public void testExceptionWithRelativePath()
     {
-        exceptions.put("dojo/foo/bar", "Foo");
+        exceptions.add(new NameException("dojo/foo/bar", "Foo"));
         assertEquals("Foo", NameResolver.defineToParameter("../bar", exceptions, true, "dojo/foo/bar"));
     }
 }

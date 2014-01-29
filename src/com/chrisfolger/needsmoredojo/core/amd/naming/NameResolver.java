@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.core.amd.naming;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 public class NameResolver
@@ -10,12 +11,12 @@ public class NameResolver
     public static final String I18NPLUGIN = "dojo/i18n!";
     public static final String TEXTPLUGIN = "dojo/text!";
 
-    public static String defineToParameter(String define, Map<String, String> exceptions)
+    public static String defineToParameter(String define, List<NameException> exceptions)
     {
         return defineToParameter(define, exceptions, false, null);
     }
 
-    public static String defineToParameter(String define, Map<String, String> exceptions, boolean useModulePath, String absoluteModulePath)
+    public static String defineToParameter(String define, List<NameException> exceptions, boolean useModulePath, String absoluteModulePath)
     {
         define = define.replaceAll("\"|'", "");
 
@@ -25,14 +26,27 @@ public class NameResolver
             return "baseFx";
         }
 
-        // check all exceptions
-        if(exceptions.containsKey(define))
+        String firstModuleException = null;
+        String absolutePathException = null;
+        for(NameException exception : exceptions)
         {
-            return exceptions.get(define);
+            if(exception.getLiteral().equals(define))
+            {
+                firstModuleException = exception.getParameter();
+            }
+            if(useModulePath && exception.getLiteral().equals(absoluteModulePath))
+            {
+                absolutePathException = exception.getParameter();
+            }
         }
-        else if (useModulePath && absoluteModulePath != null && exceptions.containsKey(absoluteModulePath))
+        // check all exceptions
+        if(firstModuleException != null)
         {
-            return exceptions.get(absoluteModulePath);
+            return firstModuleException;
+        }
+        else if (useModulePath && absoluteModulePath != null && absolutePathException != null)
+        {
+            return absolutePathException;
         }
 
         if(define.startsWith(TEXTPLUGIN) || define.startsWith(I18NPLUGIN))

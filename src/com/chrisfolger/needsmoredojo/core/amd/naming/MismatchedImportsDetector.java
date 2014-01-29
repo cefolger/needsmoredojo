@@ -46,7 +46,7 @@ public class MismatchedImportsDetector
         }
     }
 
-    public List<Mismatch> matchOnList(PsiElement[] defines, PsiElement[] parameters, Map<String, String> exceptions, DojoSettings dojoSettings)
+    public List<Mismatch> matchOnList(PsiElement[] defines, PsiElement[] parameters, List<NameException> exceptions, DojoSettings dojoSettings, MismatchedImportsDetectorCache cache)
     {
         List<Mismatch> results = new ArrayList<Mismatch>();
 
@@ -73,7 +73,6 @@ public class MismatchedImportsDetector
             String absolutePath = null;
 
             ImportReorderer reorderer = new ImportReorderer();
-            MismatchedImportsDetectorCache cache = ServiceManager.getService(defines[i].getProject(), MismatchedImportsDetectorCache.class);
             String absoluteModulePath = cache.getAbsolutePath(defines[i].getContainingFile(), defines[i].getText());
             if(absoluteModulePath == null)
             {

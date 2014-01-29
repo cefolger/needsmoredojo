@@ -1,6 +1,7 @@
 package com.chrisfolger.needsmoredojo.core.amd.importing;
 
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameException;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.refactoring.MatchResult;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
@@ -11,7 +12,9 @@ import com.intellij.refactoring.RefactoringFactory;
 import com.intellij.refactoring.RenameRefactoring;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,13 +22,13 @@ import java.util.Map;
  */
 public class ImportUpdater
 {
-    private Map<String, String> moduleNamingExceptionMap;
+    private List<NameException> moduleNamingExceptionMap;
 
-    public ImportUpdater(@Nullable Map<String, String> moduleNamingExceptionMap)
+    public ImportUpdater(@Nullable List<NameException> moduleNamingExceptionMap)
     {
         if(moduleNamingExceptionMap == null)
         {
-            this.moduleNamingExceptionMap = new HashMap<String, String>();
+            this.moduleNamingExceptionMap = new ArrayList<NameException>();
         }
         else
         {

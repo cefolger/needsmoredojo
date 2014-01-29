@@ -6,6 +6,7 @@ import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportUpdater;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameException;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.util.FileUtil;
 import com.chrisfolger.needsmoredojo.core.util.JSUtil;
@@ -35,10 +36,10 @@ public class ModuleImporter
     private PsiFile moduleFile;
     private Project project;
     private String moduleName;
-    private Map<String, String> moduleNamingExceptionMap;
+    private List<NameException> moduleNamingExceptionMap;
     private ImportUpdater importUpdater;
 
-    public ModuleImporter(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, Map<String, String> exceptionsMap)
+    public ModuleImporter(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, List<NameException> exceptionsMap)
     {
         this.moduleName = moduleName;
         this.moduleFile = moduleFile;
