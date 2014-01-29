@@ -222,4 +222,14 @@ public class NameResolver
 
         return modulePath;
     }
+
+    public static String getModuleAndPathWithoutPluginResourceId(String fullModulePath)
+    {
+        String modulePath = fullModulePath;
+        if(modulePath.contains("!"))
+        {
+            modulePath = modulePath.substring(0, modulePath.lastIndexOf('!'));
+        }
+        return modulePath;
+    }
 }

@@ -132,16 +132,17 @@ public class ImportReorderer
     {
         String moduleText = defineText.replaceAll("'", "").replaceAll("\"", "");
 
-        if(!useRelative && moduleText.indexOf('.') == -1)
+        if(!useRelative && NameResolver.getModulePath(moduleText).indexOf('.') == -1)
         {
             return moduleText;
         }
 
         String moduleName = NameResolver.getModuleName(moduleText);
+        String modulePath = NameResolver.getModuleAndPathWithoutPluginResourceId(moduleText);
         String resourceId = NameResolver.getAMDPluginResourceIfPossible(moduleText, true);
 
         // get the list of possible strings/PsiFiles that would match it
-        PsiFile importedFile = new DojoModuleFileResolver().resolveReferencedFile(project, file, defineText);
+        PsiFile importedFile = new DojoModuleFileResolver().resolveReferencedFile(project, file, modulePath);
 
         // get the files that are being imported
         PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(file.getProject(), moduleName, true, false);
