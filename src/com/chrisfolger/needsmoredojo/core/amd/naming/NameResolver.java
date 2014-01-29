@@ -75,9 +75,12 @@ public class NameResolver
         if(useModulePath && absoluteModulePath != null)
         {
             String[] parts = absoluteModulePath.split("/");
-            String prefix = parts[parts.length - 2].replaceAll("_", "");
-            String name = parts[parts.length - 1].replaceAll("_", "");
-            return prefix + ("" + name.charAt(0)).toUpperCase() + name.substring(1);
+            if(parts.length > 1)
+            {
+                String prefix = parts[parts.length - 2].replaceAll("_", "");
+                String name = parts[parts.length - 1].replaceAll("_", "");
+                return prefix + ("" + name.charAt(0)).toUpperCase() + name.substring(1);
+            }
         }
 
         return result;

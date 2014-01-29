@@ -6,6 +6,7 @@ import com.chrisfolger.needsmoredojo.core.amd.importing.ImportCreator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
+import com.chrisfolger.needsmoredojo.intellij.dialog.AddNewImportSelectionDialog;
 import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -17,6 +18,7 @@ import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -29,7 +31,8 @@ public class AddNewImportAction extends JavaScriptAction
     @Override
     public void actionPerformed(AnActionEvent e)
     {
-        final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(e.getProject());
+        Project project = e.getProject();
+        final PsiFile psiFile = PsiFileUtil.getPsiFileInCurrentEditor(project);
 
         Editor editor = e.getData(PlatformDataKeys.EDITOR);
         String initialChoice = "";
@@ -43,7 +46,7 @@ public class AddNewImportAction extends JavaScriptAction
 
         String warning = "";
 
-        String projectSources = ServiceManager.getService(e.getProject(), DojoSettings.class).getProjectSourcesDirectory();
+        String projectSources = ServiceManager.getService(project, DojoSettings.class).getProjectSourcesDirectory();
         if(projectSources == null || projectSources.equals(""))
         {
             warning += "\n*For best results, configure your project sources in the settings dialog*";
@@ -65,7 +68,17 @@ public class AddNewImportAction extends JavaScriptAction
         }
         else if(choices.length > 0)
         {
-            importModule = Messages.showEditableChooseDialog("", "Add new AMD Import", null, choices, choices[0], null);
+            AddNewImportSelectionDialog dialog = new AddNewImportSelectionDialog(project);
+            dialog.getPeer().setTitle("Add New AMD Import");
+            dialog.show(choices, choices[0]);
+            if(dialog.isOK())
+            {
+                importModule = dialog.getSelectedItem();
+            }
+            else
+            {
+                importModule = null;
+            }
         }
         else if (choices.length == 0)
         {
