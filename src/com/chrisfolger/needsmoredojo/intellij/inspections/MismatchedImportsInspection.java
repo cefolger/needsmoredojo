@@ -75,7 +75,10 @@ public class MismatchedImportsInspection extends DojoInspection
         }
 
         LocalQuickFix noFix = null;
-        List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(blockDefines.toArray(new PsiElement[0]), blockParameters.toArray(new PsiElement[0]), ServiceManager.getService(file.getProject(), DojoSettings.class).getExceptionsMap());
+        List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(blockDefines.toArray(new PsiElement[0]),
+                blockParameters.toArray(new PsiElement[0]),
+                ServiceManager.getService(file.getProject(), DojoSettings.class).getExceptionsMap(),
+                ServiceManager.getService(file.getProject(), DojoSettings.class));
         for(int i=0;i<mismatches.size();i++)
         {
             MismatchedImportsDetector.Mismatch mismatch = mismatches.get(i);

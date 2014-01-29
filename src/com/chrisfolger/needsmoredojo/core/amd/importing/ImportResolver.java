@@ -280,7 +280,7 @@ public class ImportResolver
             return new String[0];
         }
 
-        return getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[0]), module, psiFile, prioritizeRelativeImports);
+        return getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[libraries.size()]), module, psiFile, prioritizeRelativeImports);
     }
 
     /**

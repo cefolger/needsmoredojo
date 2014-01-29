@@ -144,6 +144,20 @@ public class AMDValidator
             return resourceId.equals(parameterComparison) || parameterComparison.equals(pluginId) || parameterComparison.equals(NameResolver.getModuleName(pluginId));
         }
 
+        // By the time you get here, there is one more check needed. If there are two imported modules a/b/module1 and b/c/module1,
+        // module1, bModule1, and cModule1 should be accepted as valid
+        if(defineComparison.indexOf('/') > 0)
+        {
+            String[] result = defineComparison.split("/");
+
+            if(result.length > 1)
+            {
+                String prefix = result[result.length - 2];
+                String name = result[result.length - 1];
+                return parameterComparison.equals(prefix + name);
+            }
+        }
+
         return false;
     }
 

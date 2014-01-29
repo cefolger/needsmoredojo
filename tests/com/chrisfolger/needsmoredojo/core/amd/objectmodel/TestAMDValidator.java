@@ -188,4 +188,12 @@ public class TestAMDValidator
     {
         assertTrue(validator.defineMatchesParameter("dojo/foo!bar", "foo", exceptions));
     }
+
+    @Test
+    public void testSameNameDifferentPaths()
+    {
+        assertTrue(validator.defineMatchesParameter("a/b/moduleA", "moduleA", exceptions));
+        assertTrue(validator.defineMatchesParameter("a/b/moduleA", "bModuleA", exceptions));
+        assertTrue(validator.defineMatchesParameter("a/c/moduleA", "cModuleA", exceptions));
+    }
 }
