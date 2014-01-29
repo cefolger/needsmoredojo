@@ -128,21 +128,11 @@ public class ImportReorderer
         editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
     }
 
-    public String getAbsoluteSyntax(PsiElement define, PsiFile file)
+    public String getPathSyntax(Project project, String defineText, PsiFile file, boolean useRelative)
     {
-        return getAbsoluteSyntax(define.getProject(), define.getText(), file);
-    }
-
-    /**
-     * Given a module import, converts it to the absolute path reference. If it's already an absolute path,
-     * returns it instead of trying to resolve it
-     */
-    public String getAbsoluteSyntax(Project project, String defineText, PsiFile file)
-    {
-        boolean relative = defineText.charAt(1) == '.';
         String moduleText = defineText.replaceAll("'", "").replaceAll("\"", "");
 
-        if(!relative)
+        if(!useRelative && moduleText.indexOf('.') == -1)
         {
             return moduleText;
         }
@@ -172,12 +162,15 @@ public class ImportReorderer
             }
         }
 
-
         String choice = choices.get(0) + resourceId;
 
         if(choices.size() > 1)
         {
-            if (!choices.get(1).startsWith("."))
+            if (choices.get(1).startsWith(".") && useRelative)
+            {
+                return choices.get(1) + resourceId;
+            }
+            else if (!choices.get(1).startsWith(".") && !useRelative)
             {
                 return choices.get(1) + resourceId;
             }
@@ -204,35 +197,13 @@ public class ImportReorderer
         boolean relative = define.getText().charAt(1) == '.';
         char quote = define.getText().charAt(0);
         String moduleText = define.getText().replaceAll("'", "").replaceAll("\"", "");
-        String moduleName = NameResolver.getModuleName(moduleText);
-        String resourceId = NameResolver.getAMDPluginResourceIfPossible(moduleText, true);
 
-        // get the list of possible strings/PsiFiles that would match it
-        PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(file.getProject(), moduleName, true, false);
-
-        // get the files that are being imported
-        String[] results = new ImportResolver().getChoicesFromFiles(files, new SourcesLocator().getSourceLibraries(file.getProject()).toArray(new SourceLibrary[0]), moduleName, define.getContainingFile(), false);
-        String choice = results[0] + resourceId;
-
-        if(results.length > 1)
-        {
-            if(results[1].startsWith(".") && !relative)
-            {
-                choice = results[1] + resourceId;
-            }
-            else if (!results[1].startsWith(".") && relative)
-            {
-                choice = results[1] + resourceId;
-            }
-        }
-
-        if(choice.equals(moduleText))
+        String syntax = getPathSyntax(define.getProject(), define.getText(), define.getContainingFile(), !relative);
+        if(syntax.equals(moduleText))
         {
             return null; // no point in replacing with the same thing
         }
 
-        PsiElement replacement = JSChangeUtil.createExpressionFromText(define.getProject(), quote + choice + quote).getPsi();
-
-        return replacement;
+        return JSChangeUtil.createExpressionFromText(define.getProject(), quote + syntax + quote).getPsi();
     }
 }

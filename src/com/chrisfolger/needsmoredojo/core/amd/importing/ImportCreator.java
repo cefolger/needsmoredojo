@@ -98,7 +98,7 @@ public class ImportCreator
                 String parameterWithAbsolutePath = NameResolver.defineToParameter(module,
                         exceptionsMap,
                         true,
-                        new ImportReorderer().getAbsoluteSyntax(parameters.getProject(), module, parameters.getContainingFile()));
+                        new ImportReorderer().getPathSyntax(parameters.getProject(), module, parameters.getContainingFile(), false));
 
                 createImport(module, quoteCharacter, parameterWithAbsolutePath, imports, parameters);
                 return;

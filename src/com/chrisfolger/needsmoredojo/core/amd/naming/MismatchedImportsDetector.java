@@ -74,7 +74,7 @@ public class MismatchedImportsDetector
             if(enableResolutionBasedInspection)
             {
                 ImportReorderer reorderer = new ImportReorderer();
-                String absoluteModulePath = reorderer.getAbsoluteSyntax(defines[i], defines[i].getContainingFile());
+                String absoluteModulePath = reorderer.getPathSyntax(defines[i].getProject(), defines[i].getText(), defines[i].getContainingFile(), false);
 
                 if(absoluteModulePath != null)
                 {
