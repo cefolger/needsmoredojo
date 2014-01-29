@@ -30,6 +30,10 @@ public class NameResolver
         {
             return exceptions.get(define);
         }
+        else if (useModulePath && absoluteModulePath != null && exceptions.containsKey(absoluteModulePath))
+        {
+            return exceptions.get(absoluteModulePath);
+        }
 
         if(define.startsWith(TEXTPLUGIN) || define.startsWith(I18NPLUGIN))
         {

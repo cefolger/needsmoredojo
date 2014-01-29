@@ -163,6 +163,11 @@ public class ImportReorderer
             }
         }
 
+        if(choices.size() == 0)
+        {
+            return moduleText;
+        }
+
         String choice = choices.get(0) + resourceId;
 
         if(choices.size() > 1)

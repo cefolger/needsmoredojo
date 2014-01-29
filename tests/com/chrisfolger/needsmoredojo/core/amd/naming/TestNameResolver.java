@@ -113,4 +113,11 @@ public class TestNameResolver
         assertEquals("fooBar", NameResolver.defineToParameter("dojo/foo/bar", exceptions, true, "dojo/foo/bar"));
         assertEquals("fooBar", NameResolver.defineToParameter("dojo/_foo/bar", exceptions, true, "dojo/_foo/bar"));
     }
+
+    @Test
+    public void testExceptionWithRelativePath()
+    {
+        exceptions.put("dojo/foo/bar", "Foo");
+        assertEquals("Foo", NameResolver.defineToParameter("../bar", exceptions, true, "dojo/foo/bar"));
+    }
 }
