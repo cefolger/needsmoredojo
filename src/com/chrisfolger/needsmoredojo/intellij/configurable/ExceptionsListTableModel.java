@@ -44,7 +44,7 @@ public class ExceptionsListTableModel extends AbstractTableModel
 
     public boolean isCellEditable(int row, int col)
     {
-        return col != 0;
+        return true;
     }
 
     public void addRow(String[] rowData)
