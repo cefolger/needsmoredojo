@@ -26,18 +26,25 @@ public class MismatchedImportsQuickFix implements LocalQuickFix {
     private PsiElement define;
     private PsiElement parameter;
     private LinkedHashMap<String, String> amdImportNamingExceptions = null;
+    private String newParameterName = "";
 
-    public MismatchedImportsQuickFix(PsiElement define, PsiElement parameter) {
+    public MismatchedImportsQuickFix(PsiElement define, PsiElement parameter, String absolutePath) {
         this.define = define;
         this.parameter = parameter;
 
         amdImportNamingExceptions = ServiceManager.getService(define.getProject(), DojoSettings.class).getAmdImportNamingExceptions();
+        this.newParameterName = NameResolver.defineToParameter(define.getText(), amdImportNamingExceptions);
+
+        if(parameter != null && absolutePath != null)
+        {
+            this.newParameterName = NameResolver.defineToParameter(define.getText(), amdImportNamingExceptions, true, absolutePath);
+        }
     }
 
     @NotNull
     @Override
     public String getName() {
-        return "Change parameter \"" + parameter.getText() + "\" to \"" + NameResolver.defineToParameter(define.getText(), amdImportNamingExceptions) + "\" to match define literal";
+        return "Change parameter \"" + parameter.getText() + "\" to \"" + this.newParameterName + "\" to match define literal";
     }
 
     @NotNull
@@ -50,7 +57,7 @@ public class MismatchedImportsQuickFix implements LocalQuickFix {
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor problemDescriptor) {
 
         final RenameRefactoring refactoring = RefactoringFactory.getInstance(project)
-                .createRename(parameter, NameResolver.defineToParameter(define.getText(), amdImportNamingExceptions), false, false);
+                .createRename(parameter, this.newParameterName, false, false);
 
         CommandProcessor.getInstance().executeCommand(project, new Runnable() {
             @Override

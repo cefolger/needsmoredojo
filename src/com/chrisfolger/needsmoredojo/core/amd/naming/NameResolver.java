@@ -12,6 +12,11 @@ public class NameResolver
 
     public static String defineToParameter(String define, Map<String, String> exceptions)
     {
+        return defineToParameter(define, exceptions, false, null);
+    }
+
+    public static String defineToParameter(String define, Map<String, String> exceptions, boolean useModulePath, String absoluteModulePath)
+    {
         define = define.replaceAll("\"|'", "");
 
         // since there are two fx modules we have this exception
@@ -61,6 +66,14 @@ public class NameResolver
         if(result.contains("!"))
         {
             result = result.substring(0, result.indexOf('!'));
+        }
+
+        if(useModulePath && absoluteModulePath != null)
+        {
+            String[] parts = absoluteModulePath.split("/");
+            String prefix = parts[parts.length - 2].replaceAll("_", "");
+            String name = parts[parts.length - 1].replaceAll("_", "");
+            return prefix + ("" + name.charAt(0)).toUpperCase() + name.substring(1);
         }
 
         return result;

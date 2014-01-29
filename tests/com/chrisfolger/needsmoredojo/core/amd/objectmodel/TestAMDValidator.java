@@ -195,5 +195,6 @@ public class TestAMDValidator
         assertTrue(validator.defineMatchesParameter("a/b/moduleA", "moduleA", exceptions));
         assertTrue(validator.defineMatchesParameter("a/b/moduleA", "bModuleA", exceptions));
         assertTrue(validator.defineMatchesParameter("a/c/moduleA", "cModuleA", exceptions));
+        assertTrue(validator.defineMatchesParameter("a/_c/moduleA", "cModuleA", exceptions));
     }
 }

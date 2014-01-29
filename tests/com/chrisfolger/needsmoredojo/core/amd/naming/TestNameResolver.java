@@ -106,4 +106,11 @@ public class TestNameResolver
     {
         assertEquals("foo", NameResolver.defineToParameter("dojo/foo!bar", exceptions));
     }
+
+    @Test
+    public void testUsingModulePaths()
+    {
+        assertEquals("fooBar", NameResolver.defineToParameter("dojo/foo/bar", exceptions, true, "dojo/foo/bar"));
+        assertEquals("fooBar", NameResolver.defineToParameter("dojo/_foo/bar", exceptions, true, "dojo/_foo/bar"));
+    }
 }

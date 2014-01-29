@@ -16,12 +16,18 @@ public class MismatchedImportsDetector
         private int index;
         private PsiElement define;
         private PsiElement parameter;
+        private String absolutePath;
 
-        public Mismatch(PsiElement define, PsiElement parameter, int index)
+        public Mismatch(PsiElement define, PsiElement parameter, int index, String absolutePath)
         {
+            this.absolutePath = absolutePath;
             this.define = define;
             this.parameter = parameter;
             this.index = index;
+        }
+
+        public String getAbsolutePath() {
+            return absolutePath;
         }
 
         public int getIndex() {
@@ -46,7 +52,7 @@ public class MismatchedImportsDetector
             // special case where there are missing defines most likely
             for(int i=defines.length;i<parameters.length;i++)
             {
-                results.add(new Mismatch(null, parameters[i], i));
+                results.add(new Mismatch(null, parameters[i], i, null));
             }
         }
 
@@ -61,6 +67,7 @@ public class MismatchedImportsDetector
 
             String defineTest = defines[i].getText();
             String parameterTest = parameters[i].getText();
+            String absolutePath = null;
             // TODO option to enable resolution based inspection
             // TODO fix add new import
             boolean enableResolutionBasedInspection = true;
@@ -72,12 +79,13 @@ public class MismatchedImportsDetector
                 if(absoluteModulePath != null)
                 {
                     defineTest = absoluteModulePath;
+                    absolutePath = absoluteModulePath;
                 }
             }
 
             if(!new AMDValidator().defineMatchesParameter(defineTest, parameterTest, exceptions))
             {
-                results.add(new Mismatch(defines[i], parameters[i], i));
+                results.add(new Mismatch(defines[i], parameters[i], i, absolutePath));
             }
         }
 

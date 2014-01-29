@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.intellij.inspections;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
 import com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetector;
+import com.chrisfolger.needsmoredojo.core.amd.naming.NameResolver;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -17,9 +18,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class MismatchedImportsInspection extends DojoInspection
@@ -74,6 +73,26 @@ public class MismatchedImportsInspection extends DojoInspection
 
         }
 
+        // TODO if resolution inspection is enabled, then check for duplicates
+        // TODO option to enable resolution based inspection
+        boolean enableResolutionBasedInspection = true;
+        Map<String, Integer> parameterOccurrences = new HashMap<String, Integer>();
+        if(enableResolutionBasedInspection)
+        {
+            for(PsiElement parameter : blockParameters)
+            {
+                if(parameter == null) continue;
+                if(parameterOccurrences.containsKey(parameter.getText()))
+                {
+                    parameterOccurrences.put(parameter.getText(), parameterOccurrences.get(parameter.getText()) + 1);
+                }
+                else
+                {
+                    parameterOccurrences.put(parameter.getText(), 1);
+                }
+            }
+        }
+
         LocalQuickFix noFix = null;
         List<MismatchedImportsDetector.Mismatch> mismatches = new MismatchedImportsDetector().matchOnList(blockDefines.toArray(new PsiElement[0]),
                 blockParameters.toArray(new PsiElement[0]),
@@ -110,7 +129,15 @@ public class MismatchedImportsInspection extends DojoInspection
 
             if(define != null && parameter != null)
             {
-                fix = new MismatchedImportsQuickFix(define, parameter);
+                String normalName = NameResolver.defineToParameter(define.getText(), ServiceManager.getService(define.getProject(), DojoSettings.class).getAmdImportNamingExceptions());
+                if(parameterOccurrences.containsKey(normalName))
+                {
+                    fix = new MismatchedImportsQuickFix(define, parameter, mismatch.getAbsolutePath());
+                }
+                else
+                {
+                    fix = new MismatchedImportsQuickFix(define, parameter, null);
+                }
                 exceptionFix = new AddExceptionQuickFix(define, parameter);
             }
 

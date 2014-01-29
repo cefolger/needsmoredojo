@@ -154,7 +154,7 @@ public class AMDValidator
             {
                 String prefix = result[result.length - 2];
                 String name = result[result.length - 1];
-                return parameterComparison.equals(prefix + name);
+                return parameterComparison.equals((prefix + name).replaceAll("_", ""));
             }
         }
 
