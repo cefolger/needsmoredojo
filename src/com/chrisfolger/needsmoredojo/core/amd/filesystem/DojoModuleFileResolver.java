@@ -148,16 +148,16 @@ public class DojoModuleFileResolver
         return modules;
     }
 
-    public PsiFile resolveReferencedFile(Project project, PsiElement define)
+    public PsiFile resolveReferencedFile(Project project, PsiFile fileContainingDefine, String defineText)
     {
         ImportResolver resolver = new ImportResolver();
-        String text = define.getText().replaceAll("'|\"", "");
+        String text = defineText.replaceAll("'|\"", "");
         PsiFile[] possibleFiles = resolver.getPossibleDojoImportFiles(project, NameResolver.getModuleName(text), false, false);
 
         LinkedHashMap<String, PsiFile> possibleImportedFiles = resolver.getChoicesFromFiles(possibleFiles,
                 new SourcesLocator().getSourceLibraries(project).toArray(new SourceLibrary[0]),
                 NameResolver.getModuleName(text),
-                define.getContainingFile(), false, true);
+                fileContainingDefine, false, true);
 
         for(String importString : possibleImportedFiles.keySet())
         {
@@ -168,6 +168,11 @@ public class DojoModuleFileResolver
         }
 
         return null;
+    }
+
+    public PsiFile resolveReferencedFile(Project project, PsiElement define)
+    {
+        return resolveReferencedFile(project, define.getContainingFile(), define.getText());
     }
 
     public Set<String> getDirectoriesForDojoModules(Project project, Set<String> modules)

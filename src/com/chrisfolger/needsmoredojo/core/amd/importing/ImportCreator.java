@@ -13,7 +13,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Map;
 
 public class ImportCreator
 {
@@ -86,7 +86,25 @@ public class ImportCreator
 
     public void createImport(String module, String quoteCharacter, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
-        String parameter = NameResolver.defineToParameter(module, ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap());
+        Map<String, String> exceptionsMap = ServiceManager.getService(parameters.getProject(), DojoSettings.class).getExceptionsMap();
+        String parameter = NameResolver.defineToParameter(module, exceptionsMap);
+
+        // if the parameter would cause a duplicate, then assume it is a module with a different path but the same name
+        // as an existing imported module.
+        for(JSParameter existingParameter : parameters.getParameters())
+        {
+            if(existingParameter != null && existingParameter.getText().equals(parameter))
+            {
+                String parameterWithAbsolutePath = NameResolver.defineToParameter(module,
+                        exceptionsMap,
+                        true,
+                        new ImportReorderer().getAbsoluteSyntax(parameters.getProject(), module, parameters.getContainingFile()));
+
+                createImport(module, quoteCharacter, parameterWithAbsolutePath, imports, parameters);
+                return;
+            }
+        }
+
         createImport(module, quoteCharacter, parameter, imports, parameters);
     }
 

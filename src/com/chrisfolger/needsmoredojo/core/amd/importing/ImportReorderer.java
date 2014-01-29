@@ -14,6 +14,7 @@ import com.intellij.lang.javascript.psi.JSParameter;
 import com.intellij.lang.javascript.psi.impl.JSChangeUtil;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nullable;
@@ -127,23 +128,19 @@ public class ImportReorderer
         editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
     }
 
+    public String getAbsoluteSyntax(PsiElement define, PsiFile file)
+    {
+        return getAbsoluteSyntax(define.getProject(), define.getText(), file);
+    }
+
     /**
      * Given a module import, converts it to the absolute path reference. If it's already an absolute path,
      * returns it instead of trying to resolve it
-     *
-     * @param define
-     * @param file
-     * @return
      */
-    public String getAbsoluteSyntax(PsiElement define, PsiFile file)
+    public String getAbsoluteSyntax(Project project, String defineText, PsiFile file)
     {
-        if(define == null)
-        {
-            return null;
-        }
-
-        boolean relative = define.getText().charAt(1) == '.';
-        String moduleText = define.getText().replaceAll("'", "").replaceAll("\"", "");
+        boolean relative = defineText.charAt(1) == '.';
+        String moduleText = defineText.replaceAll("'", "").replaceAll("\"", "");
 
         if(!relative)
         {
@@ -154,14 +151,14 @@ public class ImportReorderer
         String resourceId = NameResolver.getAMDPluginResourceIfPossible(moduleText, true);
 
         // get the list of possible strings/PsiFiles that would match it
-        PsiFile importedFile = new DojoModuleFileResolver().resolveReferencedFile(define.getProject(), define);
+        PsiFile importedFile = new DojoModuleFileResolver().resolveReferencedFile(project, file, defineText);
 
         // get the files that are being imported
         PsiFile[] files = new ImportResolver().getPossibleDojoImportFiles(file.getProject(), moduleName, true, false);
         LinkedHashMap<String, PsiFile> results = new ImportResolver().getChoicesFromFiles(files,
                 new SourcesLocator().getSourceLibraries(file.getProject()).toArray(new SourceLibrary[0]),
                 moduleName,
-                define.getContainingFile(),
+                file,
                 false,
                 true);
 
