@@ -73,23 +73,17 @@ public class MismatchedImportsInspection extends DojoInspection
 
         }
 
-        // TODO if resolution inspection is enabled, then check for duplicates
-        // TODO option to enable resolution based inspection
-        boolean enableResolutionBasedInspection = true;
         Map<String, Integer> parameterOccurrences = new HashMap<String, Integer>();
-        if(enableResolutionBasedInspection)
+        for(PsiElement parameter : blockParameters)
         {
-            for(PsiElement parameter : blockParameters)
+            if(parameter == null) continue;
+            if(parameterOccurrences.containsKey(parameter.getText()))
             {
-                if(parameter == null) continue;
-                if(parameterOccurrences.containsKey(parameter.getText()))
-                {
-                    parameterOccurrences.put(parameter.getText(), parameterOccurrences.get(parameter.getText()) + 1);
-                }
-                else
-                {
-                    parameterOccurrences.put(parameter.getText(), 1);
-                }
+                parameterOccurrences.put(parameter.getText(), parameterOccurrences.get(parameter.getText()) + 1);
+            }
+            else
+            {
+                parameterOccurrences.put(parameter.getText(), 1);
             }
         }
 

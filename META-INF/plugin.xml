@@ -214,5 +214,8 @@
 
         <projectService serviceInterface="com.chrisfolger.needsmoredojo.core.settings.DojoSettings" serviceImplementation="com.chrisfolger.needsmoredojo.core.settings.DojoSettings">
         </projectService>
+
+        <projectService serviceInterface="com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetectorCache" serviceImplementation="com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetectorCache">
+        </projectService>
     </extensions>
 </idea-plugin>

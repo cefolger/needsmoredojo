@@ -3,11 +3,14 @@ package com.chrisfolger.needsmoredojo.core.amd.naming;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportReorderer;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.AMDValidator;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MismatchedImportsDetector
 {
@@ -68,19 +71,20 @@ public class MismatchedImportsDetector
             String defineTest = defines[i].getText();
             String parameterTest = parameters[i].getText();
             String absolutePath = null;
-            // TODO option to enable resolution based inspection
-            // TODO fix add new import
-            boolean enableResolutionBasedInspection = true;
-            if(enableResolutionBasedInspection)
-            {
-                ImportReorderer reorderer = new ImportReorderer();
-                String absoluteModulePath = reorderer.getPathSyntax(defines[i].getProject(), defines[i].getText(), defines[i].getContainingFile(), false);
 
-                if(absoluteModulePath != null)
-                {
-                    defineTest = absoluteModulePath;
-                    absolutePath = absoluteModulePath;
-                }
+            ImportReorderer reorderer = new ImportReorderer();
+            MismatchedImportsDetectorCache cache = ServiceManager.getService(defines[i].getProject(), MismatchedImportsDetectorCache.class);
+            String absoluteModulePath = cache.getAbsolutePath(defines[i].getContainingFile(), defines[i].getText());
+            if(absoluteModulePath == null)
+            {
+                absoluteModulePath = reorderer.getPathSyntax(defines[i].getProject(), defines[i].getText(), defines[i].getContainingFile(), false);
+                cache.put(defines[i].getContainingFile(), defines[i].getText(), absoluteModulePath);
+            }
+
+            if(absoluteModulePath != null)
+            {
+                defineTest = absoluteModulePath;
+                absolutePath = absoluteModulePath;
             }
 
             if(!new AMDValidator().defineMatchesParameter(defineTest, parameterTest, exceptions))
