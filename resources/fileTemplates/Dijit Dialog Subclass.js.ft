@@ -1,0 +1,27 @@
+define([
+    'dijit/_TemplatedMixin',
+    'dijit/_WidgetsInTemplateMixin',
+    'dojo/_base/declare',
+    'dijit/Dialog',
+    'dojo/text!{pathToTemplate}'
+], function(TemplatedMixin, WidgetsInTemplateMixin, declare, Dialog, template) {
+    return declare([Dialog, TemplatedMixin, WidgetsInTemplateMixin], {
+        templateString: template,
+
+        postMixInProperties: function() {
+            this.inherited(arguments);
+        },
+
+        buildRendering: function() {
+            this.inherited(arguments);
+        },
+
+        postCreate: function() {
+            this.inherited(arguments);
+        },
+
+        startup: function() {
+            this.inherited(arguments);
+        }
+    });
+});
