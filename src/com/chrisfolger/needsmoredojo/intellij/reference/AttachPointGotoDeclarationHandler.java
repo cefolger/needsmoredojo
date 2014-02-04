@@ -1,5 +1,6 @@
 package com.chrisfolger.needsmoredojo.intellij.reference;
 
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.AttachPointResolver;
 import com.chrisfolger.needsmoredojo.core.amd.objectmodel.TemplatedWidgetUtil;
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.intellij.inspections.DojoInspection;
@@ -28,26 +29,7 @@ public class AttachPointGotoDeclarationHandler extends DojoDeclarationHandler im
             return new PsiElement[0];
         }
 
-        DojoSettings settings = ServiceManager.getService(psiElement.getProject(), DojoSettings.class);
-        if(!settings.isNeedsMoreDojoEnabled())
-        {
-            return new PsiElement[0];
-        }
-
-        PsiFile templateFile = new TemplatedWidgetUtil(psiElement.getContainingFile()).findTemplatePath();
-
-        if(templateFile == null)
-        {
-            return new PsiElement[0];
-        }
-
-        PsiElement attachPoint = TemplatedWidgetUtil.getAttachPointElementInHtmlFile(psiElement, templateFile);
-        if(attachPoint == null)
-        {
-            return new PsiElement[0];
-        }
-
-        return new PsiElement[] { attachPoint };
+        return AttachPointResolver.getGotoDeclarationTargets(psiElement, i, editor);
     }
 
     @Nullable

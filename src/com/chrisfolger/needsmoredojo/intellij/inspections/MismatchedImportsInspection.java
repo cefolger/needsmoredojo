@@ -57,6 +57,7 @@ public class MismatchedImportsInspection extends DojoInspection
         return "Needs More Dojo";
     }
 
+    @NotNull
     @Override
     public String[] getGroupPath()
     {

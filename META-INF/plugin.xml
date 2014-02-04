@@ -217,5 +217,11 @@
 
         <projectService serviceInterface="com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetectorCache" serviceImplementation="com.chrisfolger.needsmoredojo.core.amd.naming.MismatchedImportsDetectorCache">
         </projectService>
+
+        <!-- overrides the default JavaScript unresolved variable inspection so that we are able to resolve attach points. Otherwise there
+            is no way to provide references to attach point variables -->
+        <localInspection language="JavaScript" groupPath="JavaScript" shortName="JSUnresolvedVariable"
+                         key="js.unresolved.variable.inspection.name" groupKey="js.inspection.group.name" enabledByDefault="true"
+                         level="WEAK WARNING" implementationClass="com.chrisfolger.needsmoredojo.intellij.inspections.DojoUnresolvedVariableInspection" unfair="true"/>
     </extensions>
 </idea-plugin>
