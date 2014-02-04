@@ -12,6 +12,13 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Overrides the default javascript unresolved variable inspection.
+ *
+ * The point of this is to provide support for attach points instead of having them marked as unresolved
+ * variables. Since there is no way to provide references for properties via ReferenceContributors, I decided
+ * to do it by overriding this inspection.
+ */
 public class DojoUnresolvedVariableInspection extends JSUnresolvedVariableInspection
 {
     @Nls
