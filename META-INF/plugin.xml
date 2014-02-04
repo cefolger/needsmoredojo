@@ -201,8 +201,11 @@
         <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.ThisInheritedGotoDeclarationHandler"/>
         <gotoDeclarationHandler implementation="com.chrisfolger.needsmoredojo.intellij.reference.MethodGotoDeclarationHandler"/>
 
+        <!--
+        Removed these until version 0.8
         <moduleType id="DOJO_TOOLKIT_MODULE" implementationClass="com.chrisfolger.needsmoredojo.intellij.modules.DojoToolkitModuleType" classpathProvider="true"/>
         <moduleConfigurationEditorProvider implementation="com.chrisfolger.needsmoredojo.intellij.modules.DojoToolkitModuleEditorProvider"/>
+        -->
 
         <projectConfigurable implementation="com.chrisfolger.needsmoredojo.intellij.configurable.DojoSettingsConfigurable"></projectConfigurable>
 
