@@ -3,7 +3,7 @@ define([
     'dijit/_WidgetsInTemplateMixin',
     'dojo/_base/declare',
     'dijit/Dialog',
-    'dojo/text!{pathToTemplate}'
+    'dojo/text!${pathToTemplate}'
 ], function(TemplatedMixin, WidgetsInTemplateMixin, declare, Dialog, template) {
     return declare([Dialog, TemplatedMixin, WidgetsInTemplateMixin], {
         templateString: template,
