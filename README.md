@@ -28,7 +28,8 @@ Download from the JetBrains plugin repository, or alternatively: clone the repo 
 15. [Navigate to Declaration for i18n resource keys](#navigate-to-declaration-for-i18n-resource-keys)
 16. [Toggle between Absolute and Relative AMD Imports](#toggle-between-absolute-and-relative-amd-imports)
 17. [Find Cyclic Dependencies](#find-cyclic-dependencies)
-18. [Navigation to modules and methods](#navigation-to-modules-and-methods)
+18. [Navigation to Modules and Methods](#navigation-to-modules-and-methods)
+19. [Included File Templates](#included-file-templates)
 
 ##### Issues and Feature Requests
 
@@ -47,6 +48,7 @@ Listed below are the keyboard shortcuts for the most common operations Needs Mor
 | Organize imports | Ctrl+Shift+O, 1 |
 | Switch between relative and absolute path syntax | Ctrl+Shift+O, S |
 | Move import up/down | Ctrl+Alt+Pg Up/Pg Down |
+| Send import to beginning/end | Ctrl+Shift+O, Home/End |
 
 ##### Initial Configuration
 
@@ -171,6 +173,9 @@ and both cases will result in "Button" being the initial value:
 Use this feature by placing the cursor near a module's path in your define statement. Use Ctrl+Alt+Page Up/Down to
 move the import and its corresponding parameter. This will not affect plugins at the end that do not have a corresponding
 parameter (such as domReady!)
+
+In addition to move up/down you can use send an import to the beginning or end of a define array literal with the
+Ctrl+Shift+O, Home and Ctrl+Shift+O, End respectively.
 
 ##### Remove AMD Import
 
@@ -440,6 +445,18 @@ The IDE will present a list of startup methods in various other modules instead 
 ```
 
 The IDE will present a list of unrelated startup methods in other modules instead of jumping to the one in _WidgetBase
+
+##### Included File Templates
+
+Starting with 0.7, several file templates are available to use. You can use them by doing a normal "New File" operation.
+I've tried to include file templates that are most useful in my experience, however any suggestions for additions are always welcome.
+
+The following templates are included:
+- Dojo Module: A regular Dojo module enclosed by a define(...) block
+- Dojo Templated Widget: A Dojo module that uses WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, and provides a template
+- Dijit Dialog Subclass (and Template): I've often found the need to subclass dijit/Dialog, but you can't do that and provide
+your own template. Instead you have to copy the dijit/Dialog template and make your own modifications. This template provides
+that for you.
 
 #### License
 
