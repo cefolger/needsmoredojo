@@ -128,9 +128,9 @@ Access this option with Ctrl+Shift+O, 2.
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport1.png)
 - Type the name of the module you would like to import and press enter.
-- A dialog will then appear listing possibilities.
+- A dialog will then appear listing possibilities. You can select one or press the indicated number key to select it
 
-![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport2.png)
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport5.png)
 - Select one and press enter, the module will be inserted for you.
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/addimport4.png)
@@ -139,7 +139,8 @@ Access this option with Ctrl+Shift+O, 2.
 containing all of the dojo sources**
 
 By default, this feature prioritizes absolute path syntax for module paths. You can change this in the settings dialog
-by checking "Prefer relative paths"
+by checking "Prefer relative paths." Another default setting will be to use single quotes for the define literal. You can
+change to double quotes by changing the "Module ID Strings" setting.
 
 You can also import an AMD plugin by using <module>!<resource id>. For example, to import an i18n resource, type
 i18!path/to/resource/file:
@@ -257,10 +258,7 @@ Inside a module that uses _TemplatedMixin, use this option with the caret over a
 key binding is Ctrl+Shift+O, A.
 
 The attach point will be looked up in the widget's template file (specified by the templateString property) and highlighted.
-Press Esc to remove the highlighting.
-
-You can also use Ctrl+Click over an attach point reference. However, note that the attach point references are flagged
-as unresolved variables even though they can be looked up.
+Press Esc to remove the highlighting. You can also use Ctrl+Click over an attach point reference.
 
 > **Note: If you don't set the location of your project sources, this feature will search for them in the directory
 containing all of the dojo sources**
@@ -297,18 +295,23 @@ corresponding parameter name.
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/mismatchedimports1.png)
 
-It will also provide a quick fix. The fix will rename the parameter (and update all references to it) to match the
-define literal. If the fix is appropriate, just activate it and the mismatch will be corrected and unflagged. If you have
-two mismatched imports in a row, you will also get a quick fix to swap the two.
+The inspection provides several quick fixes. The three possible quick fixes are:
+- Change the parameter to match the define literal (and update references to it)
+- If two consecutive imports have been flagged as mismatched, swap them
+- Add a mismatched imports exception so the import is not flagged as mismatched in the future
 
-![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/quickfix2.png)
+If a fix is appropriate, just activate it and the mismatch will be corrected.
+
+![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/quickfix3.png)
 
 You can disable the mismatched imports inspection by going in the inspections menu under **JavaScript -> Needs More Dojo** and unchecking it.
 
-Sometimes the Needs More Dojo conventions may inappropriately flag an import as mismatched. For these cases, you can
-add a naming exception via the Needs More Dojo settings:
+Sometimes the Needs More Dojo conventions may inappropriately flag an import as mismatched. If you don't add an exception via
+a quick fix, you can do it in the Needs More Dojo settings:
 
 ![ScreenShot](https://raw.github.com/cefolger/needsmoredojo/dev/screenshots/docs/modulenamingexception.png)
+
+These exceptions will apply to the given module whether it is imported using an absolute or relative path syntax.
 
 In IntelliJ IDEA, you can also run this inspection in batch mode on your entire project or a subset. To do this, use Analyze ->
 Run Inspection By Name -> Check for inconsistently named imports.

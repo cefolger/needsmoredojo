@@ -46,8 +46,12 @@
                 <li>Add ability to send an import to the end and beginning of of the list</li>
                 <li>Move most items under the Code menu to a Needs More Dojo submenu </li>
                 <li>Add the "Dojo Toolkit" module type</li>
+                <li>Module names using the parent directory as a prefix are no longer flagged as mismatched (see #153)</li>
+                <li>Module naming exceptions work with relative and absolute path references </li>
+                <li>Module naming exceptions can have more than one mapping per module </li>
+                <li>Add new import has been redone to support selection via hotkeys </li>
                 <li>Fix NPE bug caused by templateString references that couldn't be resolved (#148)</li>
-                <li>Minor bug fixes (#145, #149)</li>
+                <li>Bug fixes (#145, #149, #156, #159, #160)</li>
             </ul>
 
             <b>0.6</b>
@@ -72,21 +76,6 @@
                 <li>Jump to attach point will attempt to resolve absolute file references for templates </li>
                 <li>Fix high priority bug with goto declaration using absolute file paths in templated widgets (#123) </li>
                 <li>Minor bug fixes (#127, #132, #135)</li>
-            </ul>
-
-            <b>0.5.1</b>
-            <ul>
-                <li>Add experimental cyclic dependency detection both as an inspection and an action (Ctrl+Alt+O, C). Inspection
-                 must be enabled via the settings menu</li>
-                <li>Add ability to toggle between relative and absolute AMD path syntax </li>
-                <li>Add ability to ignore certain unused imports with /*NMD:Ignore*/ block </li>
-                <li>Add quick fix for renaming a parameter to match its define literal if a mismatch is detected </li>
-                <li>Add Ctrl+Click support for attach points </li>
-                <li>When performing a Refactor: Move File operation, AMD plugin resources that use relative paths will
-                have their path updated</li>
-                <li>If you use one line per define literal, line comments after the literal will have their order
-                preserved when reorganizing (Issue #53)</li>
-                <li>Minor bug fixes (#107, #68, #112, #116)</li>
             </ul>
 
             <br><br>
