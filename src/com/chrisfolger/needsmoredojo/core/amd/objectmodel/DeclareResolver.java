@@ -98,8 +98,18 @@ public class DeclareResolver
                     return;
                 }
 
-                // get the function
-                JSFunction function = (JSFunction) element.getArguments()[1];
+                JSFunction function = null;
+
+                if(element.getArguments().length == 3)
+                {
+                    // legacy format that puts the module name as the first argument in the define call
+                    function = (JSFunction) element.getArguments()[2];
+                }
+                else
+                {
+                    function = (JSFunction) element.getArguments()[1];
+                }
+
                 function.acceptChildren(getVisitorToRetrieveDeclare(onDeclareFound));
             }
         };
