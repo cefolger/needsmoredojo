@@ -35,6 +35,6 @@ public class AddExceptionQuickFix implements LocalQuickFix
     @Override
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor problemDescriptor)
     {
-        ServiceManager.getService(project, DojoSettings.class).getExceptionsMap().put(define.getText().replaceAll("\"|'", ""), parameter.getText());
+        ServiceManager.getService(project, DojoSettings.class).getAmdImportNamingExceptionsList().add(define.getText().replaceAll("\"|'", "") + "(" +  parameter.getText());
     }
 }

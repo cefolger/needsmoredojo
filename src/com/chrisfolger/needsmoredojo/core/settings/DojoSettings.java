@@ -63,11 +63,13 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         singleQuotedModuleIDs = true;
     }
 
+    @Deprecated
     public @NotNull LinkedHashMap<String, String> getExceptionsMap()
     {
         return amdImportNamingExceptions;
     }
 
+    @Deprecated
     public @Nullable String getException(@NotNull String module)
     {
         if(amdImportNamingExceptions.containsKey(module))
@@ -80,6 +82,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         }
     }
 
+    @Deprecated
     public LinkedHashMap<String, String> getAmdImportNamingExceptions() {
         return amdImportNamingExceptions;
     }
@@ -92,6 +95,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         this.allowCaseInsensitiveSearch = allowCaseInsensitiveSearch;
     }
 
+    @Deprecated
     public void setAmdImportNamingExceptions(LinkedHashMap<String, String> amdImportNamingExceptions) {
         this.amdImportNamingExceptions = amdImportNamingExceptions;
     }
