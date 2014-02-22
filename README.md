@@ -477,4 +477,7 @@ The code is organized into two packages under com.chrisfolger.needsmoredojo: "in
 IntelliJ actions, inspections, etc. and "core," which contains most of the logic. For tracing a feature's code path, starting
 with classes under the intellij package is a good idea.
 
+Note that you will need to add a reference to the JavascriptLanguage.jar located in your IntelliJ Ultimate installation, as I found
+by default it is not included as a reference when you configure an SDK. 
+
 If you are interested in modifying or just navigating the code base, don't hesitate to contact me.
