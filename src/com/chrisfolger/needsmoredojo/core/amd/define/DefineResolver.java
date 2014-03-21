@@ -37,7 +37,14 @@ public class DefineResolver
 
         // get the first argument which should be an array literal
         JSArrayLiteralExpression literalExpressions = items.getArguments();
-        Collections.addAll(defines, literalExpressions.getExpressions());
+        for(JSExpression expression : literalExpressions.getExpressions())
+        {
+            if(expression instanceof JSLiteralExpression)
+            {
+                JSLiteralExpression literal = (JSLiteralExpression) expression;
+                defines.add(literal);
+            }
+        }
 
         // get the second argument which should be a function
         JSFunctionExpression function = items.getFunction();

@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.6</version>
+  <version>0.6.1</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -40,6 +40,11 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>0.6.1</b>
+            <ul>
+                <li>Compatibility with IntelliJ IDEA 13.1.1
+            </ul>
+
             <b>0.6</b>
             <ul>
                 <li>Move and Rename refactoring is disabled by default</li>
