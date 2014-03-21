@@ -5,6 +5,7 @@ import com.intellij.lang.javascript.psi.JSFunction;
 import com.intellij.lang.javascript.psi.JSFunctionExpression;
 import com.intellij.lang.javascript.psi.JSParameter;
 import com.intellij.lang.javascript.psi.impl.JSFunctionExpressionImpl;
+import com.intellij.lang.javascript.psi.stubs.JSFunctionStubBase;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static org.mockito.Mockito.mock;
 
-public class MockJSFunctionExpression extends JSFunctionExpressionImpl
+public class MockJSFunctionExpression extends JSFunctionExpressionImpl<JSFunctionStubBase>
 {
     private JSFunction function;
     private JSParameter[] parameters;
@@ -31,12 +32,6 @@ public class MockJSFunctionExpression extends JSFunctionExpressionImpl
         {
             this.parameters[i] = new MockJSParameter(parameters[i]);
         }
-    }
-
-    @Override
-    public JSFunction getFunction()
-    {
-        return function;
     }
 
     @NotNull

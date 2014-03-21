@@ -41,7 +41,7 @@ public class DefineResolver
 
         // get the second argument which should be a function
         JSFunctionExpression function = items.getFunction();
-        Collections.addAll(parameters, function.getFunction().getParameters());
+        Collections.addAll(parameters, function.getParameters());
     }
 
     /**
@@ -131,7 +131,7 @@ public class DefineResolver
                     return;
                 }
 
-                onDefineFound.run(new Object[] { element, items.getFunction().getFunction()});
+                onDefineFound.run(new Object[] { element });
             }
         };
     }
