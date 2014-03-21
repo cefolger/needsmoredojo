@@ -3,10 +3,11 @@ package com.chrisfolger.needsmoredojo.testutil;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.javascript.psi.JSParameter;
 import com.intellij.lang.javascript.psi.impl.JSFunctionImpl;
+import com.intellij.lang.javascript.psi.stubs.JSFunctionStubBase;
 
 import static org.mockito.Mockito.mock;
 
-public class MockJSFunction extends JSFunctionImpl
+public class MockJSFunction extends JSFunctionImpl<JSFunctionStubBase>
 {
     private JSParameter[] parameters = null;
 

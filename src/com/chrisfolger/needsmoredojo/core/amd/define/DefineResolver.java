@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,21 +37,11 @@ public class DefineResolver
 
         // get the first argument which should be an array literal
         JSArrayLiteralExpression literalExpressions = items.getArguments();
-        for(JSExpression expression : literalExpressions.getExpressions())
-        {
-            if(expression instanceof JSLiteralExpression)
-            {
-                JSLiteralExpression literal = (JSLiteralExpression) expression;
-                defines.add(literal);
-            }
-        }
+        Collections.addAll(defines, literalExpressions.getExpressions());
 
         // get the second argument which should be a function
         JSFunctionExpression function = items.getFunction();
-        for(JSParameter parameter : function.getFunction().getParameters())
-        {
-            parameters.add(parameter);
-        }
+        Collections.addAll(parameters, function.getParameters());
     }
 
     /**
@@ -140,7 +131,7 @@ public class DefineResolver
                     return;
                 }
 
-                onDefineFound.run(new Object[] { element, items.getFunction().getFunction()});
+                onDefineFound.run(new Object[] { element });
             }
         };
     }
