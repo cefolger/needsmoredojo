@@ -10,6 +10,7 @@ import com.intellij.lang.javascript.psi.*;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +20,11 @@ import java.util.Map;
 
 public class ImportCreator
 {
+    private void displayDuplicateMessage(String parameter, Project project)
+    {
+        new Notification("needsmoredojo", "Add new AMD import", parameter + " is already defined ", NotificationType.INFORMATION).notify(project);
+    }
+
     public void createImport(String module, String quoteCharacter, String parameter, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
         for(JSParameter element : parameters.getParameters())
@@ -26,7 +32,7 @@ public class ImportCreator
             if(element.getName().equals(parameter))
             {
                 // already defined, so just exit
-                new Notification("needsmoredojo", "Add new AMD import", parameter + " is already defined ", NotificationType.INFORMATION).notify(parameters.getProject());
+                displayDuplicateMessage(parameter, parameters.getProject());
                 return;
             }
         }
@@ -93,14 +99,29 @@ public class ImportCreator
 
         // if the parameter would cause a duplicate, then assume it is a module with a different path but the same name
         // as an existing imported module.
-        for(JSParameter existingParameter : parameters.getParameters())
+        for (int i = 0; i < parameters.getParameters().length; i++)
         {
+            JSParameter existingParameter = parameters.getParameters()[i];
             if(existingParameter != null && existingParameter.getText().equals(parameter))
             {
+                String existingAbsolutePath = NameResolver.getModuleAndPathWithoutPluginResourceId(imports.getExpressions()[i].getText().replaceAll("'", "").replaceAll("\"", ""));
+                if(existingAbsolutePath.contains("."))
+                {
+                    existingAbsolutePath = new ImportReorderer().getPathSyntax(parameters.getProject(), existingAbsolutePath, parameters.getContainingFile(), false);
+                }
+
+                String absolutePath = new ImportReorderer().getPathSyntax(parameters.getProject(), module, parameters.getContainingFile(), false);
+
+                if(existingAbsolutePath.equals(absolutePath))
+                {
+                    // unless of course the two modules are actually identical
+                    displayDuplicateMessage(parameter, parameters.getProject());
+                    return;
+                }
                 String parameterWithAbsolutePath = NameResolver.defineToParameter(module,
                         exceptionsMap,
                         true,
-                        new ImportReorderer().getPathSyntax(parameters.getProject(), module, parameters.getContainingFile(), false));
+                        absolutePath);
 
                 createImport(module, quoteCharacter, parameterWithAbsolutePath, imports, parameters);
                 return;

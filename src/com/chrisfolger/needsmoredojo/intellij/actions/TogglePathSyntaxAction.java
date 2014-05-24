@@ -40,7 +40,7 @@ public class TogglePathSyntaxAction extends JavaScriptAction
         }
 
         final PsiElement define = results[0];
-        final PsiElement replacement = reorderer.getOppositePathSyntaxFromImport(define, file);
+        final PsiElement replacement = reorderer.getOppositePathSyntaxFromImport(define);
         if(replacement != null)
         {
             CommandProcessor.getInstance().executeCommand(file.getProject(), new Runnable() {

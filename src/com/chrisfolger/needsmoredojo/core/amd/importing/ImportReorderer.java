@@ -190,10 +190,9 @@ public class ImportReorderer
      * import with the other syntax, if possible.
      *
      * @param define
-     * @param file
      * @return
      */
-    public @Nullable PsiElement getOppositePathSyntaxFromImport(PsiElement define, PsiFile file)
+    public @Nullable PsiElement getOppositePathSyntaxFromImport(PsiElement define)
     {
         if(define == null)
         {
