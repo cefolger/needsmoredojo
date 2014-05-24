@@ -11,6 +11,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -92,46 +93,58 @@ public class FindCyclicDependenciesAction extends JavaScriptAction
         instance.runProcessWithProgressSynchronously(new Runnable() {
             @Override
             public void run() {
-                instance.getProgressIndicator().setIndeterminate(true);
-
-                final CyclicDependencyDetector detector = new CyclicDependencyDetector();
-                Collection<VirtualFile> filesToSearch = new DojoModuleFileResolver().getAllDojoProjectSourceFiles(e.getProject());
-
-                int count = 0;
-                for (VirtualFile file : filesToSearch)
+                try
                 {
-                    if (DojoModuleFileResolver.isInDojoSources(file.getPath()))
-                    {
-                        continue;
-                    }
+                    instance.getProgressIndicator().setIndeterminate(true);
 
-                    try
-                    {
-                        PsiFile psiFile = PsiManager.getInstance(e.getProject()).findFile(file);
-                        DependencyNode cycle = detector.addDependenciesOfFile(psiFile, psiFile.getProject(), psiFile, null, null, false);
+                    final CyclicDependencyDetector detector = new CyclicDependencyDetector();
+                    Collection<VirtualFile> filesToSearch = new DojoModuleFileResolver().getAllDojoProjectSourceFiles(e.getProject());
 
-                        if (cycle != null)
+                    int count = 0;
+                    for (VirtualFile file : filesToSearch)
+                    {
+                        if (DojoModuleFileResolver.isInDojoSources(file.getPath()))
                         {
-                            DetectionResult cycleDetectionResult = detector.getCycleDetectionResult(cycle);
-                            detector.updateIncriminatingModules(cycleDetectionResult.getDependencies(), cycleDetectionResult.getCyclePath());
-                            count++;
+                            continue;
+                        }
+
+                        try
+                        {
+                            PsiFile psiFile = PsiManager.getInstance(e.getProject()).findFile(file);
+                            DependencyNode cycle = detector.addDependenciesOfFile(psiFile, psiFile.getProject(), psiFile, null, null, false);
+
+                            if (cycle != null)
+                            {
+                                DetectionResult cycleDetectionResult = detector.getCycleDetectionResult(cycle);
+                                detector.updateIncriminatingModules(cycleDetectionResult.getDependencies(), cycleDetectionResult.getCyclePath());
+                                count++;
+                            }
+                        }
+                        catch(ProcessCanceledException exception)
+                        {
+                            new Notification("needsmoredojo", "Find Circular Dependencies", "Find Circular Dependencies action was canceled", NotificationType.INFORMATION).notify(e.getProject());
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.error(ex, ex);
                         }
                     }
-                    catch (Exception ex)
+
+                    if (count == 0)
                     {
-                        logger.error(ex, ex);
+                        new Notification("needsmoredojo", "Find Circular Dependencies", "No cycles were found in the dependency graph", NotificationType.INFORMATION).notify(e.getProject());
+                    }
+                    else
+                    {
+                        updateToolWindow(count, e.getProject(), detector);
                     }
                 }
-
-                if (count == 0)
+                catch(ProcessCanceledException exception)
                 {
-                    new Notification("needsmoredojo", "Find Circular Dependencies", "No cycles were found in the dependency graph", NotificationType.INFORMATION).notify(e.getProject());
-                }
-                else
-                {
-                    updateToolWindow(count, e.getProject(), detector);
+                    new Notification("needsmoredojo", "Find Circular Dependencies", "Find Circular Dependencies action was canceled", NotificationType.INFORMATION).notify(e.getProject());
                 }
             }
-        }, "Searching for circular dependencies", false, e.getProject());
+        }, "Searching for circular dependencies", true, e.getProject());
     }
 }
