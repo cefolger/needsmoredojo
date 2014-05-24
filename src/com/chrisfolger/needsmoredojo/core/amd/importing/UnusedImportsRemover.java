@@ -138,6 +138,7 @@ public class UnusedImportsRemover
             }
 
             Set<String> terminators = new HashSet<String>();
+            Set<PsiElement> elementsToDelete = new HashSet<PsiElement>();
             terminators.add(",");
             for(int x=0;x<blockDefines.size();x++)
             {
@@ -145,8 +146,7 @@ public class UnusedImportsRemover
                 // one and should not be flagged as unused.
                 if(x >= blockParameters.size())
                 {
-                    blockDefines.remove(x);
-                    x--;
+                    elementsToDelete.add(blockDefines.get(x));
                     continue;
                 }
 
@@ -154,9 +154,14 @@ public class UnusedImportsRemover
                 PsiElement ignoreComment = AMDPsiUtil.getNextElementOfType(element, PsiComment.class, terminators, new HashSet<String>());
                 if(ignoreComment != null && ignoreComment.getText().equals(IGNORE_COMMENT))
                 {
-                    blockDefines.remove(x);
-                    x--;
+                    elementsToDelete.add(blockDefines.get(x));
+                    elementsToDelete.add(blockParameters.get(x));
                 }
+            }
+            for(PsiElement element : elementsToDelete)
+            {
+                blockDefines.remove(element);
+                blockParameters.remove(element);
             }
 
             JSRecursiveElementVisitor visitor = new UnusedImportsRemovalVisitor(blockDefines, blockParameters, parameterExceptions, expressions[i]);
