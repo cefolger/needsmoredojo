@@ -280,7 +280,14 @@ public class ImportResolver
             return new String[0];
         }
 
-        return getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[libraries.size()]), module, psiFile, prioritizeRelativeImports);
+        String[] results = getChoicesFromFiles(files, libraries.toArray(new SourceLibrary[libraries.size()]), module, psiFile, prioritizeRelativeImports);
+        if(results.length == 0 && useEnteredModuleAsChoice)
+        {
+            // it is possible to get files returned that are not valid modules, if that's the case allow the typed
+            // module to be used if the user has configured it.
+            return new String[] { module };
+        }
+        return results;
     }
 
     /**
