@@ -135,7 +135,7 @@ public class MismatchedImportsInspection extends DojoInspection
                 {
                     fix = new MismatchedImportsQuickFix(define, parameter, null);
                 }
-                exceptionFix = new AddExceptionQuickFix(define, parameter);
+                exceptionFix = new AddExceptionQuickFix(define, parameter, mismatch.getAbsolutePath());
             }
 
             // check if the previous import was also mismatched. If it was, it's possible that they were flipped by accident.

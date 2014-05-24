@@ -14,8 +14,10 @@ public class AddExceptionQuickFix implements LocalQuickFix
 {
     private PsiElement define;
     private PsiElement parameter;
+    private String absolutePath;
 
-    public AddExceptionQuickFix(PsiElement define, PsiElement parameter) {
+    public AddExceptionQuickFix(PsiElement define, PsiElement parameter, String absolutePath) {
+        this.absolutePath = absolutePath;
         this.define = define;
         this.parameter = parameter;
     }
@@ -23,7 +25,14 @@ public class AddExceptionQuickFix implements LocalQuickFix
     @NotNull
     @Override
     public String getName() {
-        return "Flag " + define.getText() + " as a mismatched imports exception";
+        if(absolutePath != null)
+        {
+            return "Flag " + absolutePath + " as a mismatched imports exception";
+        }
+        else
+        {
+            return "Flag " + define.getText() + " as a mismatched imports exception";
+        }
     }
 
     @NotNull
@@ -35,6 +44,13 @@ public class AddExceptionQuickFix implements LocalQuickFix
     @Override
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor problemDescriptor)
     {
-        ServiceManager.getService(project, DojoSettings.class).getAmdImportNamingExceptionsList().add(define.getText().replaceAll("\"|'", "") + "(" +  parameter.getText());
+        if(absolutePath != null)
+        {
+            ServiceManager.getService(project, DojoSettings.class).getAmdImportNamingExceptionsList().add(absolutePath + "(" +  parameter.getText());
+        }
+        else
+        {
+            ServiceManager.getService(project, DojoSettings.class).getAmdImportNamingExceptionsList().add(define.getText().replaceAll("\"|'", "") + "(" +  parameter.getText());
+        }
     }
 }
