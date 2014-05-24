@@ -115,6 +115,13 @@ public class TestNameResolver
     }
 
     @Test
+    public void testUsingModulePathsWithHyphenatedModules()
+    {
+        assertEquals("domConstruct", NameResolver.defineToParameter("dojo/dom-construct", exceptions, false, "dojo/dom-construct"));
+        assertEquals("dojoDomConstruct", NameResolver.defineToParameter("dojo/dom-construct", exceptions, true, "dojo/dom-construct"));
+    }
+
+    @Test
     public void testModuleNameResolution()
     {
         assertEquals("ProjectDisplay", NameResolver.defineToParameter("website/ProjectDisplay/ProjectDisplay", exceptions, false, "website/ProjectDisplay/ProjectDisplay"));

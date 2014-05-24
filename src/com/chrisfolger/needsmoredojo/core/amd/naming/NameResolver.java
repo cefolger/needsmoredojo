@@ -93,7 +93,16 @@ public class NameResolver
             {
                 String prefix = parts[parts.length - 2].replaceAll("_", "");
                 String name = parts[parts.length - 1].replaceAll("_", "");
-                return prefix + ("" + name.charAt(0)).toUpperCase() + name.substring(1);
+
+                if(name.contains("-"))
+                {
+                    int index = name.indexOf('-');
+                    name = name.replace("-", "");
+                    name = name.substring(0,index)+ ("" +name.charAt(index)).toUpperCase() +name.substring(index+1);
+                }
+
+                result = prefix + ("" + name.charAt(0)).toUpperCase() + name.substring(1);
+                return result;
             }
         }
 
