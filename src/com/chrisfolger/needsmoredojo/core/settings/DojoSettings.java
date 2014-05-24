@@ -49,6 +49,8 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         ruiImportExceptions.put("dojox/form/Uploader/Flash", "Flash");
         ruiImportExceptions.put("dojox/form/Uploader", "Uploader");
         amdImportNamingExceptionsList = new ArrayList<String>();
+        amdImportNamingExceptionsList.add("dojo/sniff(has");
+        amdImportNamingExceptionsList.add("doh/main(doh");
 
         refactoringEnabled = false;
         amdImportNamingExceptions = new LinkedHashMap<String, String>();
@@ -218,12 +220,11 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         // any version 0.6 and earlier
         if(version == null || version.equals("0.6"))
         {
-            amdImportNamingExceptions = new LinkedHashMap<String, String>();
             for(final Map.Entry<String, String> entry : amdImportNamingExceptions.entrySet())
             {
                 amdImportNamingExceptionsList.add(entry.getKey() + "(" + entry.getValue());
             }
-
+            amdImportNamingExceptions = new LinkedHashMap<String, String>();
 
             version = CURRENT_VERSION;
             return "Needs More Dojo has upgraded your settings " + fromVersion + " to version " + CURRENT_VERSION;
