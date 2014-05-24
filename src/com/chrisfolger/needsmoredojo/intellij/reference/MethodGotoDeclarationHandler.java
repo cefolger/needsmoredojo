@@ -63,8 +63,18 @@ public class MethodGotoDeclarationHandler extends DojoDeclarationHandler impleme
                 return new PsiElement[0];
             }
 
-            Set<PsiElement> resolvedMethods = AMDPsiUtil.resolveInheritedMethod(psiElement.getContainingFile(), psiElement.getProject(), psiElement.getText(), 0);
-            return resolvedMethods.toArray(new PsiElement[resolvedMethods.size()]);
+            // if the method is defined in this file, return it instead of searching other files. Rely on this.inherited
+            // references for that behavior.
+            PsiElement resolvedInThisFile = AMDPsiUtil.fileHasMethod(psiElement.getContainingFile(), psiElement.getText(), false);
+            if(resolvedInThisFile != null)
+            {
+                return new PsiElement[] { resolvedInThisFile };
+            }
+            else
+            {
+                Set<PsiElement> resolvedMethods = AMDPsiUtil.resolveInheritedMethod(psiElement.getContainingFile(), psiElement.getProject(), psiElement.getText(), 0);
+                return resolvedMethods.toArray(new PsiElement[resolvedMethods.size()]);
+            }
         }
         /**
          * the second case is when the user is referencing a method off of another dojo module. In this case, we
