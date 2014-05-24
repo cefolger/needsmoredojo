@@ -115,6 +115,12 @@ public class TestNameResolver
     }
 
     @Test
+    public void testModuleNameResolution()
+    {
+        assertEquals("ProjectDisplay", NameResolver.defineToParameter("website/ProjectDisplay/ProjectDisplay", exceptions, false, "website/ProjectDisplay/ProjectDisplay"));
+    }
+
+    @Test
     public void testExceptionWithRelativePath()
     {
         exceptions.add(new NameException("dojo/foo/bar", "Foo"));
