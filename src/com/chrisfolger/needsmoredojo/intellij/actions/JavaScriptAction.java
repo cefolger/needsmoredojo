@@ -2,11 +2,9 @@ package com.chrisfolger.needsmoredojo.intellij.actions;
 
 import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.chrisfolger.needsmoredojo.core.util.PsiFileUtil;
-import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiFile;
 
 public abstract class JavaScriptAction extends AnAction

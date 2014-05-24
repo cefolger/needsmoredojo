@@ -97,7 +97,15 @@ public class SourcesLocator
         else
         {
             // return the dojo library sources
-            return new VirtualFile[] { getDojoSourcesDirectory(project, pullFromSettings) };
+            VirtualFile dojoSourcesDirectory = getDojoSourcesDirectory(project, pullFromSettings);
+            if(dojoSourcesDirectory != null)
+            {
+                return new VirtualFile[] { dojoSourcesDirectory };
+            }
+            else
+            {
+                return new VirtualFile[0];
+            }
         }
     }
 

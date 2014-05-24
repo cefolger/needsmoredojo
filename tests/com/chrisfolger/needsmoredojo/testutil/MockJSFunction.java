@@ -7,7 +7,7 @@ import com.intellij.lang.javascript.psi.stubs.JSFunctionStubBase;
 
 import static org.mockito.Mockito.mock;
 
-public class MockJSFunction extends JSFunctionImpl<JSFunctionStubBase>
+public class MockJSFunction extends JSFunctionImpl
 {
     private JSParameter[] parameters = null;
 
