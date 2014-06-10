@@ -103,7 +103,10 @@ public class UnusedImportsInspection extends DojoInspection
 
                 if (parameter != null)
                 {
-                    descriptors.add(manager.createProblemDescriptor(parameter, String.format("Unused AMD import: %s", parameter.getText()), fixes, ProblemHighlightType.LIKE_DEPRECATED, true, false));
+                    if(isOnTheFly || define == null)
+                    {
+                        descriptors.add(manager.createProblemDescriptor(parameter, String.format("Unused AMD import: %s", parameter.getText()), fixes, ProblemHighlightType.LIKE_DEPRECATED, true, false));
+                    }
                 }
 
                 if (define != null)

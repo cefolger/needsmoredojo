@@ -64,7 +64,7 @@ public class MismatchedImportsInspection extends DojoInspection
         return new String[] { "JavaScript", "Needs More Dojo "};
     }
 
-    private void addProblemsForBlock(JSCallExpression expression, List<ProblemDescriptor> descriptors, PsiFile file, InspectionManager manager)
+    private void addProblemsForBlock(JSCallExpression expression, List<ProblemDescriptor> descriptors, PsiFile file, InspectionManager manager, boolean isOnTheFly)
     {
         List<PsiElement> blockDefines = new ArrayList<PsiElement>();
         List<PsiElement> blockParameters = new ArrayList<PsiElement>();
@@ -163,7 +163,10 @@ public class MismatchedImportsInspection extends DojoInspection
 
             if (parameter != null)
             {
-                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, fix, exceptionFix));
+                if (isOnTheFly || define == null)
+                {
+                    descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, fix, exceptionFix));
+                }
             }
 
             if (define != null)
@@ -194,7 +197,7 @@ public class MismatchedImportsInspection extends DojoInspection
         Set<JSCallExpression> expressions = resolver.getAllImportBlocks(file);
         for(JSCallExpression expression : expressions)
         {
-            addProblemsForBlock(expression, descriptors, file, manager);
+            addProblemsForBlock(expression, descriptors, file, manager, isOnTheFly);
         }
 
         return descriptors.toArray(new ProblemDescriptor[0]);
