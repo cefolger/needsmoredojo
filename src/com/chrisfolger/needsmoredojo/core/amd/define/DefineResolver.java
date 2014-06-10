@@ -237,10 +237,13 @@ public class DefineResolver
             @Override
             public void visitJSCallExpression(JSCallExpression expression)
             {
-                if(expression != null && expression.getMethodExpression() != null &&
-                        (expression.getMethodExpression().getText().equals("define") || expression.getMethodExpression().getText().equals("require")))
+                if(expression != null && expression.getMethodExpression() != null)
                 {
-                    listOfDefinesOrRequiresToVisit.add(expression);
+                    String expressionText = expression.getMethodExpression().getText();
+                    if(expressionText.equals("define") || expressionText.equals("require"))
+                    {
+                        listOfDefinesOrRequiresToVisit.add(expression);
+                    }
                 }
                 super.visitJSCallExpression(expression);
             }

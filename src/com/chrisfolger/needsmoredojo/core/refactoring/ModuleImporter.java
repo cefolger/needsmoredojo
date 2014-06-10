@@ -79,12 +79,13 @@ public class ModuleImporter
         {
             JSExpression argument = statement.getArguments().getExpressions()[i];
 
-            if(argument.getText().contains("\""))
+            String rawArgumentText = argument.getText();
+            if(rawArgumentText.contains("\""))
             {
                 quote = '"';
             }
 
-            String argumentText = argument.getText().replaceAll("'", "").replaceAll("\"", "");
+            String argumentText = rawArgumentText.replaceAll("'", "").replaceAll("\"", "");
             if(argumentText.contains(moduleName))
             {
                 StringBuilder b = new StringBuilder(argumentText);
@@ -229,13 +230,14 @@ public class ModuleImporter
                 JSExpression expression = statement.getArguments().getExpressions()[i];
 
                 char quote = '"';
-                if(expression.getText().contains("'"))
+                String expressionText = expression.getText();
+                if(expressionText.contains("'"))
                 {
                     quote = '\'';
                 }
 
                 // figure out which module it is
-                String importModule = expression.getText().replaceAll("'", "").replaceAll("\"", "");
+                String importModule = expressionText.replaceAll("'", "").replaceAll("\"", "");
 
                 // get the module name
                 String moduleName = NameResolver.getModuleName(importModule);
@@ -312,7 +314,13 @@ public class ModuleImporter
                 if(!isInProjectDirectory) continue;
 
                 PsiFile psiFile = psiManager.findFile(file);
-                if(!psiFile.getText().contains("define(") && !psiFile.getText().contains("require"))
+                String psiFileText = psiFile.getText();
+                if(!psiFileText.contains("define(") && !psiFileText.contains("require"))
+                {
+                    continue;
+                }
+
+                if(!psiFileText.contains(moduleName))
                 {
                     continue;
                 }
