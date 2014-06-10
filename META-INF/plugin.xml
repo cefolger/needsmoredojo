@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.7</version>
+  <version>0.7.1</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -40,6 +40,10 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>0.7.1 </b>
+            <ul>
+            </ul>
+
             <b>0.7 (major release) </b>
             <ul>
                 <li>Quick fix to add a mismatched import exception </li>
@@ -186,7 +190,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchedImportsProvider"/>
+        <severitiesProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchSeverityProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.UnusedImportsProvider"/>
         <inspectionToolProvider implementation="com.chrisfolger.needsmoredojo.intellij.inspections.CyclicDependencyProvider"/>
 
@@ -220,5 +224,9 @@
         <localInspection language="JavaScript" groupPath="JavaScript" shortName="JSUnresolvedVariable"
                          key="js.unresolved.variable.inspection.name" groupKey="js.inspection.group.name" enabledByDefault="true"
                          level="WEAK WARNING" implementationClass="com.chrisfolger.needsmoredojo.intellij.inspections.DojoUnresolvedVariableInspection" unfair="true"/>
+
+        <localInspection hasStaticDescription="true" language="JavaScript" groupPath="JavaScript,Needs More Dojo" shortName="MismatchedImportsInspection"
+                         key="com.chrisfolger.needsmoredojo.MismatchedImportsInspection" groupKey="com.chrisfolger.needsmoredojo" enabledByDefault="true"
+                         level="NMDMismatch" implementationClass="com.chrisfolger.needsmoredojo.intellij.inspections.MismatchedImportsInspection" unfair="true"/>
     </extensions>
 </idea-plugin>

@@ -163,12 +163,12 @@ public class MismatchedImportsInspection extends DojoInspection
 
             if (parameter != null)
             {
-                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix, exceptionFix));
+                descriptors.add(manager.createProblemDescriptor(parameter, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, fix, exceptionFix));
             }
 
             if (define != null)
             {
-                descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.ERROR, true, fix, exceptionFix));
+                descriptors.add(manager.createProblemDescriptor(define, String.format("Mismatch between define %s and parameter %s", defineString, parameterString), true, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, fix, exceptionFix));
             }
 
             if(importsSwapped)
