@@ -6,7 +6,6 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.naming.NamingException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -247,7 +246,18 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         for(String entry : amdImportNamingExceptionsList)
         {
             String[] items = entry.split("\\(");
-            results.add(new NameException(items[0], items[1]));
+            if(items.length >= 2)
+            {
+                results.add(new NameException(items[0], items[1]));
+            }
+            else if (items.length == 0)
+            {
+                results.add(new NameException("", ""));
+            }
+            else
+            {
+                results.add(new NameException(items[0], ""));
+            }
         }
 
         return results;

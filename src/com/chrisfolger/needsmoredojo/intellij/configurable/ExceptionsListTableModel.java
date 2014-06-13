@@ -34,11 +34,27 @@ public class ExceptionsListTableModel extends AbstractTableModel
     {
         if(col == 0)
         {
-            return exceptionsMap.get(row).split("\\(")[0];
+            String[] results = exceptionsMap.get(row).split("\\(");
+            if(results.length >= 1)
+            {
+                return results[0];
+            }
+            else
+            {
+                return "";
+            }
         }
         else
         {
-            return exceptionsMap.get(row).split("\\(")[1];
+            String[] result = exceptionsMap.get(row).split("\\(");
+            if(result.length >= 2)
+            {
+                return exceptionsMap.get(row).split("\\(")[1];
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 
@@ -67,6 +83,15 @@ public class ExceptionsListTableModel extends AbstractTableModel
         }
 
         String[] values = exceptionsMap.get(row).split("\\(");
+        if(values.length == 0)
+        {
+            values = new String[] { "", "" };
+        }
+        else if(values.length == 1)
+        {
+            values = new String[] { values[0], "" };
+        }
+
         if(col == 1)
         {
             values[1] = (String) value;
