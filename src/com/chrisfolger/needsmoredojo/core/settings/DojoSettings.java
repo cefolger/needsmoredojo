@@ -21,7 +21,7 @@ import java.util.Map;
 )
 public class DojoSettings implements PersistentStateComponent<DojoSettings>
 {
-    private static final String CURRENT_VERSION = "0.7";
+    private static final String CURRENT_VERSION = "0.7.1";
     private LinkedHashMap<String, String> amdImportNamingExceptions;
     private LinkedHashMap<String, String> ruiImportExceptions;
     private List<String> amdImportNamingExceptionsList;
@@ -53,8 +53,6 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
         refactoringEnabled = false;
         amdImportNamingExceptions = new LinkedHashMap<String, String>();
-        amdImportNamingExceptions.put("dojo/sniff", "has");
-        amdImportNamingExceptions.put("doh/main", "doh");
         preferRelativeImports = false;
         dojoSourcesShareProjectSourcesRoot = false;
         needsMoreDojoEnabled = true;
@@ -225,6 +223,11 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
             }
             amdImportNamingExceptions = new LinkedHashMap<String, String>();
 
+            version = CURRENT_VERSION;
+            return "Needs More Dojo has upgraded your settings " + fromVersion + " to version " + CURRENT_VERSION;
+        }
+        else if (version.equals("0.7"))
+        {
             version = CURRENT_VERSION;
             return "Needs More Dojo has upgraded your settings " + fromVersion + " to version " + CURRENT_VERSION;
         }
