@@ -204,11 +204,13 @@ public class DefineResolver
          */
         int argumentOffset = 0;
         String className = null;
+        PsiElement classNameElement = null;
 
         if(arguments.length > 1 && arguments[0] instanceof JSLiteralExpression && arguments[1] instanceof JSArrayLiteralExpression)
         {
             argumentOffset = 1;
             className = arguments[0].getText();
+            classNameElement = arguments[0];
         }
         else if(!(arguments.length > 1 && arguments[0] instanceof JSArrayLiteralExpression && arguments[1] instanceof JSFunctionExpression))
         {
@@ -221,7 +223,7 @@ public class DefineResolver
         // get the second argument which should be a function
         JSFunctionExpression function = (JSFunctionExpression) arguments[1 + argumentOffset];
 
-        return new DefineStatement(literalExpressions, function, className, original);
+        return new DefineStatement(literalExpressions, function, className, original, classNameElement);
     }
 
     /**

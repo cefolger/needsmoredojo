@@ -4,6 +4,7 @@ import com.chrisfolger.needsmoredojo.core.amd.define.DefineResolver;
 import com.chrisfolger.needsmoredojo.core.amd.define.DefineStatement;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.DojoModuleFileResolver;
 import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourceLibrary;
+import com.chrisfolger.needsmoredojo.core.amd.filesystem.SourcesLocator;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportResolver;
 import com.chrisfolger.needsmoredojo.core.amd.importing.ImportUpdater;
 import com.chrisfolger.needsmoredojo.core.amd.naming.NameException;
@@ -38,8 +39,9 @@ public class ModuleImporter
     private String moduleName;
     private List<NameException> moduleNamingExceptionMap;
     private ImportUpdater importUpdater;
+    private String absoluteModulePath;
 
-    public ModuleImporter(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, List<NameException> exceptionsMap)
+    public ModuleImporter(PsiFile[] possibleImportFiles, String moduleName, PsiFile moduleFile, SourceLibrary[] libraries, List<NameException> exceptionsMap, String originalAbsolutePath)
     {
         this.moduleName = moduleName;
         this.moduleFile = moduleFile;
@@ -47,6 +49,8 @@ public class ModuleImporter
         this.libraries = libraries;
         this.possibleFiles = possibleImportFiles;
         this.moduleNamingExceptionMap = exceptionsMap;
+        this.absoluteModulePath = originalAbsolutePath;
+
         importUpdater = new ImportUpdater(exceptionsMap);
     }
 
@@ -156,6 +160,23 @@ public class ModuleImporter
         }
 
         return pluginPostfix;
+    }
+
+    public void reimportModuleId(PsiFile file)
+    {
+        DefineStatement defineStatement = new DefineResolver().getDefineStatementItems(moduleFile);
+        SourceLibrary containingLibrary = new SourcesLocator().getFirstLibraryThatIncludesFile(file.getVirtualFile().getCanonicalPath(), libraries);
+        String newAbsolutePath = ImportResolver.getAbsolutePathRelativeToLibrary(containingLibrary, file.getContainingDirectory().getVirtualFile().getCanonicalPath(), file);
+
+        if(defineStatement.getClassNameElement() == null)
+        {
+            return;
+        }
+        if(!defineStatement.getClassNameElement().getText().contains(absoluteModulePath))
+        {
+            return;
+        }
+        new ImportUpdater(moduleNamingExceptionMap).updateModuleId(defineStatement, newAbsolutePath);
     }
 
     /**

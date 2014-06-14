@@ -28,12 +28,16 @@ public class MoveRefactoringListener implements RefactoringElementListener
         this.originalFile = originalFile;
         possibleFiles = new ImportResolver().getPossibleDojoImportFiles(originalPsiFile.getProject(), originalFile.substring(0, originalFile.indexOf('.')), true, false);
 
+        SourceLibrary[] libraries = new SourcesLocator().getSourceLibraries(originalPsiFile.getProject()).toArray(new SourceLibrary[0]);
+        SourceLibrary libraryFileIsIn = new SourcesLocator().getFirstLibraryThatIncludesFile(originalPsiFile.getVirtualFile().getCanonicalPath(), libraries);
+
         renamer = new ModuleImporter(possibleFiles,
                 originalFile.substring(0, originalFile.indexOf('.')),
                 originalPsiFile,
-                new SourcesLocator().getSourceLibraries(originalPsiFile.getProject()).toArray(new SourceLibrary[0]),
+                libraries,
                 ServiceManager.getService(originalPsiFile.getProject(),
-                        DojoSettings.class).getNamingExceptionList());
+                        DojoSettings.class).getNamingExceptionList(),
+                ImportResolver.getAbsolutePathRelativeToLibrary(libraryFileIsIn, originalPsiFile.getContainingDirectory().getVirtualFile().getCanonicalPath(), originalPsiFile));
 
 
         moduleReferences = renamer.findFilesThatModuleReferences(originalPsiFile);
@@ -62,6 +66,8 @@ public class MoveRefactoringListener implements RefactoringElementListener
         {
             renamer.reimportModule(result.getIndex(), file, result.getQuote(), result.getPath(), result.getModule(), result.getPluginResourceId(), false, result.getPluginResourceFile(), result.getCallExpression());
         }
+
+        renamer.reimportModuleId(file);
     }
 
     @Override

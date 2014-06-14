@@ -62,6 +62,19 @@ public class ImportResolver
         return getChoicesFromFiles(filesArray, libraries, module, originalModule, false);
     }
 
+    public static String getAbsolutePathRelativeToLibrary(SourceLibrary firstLibrary, String canonicalPath, PsiFile file)
+    {
+        String result = canonicalPath;
+        if(!firstLibrary.getPath().equals(""))
+        {
+            result = firstLibrary.getName() + result.substring(result.indexOf(firstLibrary.getPath()) + firstLibrary.getPath().length());
+        }
+        result = result.substring(result.indexOf(firstLibrary.getName()));
+        result = result.replace('\\', '/') + '/' + file.getName().substring(0, file.getName().indexOf('.'));
+
+        return result;
+    }
+
     public @NotNull LinkedHashMap<String, PsiFile> getChoicesFromFiles(@NotNull PsiFile[] filesArray, @NotNull SourceLibrary[] libraries, @NotNull String module, @Nullable PsiFile originalModule, boolean prioritizeRelativePaths, boolean getMap)
     {
         Map<String, PsiFile> moduleFileMap = new HashMap<String, PsiFile>();

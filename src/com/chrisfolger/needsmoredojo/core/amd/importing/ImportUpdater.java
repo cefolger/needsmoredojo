@@ -91,4 +91,16 @@ public class ImportUpdater
         PsiElement defineLiteral = statement.getArguments().getExpressions()[match.getIndex()];
         updateModuleReference(targetFile, match, statement, JSUtil.createExpression(defineLiteral.getParent(), match.getQuote() + match.getPath() + match.getPluginResourceId() + match.getQuote()), updateReferences);
     }
+
+    public void updateModuleId(final DefineStatement defineStatement, String newModuleId)
+    {
+        final PsiElement newIdElement = JSUtil.createExpression(defineStatement.getClassNameElement().getParent(), defineStatement.getClassNameElement().getText().charAt(0) + newModuleId + defineStatement.getClassNameElement().getText().charAt(0));
+
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                defineStatement.getClassNameElement().replace(newIdElement);
+            }
+        });
+    }
 }
