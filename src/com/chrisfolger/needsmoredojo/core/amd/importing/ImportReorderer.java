@@ -111,7 +111,7 @@ public class ImportReorderer
 
         int sourceIndex = PsiUtil.getIndexInParent(defines[0]);
         int destinationIndex = PsiUtil.getIndexInParent(defines[1]);
-        JSParameter[] parameterList = items.getFunction().getParameters();
+        JSParameter[] parameterList = items.getFunction().getParameterVariables();
 
         if(sourceIndex >= parameterList.length || destinationIndex >= parameterList.length)
         {

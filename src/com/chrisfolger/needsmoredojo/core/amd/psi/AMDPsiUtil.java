@@ -354,7 +354,7 @@ public class AMDPsiUtil
         {
             for (int x = 0; x < defineStatement.getFunction().getParameters().length; x++)
             {
-                JSParameter parameter = defineStatement.getFunction().getParameters()[x];
+                JSParameter parameter = defineStatement.getFunction().getParameterVariables()[x];
                 JSExpression define = defineStatement.getArguments().getExpressions()[x];
 
                 if(parameter.getText().equals(psiElement.getText()))
