@@ -62,7 +62,7 @@ public class ImportUpdater
                 if(!(match.getIndex() >= statement.getFunction().getParameters().length))
                 {
                     // for performance reasons we should only rename a parameter if the name has actually changed
-                    String parameterText = statement.getFunction().getParameters()[match.getIndex()].getText();
+                    String parameterText = statement.getFunction().getParameterVariables()[match.getIndex()].getText();
                     String newParameterName = NameResolver.defineToParameter(match.getPath(), moduleNamingExceptionMap);
 
                     if(parameterText.equals(newParameterName))
@@ -71,7 +71,7 @@ public class ImportUpdater
                     }
 
                     RenameRefactoring refactoring = RefactoringFactory.getInstance(targetFile.getProject())
-                            .createRename(statement.getFunction().getParameters()[match.getIndex()], newParameterName, false, false);
+                            .createRename(statement.getFunction().getParameterVariables()[match.getIndex()], newParameterName, false, false);
 
                     refactoring.doRefactoring(refactoring.findUsages());
                 }

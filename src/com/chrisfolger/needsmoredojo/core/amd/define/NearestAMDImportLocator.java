@@ -57,7 +57,7 @@ public class NearestAMDImportLocator
         }
 
 
-        JSElement parameter = defineStatement.getFunction().getParameters()[defineIndex];
+        JSElement parameter = defineStatement.getFunction().getParameterVariables()[defineIndex];
 
         return parameter;
     }
@@ -120,7 +120,7 @@ public class NearestAMDImportLocator
     {
         for(int i=0;i<defineStatement.getFunction().getParameters().length;i++)
         {
-            if(defineStatement.getFunction().getParameters()[i].getText().equals(parameter.getText()))
+            if(defineStatement.getFunction().getParameterVariables()[i].getText().equals(parameter.getText()))
             {
                 return i;
             }

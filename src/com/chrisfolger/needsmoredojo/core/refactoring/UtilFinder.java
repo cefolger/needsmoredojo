@@ -32,9 +32,10 @@ public class UtilFinder
 
                         for(JSVariable variable : ((JSVarStatement)statement).getVariables())
                         {
-                            if(variable.getInitializerText().contains("declare"))
+                            final JSExpression initializer = variable.getInitializer();
+                            if(initializer instanceof JSCallExpression && initializer.getText().contains("declare"))
                             {
-                                JSCallExpression declareCall = (JSCallExpression) variable.getInitializer();
+                                JSCallExpression declareCall = (JSCallExpression) initializer;
                                 declaration = declareCall;
                                 break;
                             }

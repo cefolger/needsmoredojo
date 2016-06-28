@@ -40,7 +40,7 @@ public class UnusedImportsRemovalVisitor extends JSRecursiveElementVisitor
         {
             // if the nearest block contains a reference AND it is not equal to the owning block, then the owning
             // block cannot claim this reference
-            for(JSParameter parameter : block.getFunction().getParameters())
+            for(JSParameter parameter : block.getFunction().getParameterVariables())
             {
                 String matchText = prefix + parameter.getText();
 
