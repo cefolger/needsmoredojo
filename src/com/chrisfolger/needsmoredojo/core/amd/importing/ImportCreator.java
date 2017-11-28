@@ -27,7 +27,7 @@ public class ImportCreator
 
     public void createImport(String module, String quoteCharacter, String parameter, JSArrayLiteralExpression imports, JSParameterList parameters)
     {
-        for(JSParameter element : parameters.getParameters())
+        for(JSParameter element : parameters.getParameterVariables())
         {
             if(element.getName().equals(parameter))
             {
@@ -37,7 +37,7 @@ public class ImportCreator
             }
         }
 
-        if(imports.getChildren().length == 0)
+        if(imports.getExpressions().length == 0)
         {
             // how to insert
             /*
@@ -80,7 +80,7 @@ public class ImportCreator
         else
         {
             String formatString = quoteCharacter + "%s" + quoteCharacter + ",";
-            JSUtil.addStatementBeforeElement(imports, imports.getChildren()[0], String.format(formatString, module), "\n");
+            JSUtil.addStatementBeforeElement(imports, imports.getExpressions()[0], String.format(formatString, module), "\n");
             if(parameters.getChildren().length > 0)
             {
                 JSUtil.addStatementBeforeElement(parameters, parameters.getChildren()[0], parameter + ",", " ");
@@ -99,9 +99,9 @@ public class ImportCreator
 
         // if the parameter would cause a duplicate, then assume it is a module with a different path but the same name
         // as an existing imported module.
-        for (int i = 0; i < parameters.getParameters().length; i++)
+        for (int i = 0; i < parameters.getParameterVariables().length; i++)
         {
-            JSParameter existingParameter = parameters.getParameters()[i];
+            JSParameter existingParameter = parameters.getParameterVariables()[i];
             if(existingParameter != null && existingParameter.getText().equals(parameter))
             {
                 String existingAbsolutePath = NameResolver.getModuleAndPathWithoutPluginResourceId(imports.getExpressions()[i].getText().replaceAll("'", "").replaceAll("\"", ""));

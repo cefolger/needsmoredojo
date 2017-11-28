@@ -7,6 +7,7 @@ import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.impl.JSElementImpl;
 import com.intellij.lang.javascript.psi.impl.JSExpressionImpl;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 import static org.mockito.Mockito.mock;
 
@@ -38,7 +39,7 @@ public class BasicPsiElements
 
     public static JSElement elementFromText(final String text)
     {
-        return new JSElementImpl(mock(ASTNode.class)) {
+        return new JSElementImpl(mock(IElementType.class)) {
             @Override
             public String getText()
             {
@@ -72,7 +73,7 @@ public class BasicPsiElements
 
     public static JSExpression expressionFromText(final String text)
     {
-        return new JSExpressionImpl(mock(ASTNode.class)) {
+        return new JSExpressionImpl(mock(IElementType.class)) {
             @Override
             public String getText()
             {

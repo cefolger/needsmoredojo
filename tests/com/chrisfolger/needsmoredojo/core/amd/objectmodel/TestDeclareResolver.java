@@ -3,6 +3,9 @@ package com.chrisfolger.needsmoredojo.core.amd.objectmodel;
 import com.chrisfolger.needsmoredojo.testutil.*;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +14,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestDeclareResolver
 {
@@ -20,6 +25,11 @@ public class TestDeclareResolver
     public void setup()
     {
         resolver = new DeclareResolver();
+
+        Application applicationMock = mock(Application.class);
+        Disposable disposableMock = mock(Disposable.class);
+        when(applicationMock.isUnitTestMode()).thenReturn(true);
+        ApplicationManager.setApplication(applicationMock, disposableMock);
     }
 
     @Test

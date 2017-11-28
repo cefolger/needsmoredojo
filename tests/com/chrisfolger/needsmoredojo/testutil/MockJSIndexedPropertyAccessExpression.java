@@ -3,6 +3,7 @@ package com.chrisfolger.needsmoredojo.testutil;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.impl.JSIndexedPropertyAccessExpressionImpl;
+import com.intellij.psi.tree.IElementType;
 
 import static org.mockito.Mockito.mock;
 
@@ -11,7 +12,7 @@ public class MockJSIndexedPropertyAccessExpression extends JSIndexedPropertyAcce
     private String value;
 
     public MockJSIndexedPropertyAccessExpression(String propertyValue) {
-        super(mock(ASTNode.class));
+        super(mock(IElementType.class));
 
         this.value = propertyValue;
     }

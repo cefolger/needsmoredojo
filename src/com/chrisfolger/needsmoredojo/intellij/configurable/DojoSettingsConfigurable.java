@@ -55,6 +55,7 @@ public class DojoSettingsConfigurable implements Configurable {
     private JCheckBox enableRefactoringSupportForCheckBox;
     private JRadioButton singleQuotesRadioButton;
     private JRadioButton doubleQuotesRadioButton;
+    private JTextField importBlockNames;
     private ButtonGroup quotesButtonGroup;
     private Project project;
     private String dojoSourceString;
@@ -149,6 +150,7 @@ public class DojoSettingsConfigurable implements Configurable {
                 addModulesIfThereAreNoneDetected.isSelected() != settingsService.isAddModuleIfThereAreNoneDefined() ||
                 allowCaseInsensitiveSearch.isSelected() != settingsService.isAllowCaseInsensitiveSearch() ||
                 !supportedFileTypes.getText().equals(settingsService.getSupportedFileTypes()) ||
+                !importBlockNames.getText().equals(settingsService.getImportBlockNames()) ||
                 enableRefactoringSupportForCheckBox.isSelected() != settingsService.isRefactoringEnabled() ||
                 singleQuotesRadioButton.isSelected() != settingsService.isSingleQuotedModuleIDs() ||
                 // this flag is true if it's unchecked
@@ -265,6 +267,8 @@ public class DojoSettingsConfigurable implements Configurable {
 
         supportedFileTypes.addKeyListener(new TextChangedListener());
 
+        importBlockNames.addKeyListener(new TextChangedListener());
+
         pluginEnabled.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -377,6 +381,7 @@ public class DojoSettingsConfigurable implements Configurable {
         settingsService.setAddModuleIfThereAreNoneDefined(addModulesIfThereAreNoneDetected.isSelected());
         settingsService.setAllowCaseInsensitiveSearch(allowCaseInsensitiveSearch.isSelected());
         settingsService.setSupportedFileTypes(supportedFileTypes.getText());
+        settingsService.setImportBlockNames(importBlockNames.getText());
         settingsService.setSetupWarningDisabled(!displayWarningIfSourcesCheckBox.isSelected());
         settingsService.setRefactoringEnabled(enableRefactoringSupportForCheckBox.isSelected());
         settingsService.setSingleQuotedModuleIDs(singleQuotesRadioButton.isSelected());
@@ -407,6 +412,7 @@ public class DojoSettingsConfigurable implements Configurable {
         addModulesIfThereAreNoneDetected.setSelected(settingsService.isAddModuleIfThereAreNoneDefined());
         allowCaseInsensitiveSearch.setSelected(settingsService.isAllowCaseInsensitiveSearch());
         supportedFileTypes.setText(settingsService.getSupportedFileTypes());
+        importBlockNames.setText(settingsService.getImportBlockNames());
         displayWarningIfSourcesCheckBox.setSelected(!settingsService.isSetupWarningDisabled());
         enableRefactoringSupportForCheckBox.setSelected(settingsService.isRefactoringEnabled());
         if (settingsService.isSingleQuotedModuleIDs()) {

@@ -18,8 +18,8 @@ public class MockPsiFile extends PsiFileImpl
     private String path;
     private MockPsiDirectory directory;
 
-    public MockPsiFile(String fileName, String path) {
-        super(mock(FileViewProvider.class));
+    public MockPsiFile(String fileName, String path, FileViewProvider fileViewProviderMock) {
+        super(fileViewProviderMock);
 
         this.name = fileName;
         this.path = path;
