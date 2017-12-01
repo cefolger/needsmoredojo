@@ -6,7 +6,6 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.naming.NamingException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,6 +36,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
     private boolean setupWarningDisabled;
     private boolean refactoringEnabled;
     private String supportedFileTypes;
+    private String importBlockNames;
     private boolean singleQuotedModuleIDs;
     // this will be used for converting to module specific sources later
     private String version;
@@ -62,6 +62,7 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
         addModuleIfThereAreNoneDefined = false;
         allowCaseInsensitiveSearch = true;
         supportedFileTypes = "jsp,js,php,html";
+        importBlockNames = "require,define";
         singleQuotedModuleIDs = true;
     }
 
@@ -156,6 +157,14 @@ public class DojoSettings implements PersistentStateComponent<DojoSettings>
 
     public void setSupportedFileTypes(String supportedFileTypes) {
         this.supportedFileTypes = supportedFileTypes;
+    }
+
+    public String getImportBlockNames() {
+        return importBlockNames;
+    }
+
+    public void setImportBlockNames(String importBlockNames) {
+        this.importBlockNames = importBlockNames;
     }
 
     @Nullable

@@ -2,7 +2,10 @@ package com.chrisfolger.needsmoredojo.core.amd.define;
 
 import com.chrisfolger.needsmoredojo.core.amd.CompletionCallback;
 import com.chrisfolger.needsmoredojo.core.amd.importing.InvalidDefineException;
+import com.chrisfolger.needsmoredojo.core.settings.DojoSettings;
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
@@ -183,8 +186,8 @@ public class DefineResolver
             if(parent instanceof JSCallExpression)
             {
                 JSCallExpression statement = (JSCallExpression) parent;
-                if(statement.getMethodExpression() != null && (statement.getMethodExpression().getText().equals("define")
-                        || statement.getMethodExpression().getText().equals("require")))
+                if(statement.getMethodExpression() != null &&
+                        isValidImportBlockName(statement.getMethodExpression().getText(), element.getProject()))
                 {
                     return getDefineStatementItemsFromArguments(statement.getArguments(), statement);
                 }
@@ -238,7 +241,7 @@ public class DefineResolver
             public void visitJSCallExpression(JSCallExpression expression)
             {
                 if(expression != null && expression.getMethodExpression() != null &&
-                        (expression.getMethodExpression().getText().equals("define") || expression.getMethodExpression().getText().equals("require")))
+                        isValidImportBlockName(expression.getMethodExpression().getText(), file.getProject()))
                 {
                     listOfDefinesOrRequiresToVisit.add(expression);
                 }
@@ -249,5 +252,16 @@ public class DefineResolver
         file.accept(defineOrRequireVisitor);
 
         return listOfDefinesOrRequiresToVisit;
+    }
+
+    private Boolean isValidImportBlockName(String name, Project project) {
+        DojoSettings settings = ServiceManager.getService(project, DojoSettings.class);
+        String[] defineBlockNames = settings.getImportBlockNames().split(",");
+        for (String defineBlockName:defineBlockNames) {
+            if (name.equals(defineBlockName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

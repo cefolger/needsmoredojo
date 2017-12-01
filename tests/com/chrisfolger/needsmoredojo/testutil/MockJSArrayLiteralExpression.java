@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.impl.JSArrayLiteralExpressionImpl;
+import com.intellij.psi.tree.IElementType;
 import org.apache.commons.lang.NotImplementedException;
 
 import static org.mockito.Mockito.mock;
@@ -15,7 +16,7 @@ public class MockJSArrayLiteralExpression extends JSArrayLiteralExpressionImpl i
     private MockJSElement bracket;
 
     public MockJSArrayLiteralExpression(String[] defines) {
-        super(mock(ASTNode.class));
+        super(mock(IElementType.class));
 
         expressions = new JSExpression[defines.length];
         for(int i=0;i<defines.length;i++)

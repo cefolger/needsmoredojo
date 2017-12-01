@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.javascript.psi.JSElement;
 import com.intellij.lang.javascript.psi.impl.JSElementImpl;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 import static org.mockito.Mockito.mock;
 
@@ -16,7 +17,7 @@ public class MockJSElement extends JSElementImpl implements  MockJSElementInterf
     private MockJSElementInterface lastChild;
 
     public MockJSElement(String text) {
-        super(mock(ASTNode.class));
+        super(mock(IElementType.class));
 
         this.text = text;
     }

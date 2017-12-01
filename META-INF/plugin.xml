@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.chrisfolger.needsmoredojo</id>
   <name>Needs More Dojo</name>
-  <version>0.7</version>
+  <version>0.8.1</version>
   <vendor email="cefolger@gmail.com" url="http://www.chrisfolger.com">Chris Folger</vendor>
 
   <description><![CDATA[
@@ -40,6 +40,17 @@
       ]]></description>
 
   <change-notes><![CDATA[
+            <b>0.8.1</b>
+            <ul>
+                <li>Compatibility with IntelliJ IDEA 2017.3</li>
+            </ul>
+
+            <b>0.8</b>
+            <ul>
+                <li>Compatibility with IntelliJ IDEA 2016.1 and above</li>
+                <li>Added import block name configuration option</li>
+            </ul>
+
             <b>0.7 (major release) </b>
             <ul>
                 <li>Quick fix to add a mismatched import exception </li>
@@ -89,7 +100,7 @@
       ]]>
   </change-notes>
 
-  <idea-version since-build="107.105"/>
+  <idea-version since-build="145.1"/>
 
     <depends>JavaScript</depends>
     <depends>com.intellij.modules.xml</depends>
@@ -217,7 +228,7 @@
 
         <!-- overrides the default JavaScript unresolved variable inspection so that we are able to resolve attach points. Otherwise there
             is no way to provide references to attach point variables -->
-        <localInspection language="JavaScript" groupPath="JavaScript" shortName="JSUnresolvedVariable"
+        <localInspection language="JavaScript" groupPath="JavaScript"
                          key="js.unresolved.variable.inspection.name" groupKey="js.inspection.group.name" enabledByDefault="true"
                          level="WEAK WARNING" implementationClass="com.chrisfolger.needsmoredojo.intellij.inspections.DojoUnresolvedVariableInspection" unfair="true"/>
     </extensions>

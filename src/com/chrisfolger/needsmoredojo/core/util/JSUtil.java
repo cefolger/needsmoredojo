@@ -19,7 +19,7 @@ public class JSUtil
 {
     public static PsiElement addStatementBeforeElement(PsiElement parent, PsiElement element, String statement, String whitespace)
     {
-        ASTNode node = JSChangeUtil.createStatementFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
+        ASTNode node = JSChangeUtil.createExpressionFromText(parent.getProject(), statement, JSUtils.getDialect(parent.getContainingFile()));
         parent.addBefore(node.getPsi(), element);
 
         if(!whitespace.equals(""))

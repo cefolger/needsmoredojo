@@ -38,11 +38,6 @@ public class DojoToolkitModuleType extends ModuleType<DojoToolkitModuleBuilder>
     }
 
     @Override
-    public Icon getBigIcon() {
-        return AllIcons.Modules.Types.WebModule;
-    }
-
-    @Override
     public Icon getNodeIcon(@Deprecated boolean b) {
         return AllIcons.Nodes.WebFolder;
     }
